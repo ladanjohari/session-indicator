@@ -137,7 +137,7 @@ body{
 .s-name{flex:1;font-size:12px;color:rgba(255,255,255,0.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .s-status{font-size:11px;color:rgba(255,255,255,0.32);white-space:nowrap}
 .s-time{font-size:10px;color:rgba(255,255,255,0.22);white-space:nowrap;margin-left:3px}
-.s-row.has-actions{cursor:default}
+.s-row.has-actions{cursor:pointer}
 .s-btns{display:flex;gap:5px;align-items:center;flex-shrink:0}
 .s-btn{
   font-size:11px;padding:2px 9px;
@@ -690,6 +690,25 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
     </div>
   </section>
 
+  <!-- ── SECTION 4: DESIGN PRINCIPLES ── -->
+  <section class="principles">
+    <p class="principles-title">How it was designed</p>
+    <div class="principles-grid">
+      <div class="principle">
+        <p class="principle-title">Borrowed, not invented</p>
+        <p class="principle-body">Same visual grammar as Ethernet LEDs and the macOS camera indicator. Zero new concepts to learn.</p>
+      </div>
+      <div class="principle">
+        <p class="principle-title">Motion = state. Color = exception.</p>
+        <p class="principle-body">White dots handle 90% of cases. Color only fires for error and completion.</p>
+      </div>
+      <div class="principle">
+        <p class="principle-title">Hardware and software share one language.</p>
+        <p class="principle-body">The same dot pill lives in the SD card slot when the lid is closed.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ── SECTION: ACTIVE VS WAITING ── -->
   <section class="avw">
     <p class="avw-title">Active vs. Waiting &mdash; Three Approaches</p>
@@ -768,25 +787,6 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
 
     <div class="avw-rec">
       <p><strong>Our recommendation: Variation C.</strong> Motion belongs to work in progress. Color belongs to exceptions. Keeping them separate means each signal stays clean. Amber static for waiting maps to the universal meaning of amber in hardware LEDs &mdash; not an error, but not moving either.</p>
-    </div>
-  </section>
-
-  <!-- ── SECTION 4: DESIGN PRINCIPLES ── -->
-  <section class="principles">
-    <p class="principles-title">How it was designed</p>
-    <div class="principles-grid">
-      <div class="principle">
-        <p class="principle-title">Borrowed, not invented</p>
-        <p class="principle-body">Same visual grammar as Ethernet LEDs and the macOS camera indicator. Zero new concepts to learn.</p>
-      </div>
-      <div class="principle">
-        <p class="principle-title">Motion = state. Color = exception.</p>
-        <p class="principle-body">White dots handle 90% of cases. Color only fires for error and completion.</p>
-      </div>
-      <div class="principle">
-        <p class="principle-title">Hardware and software share one language.</p>
-        <p class="principle-body">The same dot pill lives in the SD card slot when the lid is closed.</p>
-      </div>
     </div>
   </section>
 
@@ -974,7 +974,7 @@ var termLines={
       '<span style="color:rgba(255,255,255,0.32)">No active task. Agent is idle and ready.</span>',
       '',
       '<span style="color:rgba(255,255,255,0.15)">────────────────────────────────────────</span>',
-      '<span style="color:rgba(255,255,255,0.22)">Type a prompt to begin a new session.</span>'
+      '<span style="color:rgba(255,255,255,0.4)">$ </span><span class="tc">▋</span>'
     ].join('\n');
   }
 };
@@ -1080,10 +1080,11 @@ function popList(){
       var tm=document.createElement('span');
       tm.className='s-time';tm.textContent=s.time;
       r.appendChild(tm);
-      r.addEventListener('click',(function(sess){return function(){
-        closePop();openTerminal(sess);
-      };})(s));
     }
+
+    r.addEventListener('click',(function(sess){return function(){
+      closePop();openTerminal(sess);
+    };})(s));
 
     l.appendChild(r);
   });

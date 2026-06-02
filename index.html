@@ -11,11 +11,22 @@
   --ok-bg:rgba(52,199,89,0.08);--ok-fg:#34C759;--ok-bd:rgba(52,199,89,0.25);
   --gap-bg:rgba(255,59,48,0.08);--gap-fg:#FF3B30;--gap-bd:rgba(255,59,48,0.25);
   --info-bg:rgba(74,176,255,0.05);--info-fg:rgba(255,255,255,0.48);--info-bd:rgba(74,176,255,0.18);
+  --color-text-primary:rgba(255,255,255,0.82);
+  --color-text-secondary:rgba(255,255,255,0.28);
+  --color-text-success:#34C759;
+  --color-border-tertiary:rgba(255,255,255,0.06);
+  --color-background-secondary:rgba(255,255,255,0.04);
+  --border-radius-md:8px;
 }
 body.lm{
   --ok-bg:rgba(52,199,89,0.07);--ok-fg:#1a8c3a;--ok-bd:rgba(52,199,89,0.28);
   --gap-bg:rgba(255,59,48,0.07);--gap-fg:#c0261c;--gap-bd:rgba(255,59,48,0.28);
   --info-bg:rgba(0,122,255,0.05);--info-fg:rgba(0,0,0,0.45);--info-bd:rgba(0,122,255,0.18);
+  --color-text-primary:rgba(0,0,0,0.82);
+  --color-text-secondary:rgba(0,0,0,0.3);
+  --color-text-success:#1a8c3a;
+  --color-border-tertiary:rgba(0,0,0,0.07);
+  --color-background-secondary:rgba(0,0,0,0.04);
 }
 
 body{
@@ -43,12 +54,14 @@ body{
   box-shadow:0 32px 80px rgba(0,0,0,0.7),0 0 0 .5px rgba(255,255,255,0.08);
 }
 
-/* Selective desaturation: everything except .si-wrap and .popover */
-.screen .wallpaper,
-.screen .notch,
+/* Dim menu bar chrome — wallpaper and pill stay at full brightness */
 .screen .mb-left,
 .screen .mb-right > .mb-item{
-  filter:grayscale(100%) brightness(0.5);
+  opacity:0.45;
+}
+body.lm .screen .mb-left,
+body.lm .screen .mb-right > .mb-item{
+  opacity:0.55;
 }
 
 .wallpaper{
@@ -154,7 +167,7 @@ body{
 
 .demo{
   display:none;
-  position:absolute;z-index:50;
+  position:absolute;
   bottom:28px;left:50%;transform:translateX(-50%);
   background:rgba(18,18,18,0.9);
   border:.5px solid rgba(255,255,255,0.1);
@@ -196,11 +209,17 @@ body{
   border-radius:0 0 12px 12px;z-index:110;
 }
 
-.ctrl-hint{
+.ctrl-hints{
   position:absolute;z-index:60;
-  bottom:10px;right:14px;
-  font-size:9px;color:rgba(255,255,255,0.18);
-  pointer-events:none;letter-spacing:.05em;
+  bottom:12px;right:16px;
+  display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+  pointer-events:none;
+}
+.ctrl-hint{
+  font-size:11px;color:rgba(255,255,255,0.6);
+  background:rgba(0,0,0,0.55);
+  border-radius:20px;padding:4px 12px;
+  white-space:nowrap;
 }
 
 /* Hero caption */
@@ -339,6 +358,47 @@ body.lm .pa-gap-title{color:rgba(0,0,0,0.5)}
 body.lm .pa-gap-body{color:rgba(0,0,0,0.28)}
 body.lm .pa-callout strong{color:rgba(0,0,0,0.68)}
 
+/* ─── MATRIX TABLE ─── */
+.pa-matrix{margin-bottom:20px}
+.pa-matrix-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+.pa-matrix-table th{
+  font-size:11px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.07em;
+  color:var(--color-text-secondary);
+  padding:0 0 12px 0;
+  text-align:center;
+  border-bottom:.5px solid var(--color-border-tertiary);
+}
+.pa-matrix-table th:first-child{text-align:left}
+.pa-matrix-table td{
+  padding:12px 0;
+  border-bottom:.5px solid var(--color-border-tertiary);
+  text-align:center;
+  font-size:13px;
+  color:var(--color-text-primary);
+}
+.pa-matrix-table td:first-child{
+  text-align:left;width:200px;
+  font-size:13px;color:var(--color-text-primary);
+  padding-left:16px;
+}
+.pa-matrix-table .check{color:var(--color-text-success);font-size:18px}
+.pa-matrix-table .cross{color:var(--color-text-secondary);font-size:18px;opacity:.3}
+.pa-matrix-table tr.highlight td{
+  background:var(--color-background-secondary);
+  font-weight:500;
+  border-bottom:.5px solid transparent;
+}
+.pa-matrix-table tr.highlight td:first-child{border-radius:var(--border-radius-md) 0 0 var(--border-radius-md);padding-left:16px}
+.pa-matrix-table tr.highlight td:last-child{border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding-right:10px}
+.pa-matrix-table tr.highlight .check{font-size:22px;color:#34C759}
+.pa-matrix-table .tool-name{cursor:default}
+.pa-matrix-table tbody tr:not(.highlight):hover td{background:rgba(255,255,255,0.02)}
+
 /* ─── FOOTER ─── */
 .footer{
   padding-top:40px;
@@ -389,7 +449,7 @@ body.lm .demo-hint{color:rgba(0,0,0,0.22)}
 body.lm .tbtn{border-color:rgba(0,0,0,0.14);color:rgba(0,0,0,0.38)}
 body.lm .tbtn:hover{background:rgba(0,0,0,0.05);color:rgba(0,0,0,0.65)}
 body.lm .notch{background:#c8c8c8}
-body.lm .ctrl-hint{color:rgba(0,0,0,0.18)}
+body.lm .ctrl-hint{color:rgba(0,0,0,0.55);background:rgba(255,255,255,0.55)}
 body.lm .caption{color:rgba(0,0,0,0.25)}
 body.lm .problem p{color:rgba(0,0,0,0.4)}
 body.lm .legend-title{color:rgba(0,0,0,0.3)}
@@ -409,24 +469,22 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
 /* ─── TERMINAL WINDOW ─── */
 .term-win{
   display:none;
-  position:absolute;z-index:80;
-  top:60px;left:50%;
+  position:absolute;
   width:75%;max-width:680px;
   background:#1a1a1a;
   border-radius:10px;
   box-shadow:0 20px 60px rgba(0,0,0,0.65),0 0 0 .5px rgba(255,255,255,0.1);
   overflow:hidden;
+  cursor:default;
 }
 .term-win.visible{
   display:block;
   animation:termIn .18s ease-out;
 }
 @keyframes termIn{
-  from{opacity:0;transform:translateX(-50%) translateY(-8px)}
-  to{opacity:1;transform:translateX(-50%) translateY(0)}
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:translateY(0)}
 }
-.term-win:not(.visible){transform:translateX(-50%)}
-.term-win.visible{transform:translateX(-50%)}
 
 .term-chrome{
   height:32px;background:#252525;
@@ -443,14 +501,17 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
   color:rgba(255,255,255,0.55);
   white-space:nowrap;pointer-events:none;
 }
-.term-x{
-  margin-left:auto;background:none;border:none;
+.term-x,.term-min{
+  background:none;border:none;
   color:rgba(255,255,255,0.22);
-  font-size:18px;line-height:1;cursor:pointer;
-  padding:0 2px;font-family:inherit;
+  font-size:16px;line-height:1;cursor:pointer;
+  padding:0 3px;font-family:inherit;
   transition:color .1s;
 }
-.term-x:hover{color:rgba(255,255,255,0.65)}
+.term-x{margin-left:auto}
+.term-x:hover,.term-min:hover{color:rgba(255,255,255,0.65)}
+.term-win.minimized .term-body{display:none}
+.term-win.minimized .term-chrome{cursor:pointer}
 .term-body{
   font-family:'SF Mono','Menlo','Monaco','Courier New',monospace;
   font-size:12px;color:#e0e0e0;
@@ -474,25 +535,39 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
 .avw-card{
   background:rgba(255,255,255,0.025);
   border:.5px solid rgba(255,255,255,0.06);
-  border-radius:12px;padding:18px 16px 16px;
-  position:relative;
+  border-radius:12px;padding:16px 16px 16px;
 }
 .avw-card.rec{border-color:rgba(255,255,255,0.13)}
+.avw-card-header{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:12px;
+}
+.avw-card-header-text{flex:1;min-width:0}
 .avw-badge{
-  position:absolute;top:13px;right:13px;
   font-size:9px;font-weight:500;
   color:rgba(255,255,255,0.38);
   background:rgba(255,255,255,0.07);
   border:.5px solid rgba(255,255,255,0.11);
   padding:2px 8px;border-radius:20px;
   letter-spacing:.04em;text-transform:uppercase;
+  white-space:nowrap;flex-shrink:0;margin-left:8px;margin-top:1px;
 }
 .avw-var{
   font-size:10px;font-weight:500;
   color:rgba(255,255,255,0.28);
   letter-spacing:.07em;text-transform:uppercase;
-  margin-bottom:14px;
+  margin-bottom:2px;
 }
+.avw-subvar{
+  font-size:10px;color:rgba(255,255,255,0.2);
+  letter-spacing:.02em;
+}
+.avw-note{
+  font-size:9px;color:rgba(255,255,255,0.18);
+  font-style:italic;margin-top:6px;
+}
+body.lm .avw-subvar{color:rgba(0,0,0,0.22)}
+body.lm .avw-note{color:rgba(0,0,0,0.2)}
 .avw-bar{
   background:rgba(20,20,20,0.96);
   border:.5px solid rgba(255,255,255,0.07);
@@ -508,20 +583,21 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
 }
 .avw-d{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
-/* Variation A — color only, no motion */
+/* Minimal — no motion, white only */
 .avw-d.aa{background:#fff}
-.avw-d.aw{background:#E8952A}
+.avw-d.aw{background:#fff;opacity:0.35}
 
-/* Variation B — pulse speed */
+/* Pulse — pulse speed as signal, both white */
 @keyframes avwFastPulse{0%,100%{opacity:1}50%{opacity:.15}}
 @keyframes avwSlowPulse{0%,100%{opacity:1}50%{opacity:.2}}
 .avw-d.ba{background:#fff;animation:avwFastPulse .9s ease-in-out infinite}
-.avw-d.bw{background:#E8952A;animation:avwSlowPulse 2.8s ease-in-out infinite}
+.avw-d.bw{background:#fff;animation:avwSlowPulse 2.8s ease-in-out infinite}
 
-/* Variation C — shimmer active, static amber waiting */
+/* Semantic — motion + color each carry one meaning */
 @keyframes avwShimmer{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.15;transform:scale(0.35)}}
 .avw-d.ca{background:#fff;animation:avwShimmer 1.6s ease-in-out infinite}
 .avw-d.cw{background:#E8952A}
+body.lm .avw-d.aw{background:#1a1a1a;opacity:0.35}
 
 /* Dot label rows */
 .avw-labels{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;padding:0 1px}
@@ -564,6 +640,7 @@ body.lm .avw-con{color:rgba(0,0,0,0.18)}
 body.lm .avw-rec{background:rgba(0,0,0,0.025);border:.5px solid rgba(0,0,0,0.07)}
 body.lm .avw-rec p{color:rgba(0,0,0,0.32)}
 body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
+
 </style>
 </head>
 <body>
@@ -616,20 +693,11 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
         <div id="popList"></div>
       </div>
 
-      <div id="termWin" class="term-win">
-        <div class="term-chrome">
-          <div class="term-dots">
-            <div class="term-dot" style="background:#FF5F57"></div>
-            <div class="term-dot" style="background:#FFBD2E"></div>
-            <div class="term-dot" style="background:#28C840"></div>
-          </div>
-          <span class="term-title" id="termTitle"></span>
-          <button class="term-x" onclick="closeTerminal()">&#215;</button>
-        </div>
-        <div class="term-body" id="termBody"></div>
+      <div class="ctrl-hints">
+        <div class="ctrl-hint">N &middot; new session</div>
+        <div class="ctrl-hint" id="varHint">V &middot; Semantic</div>
+        <div class="ctrl-hint">P &middot; show prototype controls</div>
       </div>
-
-      <div class="ctrl-hint">P &middot; show controls</div>
 
       <div class="demo" id="demo">
         <p class="demo-label">Prototype Controls</p>
@@ -715,9 +783,14 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
     <p class="avw-subtitle">Each dot below is live. The table documents why we chose what we chose.</p>
     <div class="avw-grid">
 
-      <!-- Variation A -->
+      <!-- Variation A: Minimal -->
       <div class="avw-card">
-        <p class="avw-var">Variation A</p>
+        <div class="avw-card-header">
+          <div class="avw-card-header-text">
+            <p class="avw-var">Minimal</p>
+            <p class="avw-subvar">no motion, white only</p>
+          </div>
+        </div>
         <div class="avw-bar">
           <div class="avw-pill">
             <div class="avw-d aa"></div>
@@ -725,21 +798,26 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
           </div>
         </div>
         <div class="avw-labels">
-          <div class="avw-dl"><div class="avw-d aa"></div><span class="avw-dlabel">Active</span></div>
-          <div class="avw-dl"><div class="avw-d aw"></div><span class="avw-dlabel">Waiting</span></div>
+          <div class="avw-dl"><div class="avw-d aa"></div><span class="avw-dlabel">Active &mdash; solid white</span></div>
+          <div class="avw-dl"><div class="avw-d aw"></div><span class="avw-dlabel">Waiting &mdash; dim white, no motion</span></div>
         </div>
         <div class="avw-divider"></div>
         <div class="avw-pc">
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Zero distraction. Instantly readable.</span></div>
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Works with Reduce Motion on.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Amber universally signals caution &mdash; could create anxiety.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">No motion means active looks the same as idle at a glance.</span></div>
+          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Zero distraction. Works with Reduce Motion on.</span></div>
+          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">No color language at all &mdash; purely ambient.</span></div>
+          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Active looks identical to idle at a glance.</span></div>
+          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">No color means waiting has no urgency signal.</span></div>
         </div>
       </div>
 
-      <!-- Variation B -->
+      <!-- Variation B: Pulse -->
       <div class="avw-card">
-        <p class="avw-var">Variation B</p>
+        <div class="avw-card-header">
+          <div class="avw-card-header-text">
+            <p class="avw-var">Pulse</p>
+            <p class="avw-subvar">pulse speed as the only signal</p>
+          </div>
+        </div>
         <div class="avw-bar">
           <div class="avw-pill">
             <div class="avw-d ba"></div>
@@ -754,16 +832,21 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
         <div class="avw-pc">
           <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Speed communicates urgency intuitively.</span></div>
           <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Feels alive and responsive.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Two variables changing simultaneously (color&thinsp;+&thinsp;speed) increases cognitive load.</span></div>
+          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Two speeds can be subtle &mdash; easy to miss at a glance.</span></div>
           <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Fast pulse can be distracting in peripheral vision all day.</span></div>
         </div>
+        <p class="avw-note">Speed is the only signal &mdash; no color difference</p>
       </div>
 
-      <!-- Variation C — Recommended -->
+      <!-- Variation C: Semantic — Recommended -->
       <div class="avw-card rec">
-        <span class="avw-badge">Recommended</span>
-        <span class="avw-badge" style="top:36px;color:rgba(255,255,255,0.28);border-color:rgba(255,255,255,0.08);background:transparent">Applied to prototype &#8593;</span>
-        <p class="avw-var">Variation C</p>
+        <div class="avw-card-header">
+          <div class="avw-card-header-text">
+            <p class="avw-var">Semantic</p>
+            <p class="avw-subvar">motion + color each carry one meaning</p>
+          </div>
+          <span class="avw-badge">Recommended</span>
+        </div>
         <div class="avw-bar">
           <div class="avw-pill">
             <div class="avw-d ca"></div>
@@ -776,94 +859,17 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
         </div>
         <div class="avw-divider"></div>
         <div class="avw-pc">
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Motion and color are separated &mdash; each carries one signal only.</span></div>
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Amber static reads as &ldquo;held up&rdquo; not &ldquo;broken&rdquo;. Shimmer is subtle enough for all-day use.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Shimmer and amber are two different visual languages used simultaneously.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Requires a moment to learn.</span></div>
+          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Color carries meaning: amber = held up, white = running. Two distinct signals.</span></div>
+          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Shimmer is subtle enough for all-day peripheral use.</span></div>
+          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Requires learning the color language once.</span></div>
+          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Motion and color are two simultaneous signals.</span></div>
         </div>
       </div>
 
     </div>
 
     <div class="avw-rec">
-      <p><strong>Our recommendation: Variation C.</strong> Motion belongs to work in progress. Color belongs to exceptions. Keeping them separate means each signal stays clean. Amber static for waiting maps to the universal meaning of amber in hardware LEDs &mdash; not an error, but not moving either.</p>
-    </div>
-  </section>
-
-  <!-- ── PRIOR ART ── -->
-  <section class="priorart">
-    <p class="priorart-title">Prior art &mdash; why this hasn&rsquo;t been built yet</p>
-    <p class="priorart-sub">Every existing tool leaves the same gap.</p>
-
-    <div class="pa-grid">
-
-      <div class="pa-card">
-        <p class="pa-name">OpenAI Codex App</p>
-        <p class="pa-type">First party &middot; macOS + Windows &middot; Feb 2026</p>
-        <p class="pa-desc">Built specifically for parallel agent management. Sessions shown as a list — name, status, elapsed time. Requires the app to be open to check status.</p>
-        <div class="pa-tags">
-          <span class="pa-tag ok">parallel sessions</span>
-          <span class="pa-tag ok">task list UI</span>
-          <span class="pa-tag gap">no ambient awareness</span>
-          <span class="pa-tag gap">requires app open</span>
-        </div>
-      </div>
-
-      <div class="pa-card">
-        <p class="pa-name">OpenCode</p>
-        <p class="pa-type">Open source &middot; TUI terminal &middot; 162k GitHub stars</p>
-        <p class="pa-desc">Rich terminal UI with session panel, token usage indicators, and SQLite-backed persistent sessions. Dual-agent architecture separates Plan from Build. No desktop ambient layer.</p>
-        <div class="pa-tags">
-          <span class="pa-tag ok">rich session panel</span>
-          <span class="pa-tag ok">token usage visible</span>
-          <span class="pa-tag gap">terminal only</span>
-          <span class="pa-tag gap">no ambient indicator</span>
-        </div>
-      </div>
-
-      <div class="pa-card">
-        <p class="pa-name">Dropbox</p>
-        <p class="pa-type">macOS menu bar &middot; sync status</p>
-        <p class="pa-desc">Single icon changes appearance per sync state. Animated arrows = syncing. Click opens a popover. Uses the icon itself as the sole state carrier — no pill, no count. Only ever one state at a time.</p>
-        <div class="pa-tags">
-          <span class="pa-tag ok">single icon clear states</span>
-          <span class="pa-tag ok">popover on click</span>
-          <span class="pa-tag gap">one state only</span>
-          <span class="pa-tag gap">no parallel sessions</span>
-        </div>
-      </div>
-
-      <div class="pa-card">
-        <p class="pa-name">macOS native dots</p>
-        <p class="pa-type">Apple HIG &middot; camera &middot; mic &middot; location</p>
-        <p class="pa-desc">Orange dot = mic. Green dot = camera. Single-purpose, single-instance. No grouping, no count, no parallel state. The design language we are extending — but it breaks at more than one concurrent instance.</p>
-        <div class="pa-tags">
-          <span class="pa-tag ok">instantly understood</span>
-          <span class="pa-tag ok">color = exception</span>
-          <span class="pa-tag gap">single instance only</span>
-          <span class="pa-tag gap">cannot show n parallel sessions</span>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="pa-gaps">
-      <div class="pa-gap-col">
-        <p class="pa-gap-title">No ambient layer</p>
-        <p class="pa-gap-body">Every competing tool requires its host environment open to check status. Close the app, lose visibility.</p>
-      </div>
-      <div class="pa-gap-col">
-        <p class="pa-gap-title">No parallel state</p>
-        <p class="pa-gap-body">No competitor shows n parallel agent states in a single compact widget simultaneously.</p>
-      </div>
-      <div class="pa-gap-col">
-        <p class="pa-gap-title">No hardware surface</p>
-        <p class="pa-gap-body">No product extends awareness to a physical surface. The SD slot LED row is completely unoccupied design space.</p>
-      </div>
-    </div>
-
-    <div class="pa-callout">
-      <p><strong>The Session Indicator is the only design that addresses all three gaps.</strong> Ambient. Parallel. Dual-surface. No competitor is within two steps of this.</p>
+      <p><strong>Our recommendation: Semantic.</strong> The core insight is that these variations change the color language, not just motion. Semantic is recommended because color carries meaning &mdash; amber for blocked, white for running. Keeping motion and color as separate channels means each signal stays clean and readable at a glance.</p>
     </div>
   </section>
 
@@ -875,12 +881,19 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
 </div>
 <script>
 var sessions=[
-  {id:1,name:'run-tests',state:'active',time:'2m'},
-  {id:2,name:'analyze-codebase',state:'active',time:'5m'},
-  {id:3,name:'write-docs',state:'waiting',time:'1m'},
-  {id:4,name:'deploy-pipeline',state:'error',time:'8m'},
-  {id:5,name:'write-docs',state:'done',time:'12m'}
+  {id:1,name:'run-tests',state:'error',time:'2m'},
+  {id:2,name:'analyze-codebase',state:'waiting',time:'5m'},
+  {id:3,name:'write-docs',state:'active',time:'1m'},
+  {id:4,name:'deploy-pipeline',state:'done',time:'8m'},
+  {id:5,name:'refactor-api',state:'active',time:'12m'}
 ];
+var activeSpeeds=[1.2,1.8,2.2];
+var varMode='semantic';
+var varModes=['minimal','pulse','semantic'];
+var openTerminals=[];
+var winZTop=100;
+
+function raiseWindow(el){winZTop++;el.style.zIndex=winZTop;}
 var popOpen=false,lm=false;
 var labels={idle:'Idle',active:'Active',waiting:'Waiting',error:'Error',done:'Done'};
 var colors={idle:'rgba(255,255,255,0.16)',active:'#fff',waiting:'#E8952A',error:'#FF3B30',done:'#34C759'};
@@ -890,14 +903,38 @@ function pill(){
   var p=document.getElementById('siPill');
   p.innerHTML='';
   if(!sessions.length){p.innerHTML='<span style="font-size:9px;color:rgba(255,255,255,0.25);padding:0 2px">none</span>';return;}
-  sessions.forEach(function(s){
+  var ai=0;
+  var overflow=sessions.length>5;
+  var visible=overflow?sessions.slice(0,4):sessions;
+  visible.forEach(function(s){
     var d=document.createElement('div');
     d.className='dot '+s.state;
+    if(s.state==='active'){
+      if(varMode==='minimal'){
+        d.style.animation='none';
+      } else if(varMode==='pulse'){
+        d.style.animation='avwFastPulse 0.9s ease-in-out infinite';
+      } else {
+        d.style.animationDuration=activeSpeeds[ai%activeSpeeds.length]+'s';
+      }
+      ai++;
+    } else if(s.state==='waiting'){
+      if(varMode==='minimal'){
+        d.style.background=lm?'rgba(0,0,0,0.35)':'rgba(255,255,255,0.35)';
+      } else if(varMode==='pulse'){
+        d.style.background=lm?'#1a1a1a':'#fff';
+        d.style.animation='avwSlowPulse 2.8s ease-in-out infinite';
+      }
+    }
     p.appendChild(d);
   });
+  if(overflow){
+    var ob=document.createElement('span');
+    ob.style.cssText='font-size:9px;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.12);border-radius:8px;padding:1px 5px;';
+    ob.textContent='+'+(sessions.length-4);
+    p.appendChild(ob);
+  }
 }
-
-var currentTerminalSid=null;
 
 var termLines={
   active:function(n){
@@ -979,26 +1016,97 @@ var termLines={
   }
 };
 
-function openTerminal(session){
-  currentTerminalSid=session.id;
-  var win=document.getElementById('termWin');
-  document.getElementById('termTitle').textContent=session.name;
-  document.getElementById('termBody').innerHTML=(termLines[session.state]||termLines.idle)(session.name);
-  win.classList.remove('visible');
-  void win.offsetWidth;
-  win.classList.add('visible');
+termLines['refactor-api']=function(n){
+  return [
+    '<span style="color:rgba(255,255,255,0.5)">$ claude '+n+'</span>',
+    '<span style="color:rgba(255,255,255,0.35)">→ Scanning API surface...</span>',
+    '<span style="color:rgba(255,255,255,0.35)">→ Identifying deprecated endpoints...</span><span class="tc">▋</span>'
+  ].join('\n');
+};
+
+function isTerminalOpen(sid){
+  return openTerminals.some(function(t){return t.sid===sid;});
 }
 
-function closeTerminal(){
-  document.getElementById('termWin').classList.remove('visible');
-  if(currentTerminalSid!==null){
-    var sess=sessions.filter(function(x){return x.id===currentTerminalSid;})[0];
-    if(sess&&sess.state==='done'){
-      sessions=sessions.filter(function(x){return x.id!==currentTerminalSid;});
-      pill();demoRows();
-    }
-    currentTerminalSid=null;
+function bringTerminalToFront(sid){
+  var t=openTerminals.filter(function(t){return t.sid===sid;})[0];
+  if(!t) return;
+  raiseWindow(t.el);
+}
+
+function appendToTerminal(sid,html){
+  var t=openTerminals.filter(function(t){return t.sid===sid;})[0];
+  if(!t) return;
+  var body=t.el.querySelector('.term-body');
+  var cursors=body.querySelectorAll('.tc');
+  for(var i=0;i<cursors.length;i++) cursors[i].remove();
+  body.innerHTML+='\n'+html;
+  body.scrollTop=body.scrollHeight;
+}
+
+function closeTerminalBySid(sid){
+  var t=openTerminals.filter(function(t){return t.sid===sid;})[0];
+  if(!t) return;
+  if(t.el.parentNode) t.el.parentNode.removeChild(t.el);
+  openTerminals=openTerminals.filter(function(t){return t.sid!==sid;});
+  var sess=sessions.filter(function(x){return x.id===sid;})[0];
+  if(sess&&sess.state==='done'){
+    sessions=sessions.filter(function(x){return x.id!==sid;});
+    pill();demoRows();
+    if(popOpen) popList();
   }
+}
+
+function openTerminal(session){
+  if(isTerminalOpen(session.id)){bringTerminalToFront(session.id);return;}
+  var idx=openTerminals.length;
+  var win=document.createElement('div');
+  win.className='term-win';
+  win.style.top=(50+idx*30)+'px';
+  win.style.left=(60+idx*40)+'px';
+  raiseWindow(win);
+  win.addEventListener('mousedown',function(){bringTerminalToFront(session.id);});
+
+  var chrome=document.createElement('div');
+  chrome.className='term-chrome';
+  var dots=document.createElement('div');
+  dots.className='term-dots';
+  ['#FF5F57','#FFBD2E','#28C840'].forEach(function(c){
+    var d=document.createElement('div');
+    d.className='term-dot';d.style.background=c;
+    dots.appendChild(d);
+  });
+  chrome.appendChild(dots);
+  var minbtn=document.createElement('button');
+  minbtn.className='term-min';minbtn.innerHTML='&#8722;';
+  minbtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    win.classList.toggle('minimized');
+  });
+  chrome.appendChild(minbtn);
+  var ttl=document.createElement('span');
+  ttl.className='term-title';ttl.textContent=session.name;
+  chrome.appendChild(ttl);
+  var xbtn=document.createElement('button');
+  xbtn.className='term-x';xbtn.innerHTML='&#215;';
+  xbtn.addEventListener('click',(function(sid){return function(e){
+    e.stopPropagation();closeTerminalBySid(sid);
+  };})(session.id));
+  chrome.appendChild(xbtn);
+  chrome.addEventListener('click',function(){
+    if(win.classList.contains('minimized')) win.classList.remove('minimized');
+  });
+  win.appendChild(chrome);
+
+  var body=document.createElement('div');
+  body.className='term-body';
+  body.innerHTML=(termLines[session.name]||termLines[session.state]||termLines.idle)(session.name);
+  win.appendChild(body);
+
+  document.getElementById('screen').appendChild(win);
+  void win.offsetWidth;
+  win.classList.add('visible');
+  openTerminals.push({sid:session.id,el:win});
 }
 
 function closePop(noAck){
@@ -1008,12 +1116,70 @@ function closePop(noAck){
   pop.classList.remove('visible');
   wrap.classList.remove('open');
   if(!noAck){
-    var hadDone=sessions.some(function(x){return x.state==='done';});
-    if(hadDone){
-      sessions=sessions.filter(function(x){return x.state!=='done';});
-      pill();demoRows();
-    }
+    var before=sessions.length;
+    sessions=sessions.filter(function(x){
+      if(x.state!=='done') return true;
+      return isTerminalOpen(x.id);
+    });
+    if(sessions.length!==before){pill();demoRows();}
   }
+}
+
+var poolNames=['deploy-staging','run-linter','generate-types','build-assets','sync-database','run-migrations','compile-shader','index-search','run-tests','analyze-codebase','write-docs','refactor-api','deploy-pipeline'];
+var transitionTimers={};
+
+function scheduleTransition(sid){
+  cancelTransition(sid);
+  var delay=8000+Math.random()*12000;
+  transitionTimers[sid]=setTimeout(function(){fireTransition(sid);},delay);
+}
+
+function cancelTransition(sid){
+  if(transitionTimers[sid]){clearTimeout(transitionTimers[sid]);delete transitionTimers[sid];}
+}
+
+function fireTransition(sid){
+  var sess=sessions.filter(function(x){return x.id===sid;})[0];
+  if(!sess||sess.state!=='active') return;
+  delete transitionTimers[sid];
+  var r=Math.random();
+  var newState,msg;
+  if(r<0.40){
+    newState='done';
+    msg='\n<span style="color:#34C759">✓  Task completed successfully</span>';
+  } else if(r<0.75){
+    newState='waiting';
+    msg=[
+      '',
+      '<span style="color:#E8952A">⚠  Waiting for tool approval</span>',
+      '',
+      '  Tool:    <span style="color:rgba(255,255,255,0.55)">bash</span>',
+      '  Command: <span style="color:rgba(255,255,255,0.55)">read -p "Approve?" confirm</span>',
+      '',
+      '<span style="color:rgba(255,255,255,0.4)">y to approve  /  n to reject</span><span class="tc">▋</span>'
+    ].join('\n');
+  } else {
+    newState='error';
+    msg='\n<span style="color:#FF3B30">✗  Unexpected error &mdash; connection lost</span>';
+  }
+  sess.state=newState;
+  pill();
+  if(popOpen) popList();
+  demoRows();
+  if(isTerminalOpen(sid)) appendToTerminal(sid,msg);
+}
+
+function addSession(){
+  var used=sessions.map(function(s){return s.name;});
+  var avail=poolNames.filter(function(n){return used.indexOf(n)===-1;});
+  if(!avail.length) return;
+  var maxId=sessions.reduce(function(m,s){return Math.max(m,s.id);},0);
+  var ns={id:maxId+1,name:avail[0],state:'active',time:'0m'};
+  sessions.push(ns);
+  scheduleTransition(ns.id);
+  pill();
+  if(popOpen) popList();
+  demoRows();
 }
 
 function makeBtn(label,primary,action){
@@ -1025,15 +1191,62 @@ function makeBtn(label,primary,action){
 }
 
 function handleAction(action,sid){
-  if(action==='retry'||action==='continue'){
-    sessions.forEach(function(x){if(x.id===sid)x.state='active';});
+  var sess=sessions.filter(function(x){return x.id===sid;})[0];
+  if(!sess) return;
+  var alreadyOpen=isTerminalOpen(sid);
+
+  function doAppend(html){
+    if(alreadyOpen){
+      appendToTerminal(sid,html);
+    } else {
+      openTerminal(sess);
+      setTimeout(function(){appendToTerminal(sid,html);},300);
+    }
+  }
+
+  if(action==='retry'){
+    var retryLines=[
+      '',
+      '<span style="color:rgba(255,255,255,0.35)">→ Retrying connection...</span>',
+      '<span style="color:rgba(255,255,255,0.35)">→ Reconnecting to deployment service...</span><span class="tc">▋</span>'
+    ].join('\n');
+    doAppend(retryLines);
+    sess.state='active';
+    scheduleTransition(sid);
     pill();popList();demoRows();
-  } else if(action==='dismiss'||action==='cancel'){
-    sessions=sessions.filter(function(x){return x.id!==sid;});
+
+  } else if(action==='dismiss'){
+    var dismissLines=[
+      '',
+      '<span style="color:rgba(255,255,255,0.3)">✗  Error dismissed &mdash; session idle</span>'
+    ].join('\n');
+    doAppend(dismissLines);
+    sess.state='idle';
+    cancelTransition(sid);
     pill();popList();demoRows();
-  } else if(action==='view'){
-    var sess=sessions.filter(function(x){return x.id===sid;})[0];
-    if(sess){closePop(true);openTerminal(sess);}
+
+  } else if(action==='continue'){
+    var contLines=[
+      '',
+      '<span style="color:rgba(255,255,255,0.4)">y</span>',
+      '<span style="color:rgba(255,255,255,0.35)">→ Resuming analysis...</span>',
+      '<span style="color:rgba(255,255,255,0.35)">→ Processing remaining files...</span><span class="tc">▋</span>'
+    ].join('\n');
+    doAppend(contLines);
+    sess.state='active';
+    scheduleTransition(sid);
+    pill();popList();demoRows();
+
+  } else if(action==='cancel'){
+    var cancelLines=[
+      '',
+      '<span style="color:rgba(255,255,255,0.4)">n to reject</span>',
+      '<span style="color:rgba(255,255,255,0.3)">✗  Task cancelled &mdash; session idle</span>'
+    ].join('\n');
+    doAppend(cancelLines);
+    sess.state='idle';
+    cancelTransition(sid);
+    pill();popList();demoRows();
   }
 }
 
@@ -1045,11 +1258,11 @@ function popList(){
   var c=lm?colorsLM:colors;
   sessions.forEach(function(s){
     var r=document.createElement('div');
-    var hasActions=s.state==='error'||s.state==='waiting'||s.state==='done';
+    var hasActions=s.state==='error'||s.state==='waiting';
     r.className='s-row'+(hasActions?' has-actions':'');
 
     var dot=document.createElement('div');
-    dot.className='s-dot'+(s.state==='waiting'?' waiting':'');
+    dot.className='s-dot';
     dot.style.background=c[s.state];
     r.appendChild(dot);
 
@@ -1060,10 +1273,9 @@ function popList(){
     if(hasActions){
       var btns=document.createElement('div');
       btns.className='s-btns';
-      var btnDefs=
-        s.state==='error'   ? [['Retry',true,'retry'],['Dismiss',false,'dismiss']] :
-        s.state==='waiting' ? [['Continue',true,'continue'],['Cancel',false,'cancel']] :
-                              [['View Output',true,'view']];
+      var btnDefs=s.state==='error'
+        ? [['Retry',true,'retry'],['Dismiss',false,'dismiss']]
+        : [['Continue',true,'continue'],['Cancel',false,'cancel']];
       btnDefs.forEach(function(def){
         var btn=makeBtn(def[0],def[1],def[2]);
         btn.addEventListener('click',(function(action,sid){return function(e){
@@ -1073,7 +1285,7 @@ function popList(){
         btns.appendChild(btn);
       });
       r.appendChild(btns);
-    } else {
+    } else if(s.state!=='done'){
       var st=document.createElement('span');
       st.className='s-status';st.textContent=labels[s.state];
       r.appendChild(st);
@@ -1083,7 +1295,8 @@ function popList(){
     }
 
     r.addEventListener('click',(function(sess){return function(){
-      closePop();openTerminal(sess);
+      closePop(true);
+      openTerminal(sess);
     };})(s));
 
     l.appendChild(r);
@@ -1106,6 +1319,8 @@ function demoRows(){
       b.className=cls;b.textContent=labels[st];
       b.onclick=(function(sid,state){return function(){
         sessions.forEach(function(x){if(x.id===sid)x.state=state;});
+        if(state==='active') scheduleTransition(sid);
+        else cancelTransition(sid);
         pill();popList();demoRows();
       };})(s.id,st);
       row.appendChild(b);
@@ -1149,14 +1364,41 @@ document.addEventListener('click',function(e){
   if(!w.contains(e.target)&&!p.contains(e.target))closePop();
 });
 
+function setVarMode(mode){
+  varMode=mode;
+  var names={minimal:'Minimal',pulse:'Pulse',semantic:'Semantic'};
+  var hint=document.getElementById('varHint');
+  if(hint) hint.textContent='V · '+names[mode];
+  pill();
+}
+
 document.addEventListener('keydown',function(e){
+  var tag=document.activeElement&&document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
   if(e.key==='p'||e.key==='P'){
     var d=document.getElementById('demo');
-    d.style.display=d.style.display==='block'?'none':'block';
+    var showing=d.style.display==='block';
+    d.style.display=showing?'none':'block';
+    if(!showing) raiseWindow(d);
   }
+  if(e.key==='v'||e.key==='V'){
+    var idx=(varModes.indexOf(varMode)+1)%varModes.length;
+    setVarMode(varModes[idx]);
+  }
+  if(e.key==='1') setVarMode('minimal');
+  if(e.key==='2') setVarMode('pulse');
+  if(e.key==='3') setVarMode('semantic');
+  if(e.key==='n'||e.key==='N') addSession();
 });
 
 pill();demoRows();
+
+sessions.forEach(function(s){if(s.state==='active') scheduleTransition(s.id);});
+
+document.getElementById('demo').addEventListener('mousedown',function(){
+  raiseWindow(document.getElementById('demo'));
+});
+setVarMode('semantic');
 </script>
 </body>
 </html>

@@ -54,7 +54,6 @@ body{
   box-shadow:0 32px 80px rgba(0,0,0,0.7),0 0 0 .5px rgba(255,255,255,0.08);
 }
 
-/* Dim menu bar chrome — wallpaper and pill stay at full brightness */
 .screen .mb-left,
 .screen .mb-right > .mb-item{
   opacity:0.45;
@@ -222,7 +221,6 @@ body.lm .screen .mb-right > .mb-item{
   white-space:nowrap;
 }
 
-/* Hero caption */
 .caption{
   margin-top:18px;
   font-size:12px;color:rgba(255,255,255,0.25);
@@ -513,7 +511,6 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
   color:rgba(255,255,255,0.55);
   white-space:nowrap;pointer-events:none;
 }
-/* varLabel — floating below pill, hidden by default */
 #varLabel{
   position:absolute;top:100%;left:50%;transform:translateX(-50%);
   background:rgba(0,0,0,0.52);border-radius:20px;
@@ -524,11 +521,9 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
   display:none;
 }
 
-/* Prototype controls drag handle */
 .demo-drag{cursor:grab;user-select:none;}
 .demo-drag.dragging{cursor:grabbing;}
 
-/* Popover drag reorder */
 .s-handle{
   color:rgba(255,255,255,0.2);cursor:grab;
   font-size:11px;flex-shrink:0;
@@ -616,28 +611,23 @@ body.lm .avw-note{color:rgba(0,0,0,0.2)}
 }
 .avw-d{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
-/* Minimal — no motion, white only */
 .avw-d.aa{background:#fff}
 .avw-d.aw{background:#fff;opacity:0.35}
 
-/* Pulse — pulse speed as signal, both white */
 @keyframes avwFastPulse{0%,100%{opacity:1}50%{opacity:.15}}
 @keyframes avwSlowPulse{0%,100%{opacity:1}50%{opacity:.2}}
 .avw-d.ba{background:#fff;animation:avwFastPulse .9s ease-in-out infinite}
 .avw-d.bw{background:#fff;animation:avwSlowPulse 2.8s ease-in-out infinite}
 
-/* Semantic — motion + color each carry one meaning */
 @keyframes avwShimmer{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.15;transform:scale(0.35)}}
 .avw-d.ca{background:#fff;animation:avwShimmer 1.6s ease-in-out infinite}
 .avw-d.cw{background:#E8952A}
 body.lm .avw-d.aw{background:#1a1a1a;opacity:0.35}
 
-/* Dot label rows */
 .avw-labels{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;padding:0 1px}
 .avw-dl{display:flex;align-items:center;gap:7px}
 .avw-dlabel{font-size:10px;color:rgba(255,255,255,0.26)}
 
-/* Pros / cons */
 .avw-divider{height:.5px;background:rgba(255,255,255,0.05);margin-bottom:10px}
 .avw-pc{display:flex;flex-direction:column;gap:6px}
 .avw-pci{display:flex;align-items:flex-start;gap:6px;font-size:10px;line-height:1.5}
@@ -645,7 +635,6 @@ body.lm .avw-d.aw{background:#1a1a1a;opacity:0.35}
 .avw-con{color:rgba(255,255,255,0.18);flex-shrink:0;margin-top:1px}
 .avw-pct{color:rgba(255,255,255,0.27)}
 
-/* Recommendation callout */
 .avw-rec{
   background:rgba(255,255,255,0.03);
   border:.5px solid rgba(255,255,255,0.07);
@@ -654,7 +643,6 @@ body.lm .avw-d.aw{background:#1a1a1a;opacity:0.35}
 .avw-rec p{font-size:12px;color:rgba(255,255,255,0.32);line-height:1.7}
 .avw-rec strong{color:rgba(255,255,255,0.52);font-weight:500}
 
-/* Light mode overrides for avw section */
 body.lm .avw-title{color:rgba(0,0,0,0.3)}
 body.lm .avw-subtitle{color:rgba(0,0,0,0.3)}
 body.lm .avw-card{background:rgba(0,0,0,0.02);border:.5px solid rgba(0,0,0,0.07)}
@@ -702,1075 +690,1251 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
 @keyframes cdglow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.5)}}
 @keyframes pxflk{0%{opacity:1}50%{opacity:.72}}
 @keyframes pxblk{0%{opacity:1}55%{opacity:.2}}
-
+@keyframes varLabelIn{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
-<div class="page">
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+'use strict';
+const { useState, useReducer, useEffect, useRef, useCallback, useLayoutEffect } = React;
 
-  <!-- ── SECTION 1: HERO ── -->
-  <div class="hero">
-    <div class="screen" id="screen">
-      <div class="notch"></div>
-      <div class="wallpaper"></div>
+/* ══════════════════════════════════════════════
+   CONSTANTS
+══════════════════════════════════════════════ */
+const VARIATIONS = ['Pulse','Pixel Heart','Pixel Art','Pixel Flame','Waveform','Agent Meter','Orbital','Claude Native'];
+const POOL_NAMES = ['deploy-staging','run-linter','generate-types','build-assets','sync-database','run-migrations','compile-shader','index-search','run-tests','analyze-codebase','write-docs','refactor-api','deploy-pipeline'];
+const STATE_LABELS = {idle:'Idle',active:'Active',waiting:'Waiting',error:'Error',done:'Done'};
+const STATE_COLORS    = {idle:'rgba(255,255,255,0.16)',active:'#fff',waiting:'#E8952A',error:'#FF3B30',done:'#34C759'};
+const STATE_COLORS_LM = {idle:'rgba(0,0,0,0.18)',      active:'#1a1a1a',waiting:'#E8952A',error:'#FF3B30',done:'#34C759'};
+const ACTIVE_SPEEDS   = ['1.2s','1.8s','2.2s'];
 
-      <div class="menubar">
-        <div class="mb-left">
-          <span class="mb-item" style="font-size:15px;opacity:.82">&#63743;</span>
-          <span class="mb-item mb-bold">Finder</span>
-          <span class="mb-item">File</span>
-          <span class="mb-item">Edit</span>
-          <span class="mb-item">View</span>
-          <span class="mb-item">Go</span>
-          <span class="mb-item">Window</span>
-          <span class="mb-item">Help</span>
-        </div>
-        <div class="mb-right">
-          <div class="si-wrap" id="siWrap" onclick="togglePop()">
-            <div class="si-pill" id="siPill"></div>
-          <span id="varLabel">Semantic</span>
-          </div>
-          <span class="mb-item">
-            <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor">
-              <circle cx="7.5" cy="9.5" r="1.5"/>
-              <path d="M7.5 6.2c1.5 0 2.8.6 3.8 1.5l1.2-1.2C11.1 5.2 9.4 4.4 7.5 4.4S3.9 5.2 2.5 6.5l1.2 1.2c1-.9 2.3-1.5 3.8-1.5z"/>
-              <path d="M7.5 2.9c2.4 0 4.5 1 6.1 2.5L15 4C13 2 10.4.9 7.5.9S2 2 0 4l1.4 1.4c1.6-1.5 3.7-2.5 6.1-2.5z" opacity=".5"/>
-            </svg>
-          </span>
-          <span class="mb-item">
-            <svg width="23" height="11" viewBox="0 0 23 11" fill="none">
-              <rect x=".5" y=".5" width="18" height="10" rx="2.5" stroke="currentColor" stroke-opacity=".5"/>
-              <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
-              <path d="M20 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="currentColor" fill-opacity=".4"/>
-            </svg>
-          </span>
-          <span class="mb-item" style="font-size:12px;letter-spacing:.01em;opacity:.88">Thu May 28&nbsp;&nbsp;1:47&nbsp;PM</span>
-        </div>
-      </div>
+const PX_HEART = [[1,0],[3,0],[0,1],[1,1],[2,1],[3,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3],[2,4]];
+const PX_FIRE  = [[1,0],[2,0],[1,1],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[0,3],[1,3],[2,3],[3,3],[4,3],[1,4],[2,4],[3,4]];
+const PX_ICE   = [[2,0],[0,1],[2,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[0,3],[2,3],[4,3],[2,4]];
+const PX_BOLT  = [[2,0],[3,0],[1,1],[2,1],[1,2],[2,2],[3,2],[2,3],[3,3],[1,4],[2,4]];
+const PX_STAR  = [[2,0],[1,1],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3],[2,4]];
+const PX_SKULL = [[1,0],[2,0],[3,0],[0,1],[4,1],[0,2],[2,2],[4,2],[0,3],[1,3],[2,3],[3,3],[4,3],[1,4],[3,4]];
 
-      <div class="popover" id="popover">
-        <div class="pop-header">
-          <span class="pop-title">Agent Sessions</span>
-          <span class="pop-badge" id="popBadge">4 sessions</span>
-        </div>
-        <div id="popList"></div>
-      </div>
-
-      <div class="ctrl-hints">
-        <div class="ctrl-hint">V &middot; Indicator Variation</div>
-        <div class="ctrl-hint">P &middot; show prototype controls</div>
-      </div>
-
-      <div class="demo" id="demo">
-        <p class="demo-label demo-drag">⠿ Prototype Controls</p>
-        <div id="demoRows"></div>
-        <div class="demo-bottom">
-          <span class="demo-hint">Click the pill in the menu bar to see the popover</span>
-          <button class="tbtn" id="tbtn" onclick="toggleTheme()">Light mode</button>
-        </div>
-      </div>
-    </div>
-    <p class="caption">Session Indicator &mdash; a native macOS menu bar component for AI agent supervision</p>
-  </div>
-
-  <!-- ── SECTION 2: PROBLEM ── -->
-  <section class="problem">
-    <p>When multiple AI agents run in parallel, developers lose awareness. The Session Indicator restores it &mdash; without interrupting focus.</p>
-  </section>
-
-  <!-- ── SECTION 3: STATE LEGEND ── -->
-  <section class="legend">
-    <p class="legend-title">Five states. No learning curve.</p>
-    <div class="legend-row">
-      <div class="legend-item">
-        <div class="legend-pill">
-          <div class="legend-dot idle"></div>
-          <span class="legend-name">Idle</span>
-        </div>
-        <span class="legend-desc">No active agent. Dot stays dim and quiet.</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-pill">
-          <div class="legend-dot active"></div>
-          <span class="legend-name">Active</span>
-        </div>
-        <span class="legend-desc">Shimmer &middot; actively executing right now</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-pill">
-          <div class="legend-dot waiting"></div>
-          <span class="legend-name">Waiting</span>
-        </div>
-        <span class="legend-desc">Amber &middot; alive but not progressing</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-pill">
-          <div class="legend-dot error"></div>
-          <span class="legend-name">Error</span>
-        </div>
-        <span class="legend-desc">Needs attention. Red, static, no animation.</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-pill">
-          <div class="legend-dot done"></div>
-          <span class="legend-name">Done</span>
-        </div>
-        <span class="legend-desc">Green &middot; stays visible until you close the popover &mdash; closing is your acknowledgment.</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── SECTION 4: DESIGN PRINCIPLES ── -->
-  <section class="principles">
-    <p class="principles-title">How it was designed</p>
-    <div class="principles-grid">
-      <div class="principle">
-        <p class="principle-title">Borrowed, not invented</p>
-        <p class="principle-body">Same visual grammar as Ethernet LEDs and the macOS camera indicator. Zero new concepts to learn.</p>
-      </div>
-      <div class="principle">
-        <p class="principle-title">Motion = state. Color = exception.</p>
-        <p class="principle-body">White dots handle 90% of cases. Color only fires for error and completion.</p>
-      </div>
-      <div class="principle">
-        <p class="principle-title">Hardware and software share one language.</p>
-        <p class="principle-body">The same dot pill lives in the SD card slot when the lid is closed.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── SECTION: ACTIVE VS WAITING ── -->
-  <section class="avw">
-    <p class="avw-title">Eight indicator variations &mdash; try them live with keys 1&ndash;8</p>
-    <p class="avw-subtitle">Each dot above is live. Press 1&ndash;8 on your keyboard to switch the prototype.</p>
-    <div class="avw-grid">
-
-      <!-- Variation A: Minimal -->
-      <div class="avw-card">
-        <div class="avw-card-header">
-          <div class="avw-card-header-text">
-            <p class="avw-var">Minimal</p>
-            <p class="avw-subvar">no motion, white only</p>
-          </div>
-        </div>
-        <div class="avw-bar">
-          <div class="avw-pill">
-            <div class="avw-d aa"></div>
-            <div class="avw-d aw"></div>
-          </div>
-        </div>
-        <div class="avw-labels">
-          <div class="avw-dl"><div class="avw-d aa"></div><span class="avw-dlabel">Active &mdash; solid white</span></div>
-          <div class="avw-dl"><div class="avw-d aw"></div><span class="avw-dlabel">Waiting &mdash; dim white, no motion</span></div>
-        </div>
-        <div class="avw-divider"></div>
-        <div class="avw-pc">
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Zero distraction. Works with Reduce Motion on.</span></div>
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">No color language at all &mdash; purely ambient.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Active looks identical to idle at a glance.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">No color means waiting has no urgency signal.</span></div>
-        </div>
-      </div>
-
-      <!-- Variation B: Pulse -->
-      <div class="avw-card">
-        <div class="avw-card-header">
-          <div class="avw-card-header-text">
-            <p class="avw-var">Pulse</p>
-            <p class="avw-subvar">pulse speed as the only signal</p>
-          </div>
-        </div>
-        <div class="avw-bar">
-          <div class="avw-pill">
-            <div class="avw-d ba"></div>
-            <div class="avw-d bw"></div>
-          </div>
-        </div>
-        <div class="avw-labels">
-          <div class="avw-dl"><div class="avw-d ba"></div><span class="avw-dlabel">Active &mdash; fast pulse</span></div>
-          <div class="avw-dl"><div class="avw-d bw"></div><span class="avw-dlabel">Waiting &mdash; slow pulse</span></div>
-        </div>
-        <div class="avw-divider"></div>
-        <div class="avw-pc">
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Speed communicates urgency intuitively.</span></div>
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Feels alive and responsive.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Two speeds can be subtle &mdash; easy to miss at a glance.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Fast pulse can be distracting in peripheral vision all day.</span></div>
-        </div>
-        <p class="avw-note">Speed is the only signal &mdash; no color difference</p>
-      </div>
-
-      <!-- Variation C: Semantic — Recommended -->
-      <div class="avw-card rec">
-        <div class="avw-card-header">
-          <div class="avw-card-header-text">
-            <p class="avw-var">Semantic</p>
-            <p class="avw-subvar">motion + color each carry one meaning</p>
-          </div>
-          <span class="avw-badge">Recommended</span>
-        </div>
-        <div class="avw-bar">
-          <div class="avw-pill">
-            <div class="avw-d ca"></div>
-            <div class="avw-d cw"></div>
-          </div>
-        </div>
-        <div class="avw-labels">
-          <div class="avw-dl"><div class="avw-d ca"></div><span class="avw-dlabel">Active &mdash; shimmer</span></div>
-          <div class="avw-dl"><div class="avw-d cw"></div><span class="avw-dlabel">Waiting &mdash; amber, static</span></div>
-        </div>
-        <div class="avw-divider"></div>
-        <div class="avw-pc">
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Color carries meaning: amber = held up, white = running. Two distinct signals.</span></div>
-          <div class="avw-pci"><span class="avw-pro">+</span><span class="avw-pct">Shimmer is subtle enough for all-day peripheral use.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Requires learning the color language once.</span></div>
-          <div class="avw-pci"><span class="avw-con">&ndash;</span><span class="avw-pct">Motion and color are two simultaneous signals.</span></div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="avw-rec">
-      <p><strong>Our recommendation: Semantic (Pulse, key 1).</strong> The core insight is that these variations change the color language, not just motion. Semantic is recommended because color carries meaning &mdash; amber for blocked, white for running. Keeping motion and color as separate channels means each signal stays clean and readable at a glance.</p>
-      <p style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.22);line-height:1.6">Six additional variations &mdash; Pixel Heart (2), Pixel Art (3), Pixel Flame (4), Waveform (5), Agent Meter (6), Orbital (7), and Claude Native (8) &mdash; are available in the prototype via keys 2&ndash;8.</p>
-    </div>
-  </section>
-
-  <!-- ── SECTION 5: FOOTER ── -->
-  <footer class="footer">
-    <p>Session Indicator &middot; Design Spec v0.1 &middot; Working Document &middot; Not for distribution</p>
-  </footer>
-
-</div>
-<script>
-var sessions=[
-  {id:1,name:'run-tests',state:'active',time:'0s',shimmerSpeed:1.1},
-  {id:2,name:'analyze-codebase',state:'active',time:'0s',shimmerSpeed:1.7},
-  {id:3,name:'write-docs',state:'active',time:'0s',shimmerSpeed:2.3},
-  {id:4,name:'deploy-pipeline',state:'waiting',time:'4m'},
-  {id:5,name:'refactor-api',state:'active',time:'2m',shimmerSpeed:1.4},
-  {id:6,name:'build-assets',state:'active',time:'1m',shimmerSpeed:2.0}
-];
-var activeSpeeds=[1.2,1.8,2.2];
-var varMode='Pulse';
-var VARIATIONS=['Pulse','Pixel Heart','Pixel Art','Pixel Flame','Waveform','Agent Meter','Orbital','Claude Native'];
-var openTerminals=[];
-var winZTop=100;
-var focusedSid=null;
-var varLabelTimer=null,varLabelFadeTimer=null;
-
-function showVarLabel(name){
-  var lbl=document.getElementById('varLabel');
-  if(!lbl) return;
-  if(varLabelTimer){clearTimeout(varLabelTimer);varLabelTimer=null;}
-  if(varLabelFadeTimer){clearTimeout(varLabelFadeTimer);varLabelFadeTimer=null;}
-  lbl.textContent=name;
-  lbl.style.transition='none';
-  lbl.style.opacity='0';
-  lbl.style.display='block';
-  void lbl.offsetWidth;
-  lbl.style.transition='opacity 0.2s ease';
-  lbl.style.opacity='1';
-  varLabelTimer=setTimeout(function(){
-    lbl.style.transition='opacity 0.4s ease';
-    lbl.style.opacity='0';
-    varLabelFadeTimer=setTimeout(function(){
-      lbl.style.display='none';
-    },400);
-  },5000);
+function makePxSVG(pixels, color, sz = 1.1) {
+  const rows = pixels.reduce((m, p) => Math.max(m, p[1]), 0) + 1;
+  const rects = pixels.map(p =>
+    `<rect x="${p[0]*sz}" y="${p[1]*sz}" width="${sz}" height="${sz}" fill="${color}"/>`
+  ).join('');
+  return `<svg viewBox="0 0 ${5*sz} ${rows*sz}" width="${5*sz}" height="${rows*sz}" style="shape-rendering:crispEdges;display:block">${rects}</svg>`;
 }
 
-function raiseWindow(el){winZTop++;el.style.zIndex=winZTop;}
-var popOpen=false,lm=false;
-var labels={idle:'Idle',active:'Active',waiting:'Waiting',error:'Error',done:'Done'};
-var colors={idle:'rgba(255,255,255,0.16)',active:'#fff',waiting:'#E8952A',error:'#FF3B30',done:'#34C759'};
-var colorsLM={idle:'rgba(0,0,0,0.18)',active:'#1a1a1a',waiting:'#E8952A',error:'#FF3B30',done:'#34C759'};
-
-/* ─── PIXEL ART DATA ─── */
-var PX_HEART=[[1,0],[3,0],[0,1],[1,1],[2,1],[3,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3],[2,4]];
-var PX_FIRE=[[1,0],[2,0],[1,1],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[0,3],[1,3],[2,3],[3,3],[4,3],[1,4],[2,4],[3,4]];
-var PX_ICE=[[2,0],[0,1],[2,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[0,3],[2,3],[4,3],[2,4]];
-var PX_BOLT=[[2,0],[3,0],[1,1],[2,1],[1,2],[2,2],[3,2],[2,3],[3,3],[1,4],[2,4]];
-var PX_STAR=[[2,0],[1,1],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3],[2,4]];
-var PX_SKULL=[[1,0],[2,0],[3,0],[0,1],[4,1],[0,2],[2,2],[4,2],[0,3],[1,3],[2,3],[3,3],[4,3],[1,4],[3,4]];
-
-function makePxSVG(pixels,color,sz){
-  sz=sz||1.1;
-  var rows=pixels.reduce(function(m,p){return Math.max(m,p[1]);},0)+1;
-  var rects=pixels.map(function(p){
-    return '<rect x="'+(p[0]*sz)+'" y="'+(p[1]*sz)+'" width="'+sz+'" height="'+sz+'" fill="'+color+'"/>';
-  }).join('');
-  return '<svg viewBox="0 0 '+(5*sz)+' '+(rows*sz)+'" width="'+(5*sz)+'" height="'+(rows*sz)+'" style="shape-rendering:crispEdges;display:block">'+rects+'</svg>';
-}
-
-function pill(){
-  var p=document.getElementById('siPill');
-  p.innerHTML='';
-  p.style.background='';p.style.border='';p.style.height='';p.style.alignItems='';
-  if(varMode==='Claude Native'){
-    p.style.background='rgba(38,24,20,0.95)';
-    p.style.border='.5px solid rgba(180,100,70,0.45)';
-  } else if(varMode==='Agent Meter'){
-    p.style.height='22px';p.style.alignItems='flex-end';
-  } else if(varMode==='Waveform'||varMode==='Pixel Flame'){
-    p.style.height='18px';p.style.alignItems='flex-end';
-  } else if(varMode==='Pixel Art'){
-    p.style.height='20px';
-  } else if(varMode==='Pixel Heart'){
-    p.style.height='18px';
-  }
-  if(!sessions.length){p.innerHTML='<span style="font-size:9px;color:rgba(255,255,255,0.25);padding:0 2px">none</span>';return;}
-  var overflow=sessions.length>5;
-  var visible=overflow?sessions.slice(0,4):sessions;
-  var ai=0;
-  visible.forEach(function(s){
-    var aidx=ai; if(s.state==='active') ai++;
-    var el;
-    if(varMode==='Pulse') el=mkPulse(s,aidx);
-    else if(varMode==='Pixel Heart') el=mkPxHeart(s,aidx);
-    else if(varMode==='Pixel Art') el=mkPxArt(s);
-    else if(varMode==='Pixel Flame') el=mkPxFlame(s);
-    else if(varMode==='Waveform') el=mkWaveform(s,aidx);
-    else if(varMode==='Agent Meter') el=mkAgentMeter(s);
-    else if(varMode==='Orbital') el=mkOrbital(s,aidx);
-    else if(varMode==='Claude Native') el=mkClaudeNative(s,aidx);
-    else el=mkPulse(s,aidx);
-    p.appendChild(el);
-  });
-  if(overflow){
-    var ob=document.createElement('span');
-    ob.style.cssText='font-size:9px;color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.12);border-radius:8px;padding:1px 5px;';
-    ob.textContent='+'+(sessions.length-4);
-    p.appendChild(ob);
-  }
-}
-
-function mkPulse(s,ai){
-  var d=document.createElement('div');
-  d.className='dot '+s.state;
-  if(s.state==='active') d.style.animationDuration=(s.shimmerSpeed||activeSpeeds[ai%activeSpeeds.length])+'s';
-  return d;
-}
-
-function mkPxHeart(s,ai){
-  var c=s.state==='active'?'#fff':s.state==='waiting'?'#E8952A':s.state==='error'?'#FF3B30':s.state==='done'?'#34C759':'rgba(255,255,255,0.2)';
-  var w=document.createElement('span');
-  w.style.cssText='display:inline-flex;align-items:center;flex-shrink:0;';
-  if(s.state==='active') w.style.animation='shimmer '+(s.shimmerSpeed||activeSpeeds[ai%activeSpeeds.length])+'s ease-in-out infinite';
-  w.innerHTML=makePxSVG(PX_HEART,c,1.1);
-  return w;
-}
-
-function mkPxArt(s){
-  var w=document.createElement('span');
-  w.style.cssText='display:inline-flex;align-items:center;flex-shrink:0;';
-  var svg;
-  if(s.state==='active'){svg=makePxSVG(PX_FIRE,'#ff8030',1.1);w.style.animation='pxflk 1.2s ease-in-out infinite';}
-  else if(s.state==='waiting') svg=makePxSVG(PX_ICE,'#5bc8f5',1.1);
-  else if(s.state==='error'){svg=makePxSVG(PX_BOLT,'#f5e020',1.1);w.style.animation='pxblk 0.9s step-end infinite';}
-  else if(s.state==='done') svg=makePxSVG(PX_STAR,'#34C759',1.1);
-  else svg=makePxSVG(PX_SKULL,'rgba(255,255,255,0.2)',1.1);
-  w.innerHTML=svg;
-  return w;
-}
-
-function mkPxFlame(s){
-  var d=document.createElement('div');
-  d.style.cssText='width:5px;flex-shrink:0;border-radius:40% 40% 0 0;';
-  var pa=['pfl1','pfl2','pfl3'];
-  var pt=['0.9s','1.1s','0.75s','1.0s','0.85s','1.15s'];
-  if(s.state==='active'){
-    d.style.background='#ff9a3c';
-    d.style.animation=pa[s.id%3]+' '+pt[s.id%pt.length]+' ease-in-out infinite';
-  } else if(s.state==='waiting'){d.style.background='#E8952A';d.style.height='5px';}
-  else if(s.state==='error'){d.style.background='#FF3B30';d.style.height='4px';}
-  else if(s.state==='done'){d.style.background='#34C759';d.style.height='8px';d.style.borderRadius='50%';}
-  else{d.style.background='rgba(255,255,255,0.12)';d.style.height='3px';}
-  return d;
-}
-
-function mkWaveform(s,ai){
-  var d=document.createElement('div');
-  d.style.cssText='width:4px;border-radius:1px 1px 0 0;flex-shrink:0;';
-  var wa=['wf1','wf2','wf3'];
-  var wt=['0.7s','0.85s','0.95s','0.78s','1.0s','0.9s'];
-  if(s.state==='active'){
-    d.style.background='#fff';
-    d.style.animation=wa[ai%3]+' '+wt[ai%wt.length]+' ease-in-out infinite';
-  } else if(s.state==='waiting'){d.style.background='#E8952A';d.style.height='5px';}
-  else if(s.state==='error'){d.style.background='#FF3B30';d.style.height='3px';d.style.animation='blink 0.7s step-end infinite';}
-  else if(s.state==='done'){d.style.background='#34C759';d.style.height='10px';}
-  else{d.style.background='rgba(255,255,255,0.15)';d.style.height='3px';}
-  return d;
-}
-
-function mkAgentMeter(s){
-  var col=document.createElement('div');
-  col.className='am-col-proto';
-  function sg(cls,bg,anim){
-    var el=document.createElement('div');
-    el.className='sg-p'+(cls?' '+cls:'');
-    if(bg) el.style.background=bg;
-    if(anim) el.style.animation=anim;
-    return el;
-  }
-  if(s.state==='active'){
-    col.appendChild(sg('on s5 anim'));
-    col.appendChild(sg('on s4 anim'));
-    col.appendChild(sg('on s3 anim'));
-    col.appendChild(sg('on s2 anim'));
-    col.appendChild(sg('on s1 anim'));
-  } else if(s.state==='waiting'){
-    col.appendChild(sg());col.appendChild(sg());col.appendChild(sg());col.appendChild(sg());
-    col.appendChild(sg('on','#E8952A'));
-  } else if(s.state==='error'){
-    col.appendChild(sg());col.appendChild(sg());col.appendChild(sg());col.appendChild(sg());
-    col.appendChild(sg('on','#FF3B30','blink 0.8s step-end infinite'));
-  } else if(s.state==='done'){
-    for(var i=0;i<5;i++) col.appendChild(sg('on s1'));
-  } else {
-    for(var i=0;i<5;i++) col.appendChild(sg());
-  }
-  return col;
-}
-
-function mkOrbital(s,ai){
-  var d=document.createElement('div');
-  d.className='orb-proto';
-  var ospd=['0.7s','1.2s','1.7s'];
-  if(s.state==='active'){
-    d.style.borderTopColor='#fff';
-    d.style.animation='orb-spin '+ospd[ai%3]+' linear infinite';
-  } else if(s.state==='waiting'){d.style.borderTopColor='#E8952A';d.style.transform='rotate(60deg)';}
-  else if(s.state==='error') d.style.borderTopColor='#FF3B30';
-  else if(s.state==='done') d.style.borderColor='#34C759';
-  else d.style.borderColor='rgba(255,255,255,0.2)';
-  return d;
-}
-
-function mkClaudeNative(s,ai){
-  var d=document.createElement('div');
-  d.className='dot '+s.state;
-  if(s.state==='active'){
-    d.style.background='#ff9a6c';
-    d.style.animation='cdglow '+(s.shimmerSpeed||activeSpeeds[ai%activeSpeeds.length])+'s ease-in-out infinite';
-  } else if(s.state==='waiting'){d.style.background='#c47a3a';d.style.animation='none';}
-  else if(s.state==='error'){d.style.background='#FF3B30';d.style.animation='none';}
-  else if(s.state==='done'){d.style.background='#a8d48a';d.style.animation='none';}
-  else{d.style.background='rgba(200,120,80,0.2)';d.style.animation='none';}
-  return d;
-}
-
-var termLines={
-  active:function(n){
+/* ══════════════════════════════════════════════
+   TERMINAL CONTENT TEMPLATES
+══════════════════════════════════════════════ */
+function getInitialTerminalContent(session) {
+  const n = session.name;
+  if (n === 'refactor-api') {
     return [
-      '<span style="color:rgba(255,255,255,0.5)">$ claude '+n+'</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Resolving test suite...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Compiling 47 test files...</span>',
-      '',
-      '<span style="color:#34C759">  ✓ auth.test.ts (12ms)</span>',
-      '<span style="color:#34C759">  ✓ parser.test.ts (34ms)</span>',
-      '<span style="color:#34C759">  ✓ schema.test.ts (8ms)</span>',
-      '<span style="color:#34C759">  ✓ config.test.ts (5ms)</span>',
-      '',
-      '<span style="color:rgba(255,255,255,0.35)">→ Running api.integration.ts</span><span class="tc">▋</span>'
+      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Scanning API surface...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Identifying deprecated endpoints...</span><span class="tc">&#9611;</span>`
     ].join('\n');
-  },
-  waiting:function(n){
-    return [
-      '<span style="color:rgba(255,255,255,0.5)">$ claude '+n+'</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Analyzing project structure...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Extracting type signatures (142 files)...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Generating documentation...</span>',
+  }
+  switch (session.state) {
+    case 'active': return [
+      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Resolving test suite...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Compiling 47 test files...</span>`,
       '',
-      '<span style="color:#E8952A">⚠  Paused — waiting for tool approval</span>',
+      `<span style="color:#34C759">  &#10003; auth.test.ts (12ms)</span>`,
+      `<span style="color:#34C759">  &#10003; parser.test.ts (34ms)</span>`,
+      `<span style="color:#34C759">  &#10003; schema.test.ts (8ms)</span>`,
+      `<span style="color:#34C759">  &#10003; config.test.ts (5ms)</span>`,
+      '',
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Running api.integration.ts</span><span class="tc">&#9611;</span>`
+    ].join('\n');
+    case 'waiting': return [
+      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Analyzing project structure...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Extracting type signatures (142 files)...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Generating documentation...</span>`,
+      '',
+      `<span style="color:#E8952A">&#9888;  Paused &#8212; waiting for tool approval</span>`,
       '',
       '  Tool:    <span style="color:rgba(255,255,255,0.55)">bash</span>',
       '  Command: <span style="color:rgba(255,255,255,0.55)">find /src -name "*.ts" -newer docs/last-updated</span>',
       '',
-      '<span style="color:rgba(255,255,255,0.4)">y to approve  /  n to reject</span><span class="tc">▋</span>'
+      `<span style="color:rgba(255,255,255,0.4)">y to approve  /  n to reject</span><span class="tc">&#9611;</span>`
     ].join('\n');
-  },
-  error:function(n){
-    return [
-      '<span style="color:rgba(255,255,255,0.5)">$ claude '+n+'</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Building container image...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Pushing to registry (3.2s)</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Applying Kubernetes manifests...</span>',
+    case 'error': return [
+      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Building container image...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Pushing to registry (3.2s)</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Applying Kubernetes manifests...</span>`,
       '',
-      '<span style="color:#FF3B30">✗  Deployment failed after 47s</span>',
-      '<span style="color:#FF3B30">✗  Health check timed out — no response after 30s</span>',
+      `<span style="color:#FF3B30">&#10007;  Deployment failed after 47s</span>`,
+      `<span style="color:#FF3B30">&#10007;  Health check timed out &#8212; no response after 30s</span>`,
       '',
       '  Container logs:',
       '  [app] Attempting to connect to postgres:5432...',
-      '<span style="color:#FF3B30">✗  [app] FATAL: Connection refused (ECONNREFUSED)</span>',
-      '<span style="color:#FF3B30">✗  [app] Process exiting with code 1</span>',
+      `<span style="color:#FF3B30">&#10007;  [app] FATAL: Connection refused (ECONNREFUSED)</span>`,
+      `<span style="color:#FF3B30">&#10007;  [app] Process exiting with code 1</span>`,
       '',
-      '<span style="color:#E8952A">●  Rollback in progress...</span>',
+      `<span style="color:#E8952A">&#9679;  Rollback in progress...</span>`,
       '',
-      '<span style="color:rgba(255,255,255,0.3)">Process exited (code 1)</span>'
+      `<span style="color:rgba(255,255,255,0.3)">Process exited (code 1)</span>`
     ].join('\n');
-  },
-  done:function(n){
-    return [
-      '<span style="color:rgba(255,255,255,0.5)">$ claude '+n+'</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Scanning /src (847 files)...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Building dependency graph...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Detecting issues...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Writing report...</span>',
+    case 'done': return [
+      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Scanning /src (847 files)...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Building dependency graph...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Detecting issues...</span>`,
+      `<span style="color:rgba(255,255,255,0.35)">&#8594; Writing report...</span>`,
       '',
-      '<span style="color:#34C759">✓  Analysis complete — 8.4s</span>',
+      `<span style="color:#34C759">&#10003;  Analysis complete &#8212; 8.4s</span>`,
       '',
       '  Files scanned:   <span style="color:rgba(255,255,255,0.6)">847</span>',
-      '  Modules mapped:   <span style="color:rgba(255,255,255,0.6)">23</span>',
-      '  Issues found:      <span style="color:rgba(255,255,255,0.6)">3</span>',
+      '  Modules mapped:  <span style="color:rgba(255,255,255,0.6)">23</span>',
+      '  Issues found:    <span style="color:rgba(255,255,255,0.6)">3</span>',
       '  Report: <span style="color:rgba(255,255,255,0.6)">.claude/analysis-2024-05-28.md</span>',
       '',
-      '<span style="color:#E8952A">●  Session marked complete</span>'
+      `<span style="color:#E8952A">&#9679;  Session marked complete</span>`
     ].join('\n');
-  },
-  idle:function(n){
-    return [
-      '<span style="color:rgba(255,255,255,0.5)">$ claude '+n+'</span>',
+    default: return [
+      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
       '',
-      '<span style="color:rgba(255,255,255,0.32)">No active task. Agent is idle and ready.</span>',
+      `<span style="color:rgba(255,255,255,0.32)">No active task. Agent is idle and ready.</span>`,
       '',
-      '<span style="color:rgba(255,255,255,0.15)">────────────────────────────────────────</span>',
-      '<span style="color:rgba(255,255,255,0.4)">$ </span><span class="tc">▋</span>'
+      `<span style="color:rgba(255,255,255,0.15)">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>`,
+      `<span style="color:rgba(255,255,255,0.4)">$ </span><span class="tc">&#9611;</span>`
     ].join('\n');
+  }
+}
+
+/* ══════════════════════════════════════════════
+   INITIAL STATE
+══════════════════════════════════════════════ */
+const INITIAL_SESSIONS = [
+  {id:1, name:'run-tests',        state:'error',   time:'2m', shimmerSpeed:'1.2s'},
+  {id:2, name:'analyze-codebase', state:'waiting', time:'5m', shimmerSpeed:'1.7s'},
+  {id:3, name:'write-docs',       state:'active',  time:'1m', shimmerSpeed:'2.3s'},
+  {id:4, name:'deploy-pipeline',  state:'done',    time:'8m', shimmerSpeed:'1.4s'},
+  {id:5, name:'refactor-api',     state:'active',  time:'2m', shimmerSpeed:'2.0s'},
+  {id:6, name:'build-assets',     state:'active',  time:'1m', shimmerSpeed:'1.5s'},
+];
+
+const INITIAL_STATE = {
+  sessions: INITIAL_SESSIONS,
+  ui: {
+    openTerminals: [],
+    controlsVisible: false,
+    controlsZIndex: 100,
+    activeVariation: 'Pulse',
+    lm: false,
+    focusedTerminalId: null,
+    popoverOpen: false,
+    zCounter: 100,
   }
 };
 
-termLines['refactor-api']=function(n){
-  return [
-    '<span style="color:rgba(255,255,255,0.5)">$ claude '+n+'</span>',
-    '<span style="color:rgba(255,255,255,0.35)">→ Scanning API surface...</span>',
-    '<span style="color:rgba(255,255,255,0.35)">→ Identifying deprecated endpoints...</span><span class="tc">▋</span>'
-  ].join('\n');
-};
+/* ══════════════════════════════════════════════
+   REDUCER
+══════════════════════════════════════════════ */
+function reducer(state, action) {
+  const ui = state.ui;
+  switch (action.type) {
 
-function isTerminalOpen(sid){
-  return openTerminals.some(function(t){return t.sid===sid;});
-}
+    case 'SET_SESSION_STATE':
+      return {
+        ...state,
+        sessions: state.sessions.map(s => s.id === action.id ? {...s, state: action.state} : s)
+      };
 
-function bringTerminalToFront(sid){
-  var t=openTerminals.filter(function(t){return t.sid===sid;})[0];
-  if(!t) return;
-  raiseWindow(t.el);
-}
+    case 'ADD_SESSION':
+      return {...state, sessions: [...state.sessions, action.session]};
 
-function appendToTerminal(sid,html){
-  var t=openTerminals.filter(function(t){return t.sid===sid;})[0];
-  if(!t) return;
-  var body=t.el.querySelector('.term-body');
-  var cursors=body.querySelectorAll('.tc');
-  for(var i=0;i<cursors.length;i++) cursors[i].remove();
-  body.innerHTML+='\n'+html;
-  body.scrollTop=body.scrollHeight;
-}
+    case 'REMOVE_SESSION':
+      return {
+        ...state,
+        sessions: state.sessions.filter(s => s.id !== action.id),
+        ui: {
+          ...ui,
+          openTerminals: ui.openTerminals.filter(t => t.sessionId !== action.id),
+          focusedTerminalId: ui.focusedTerminalId === action.id ? null : ui.focusedTerminalId
+        }
+      };
 
-function closeTerminalBySid(sid){
-  var t=openTerminals.filter(function(t){return t.sid===sid;})[0];
-  if(!t) return;
-  if(t.el.parentNode) t.el.parentNode.removeChild(t.el);
-  openTerminals=openTerminals.filter(function(t){return t.sid!==sid;});
-  if(focusedSid===sid) setFocusedTerminal(null);
-  var sess=sessions.filter(function(x){return x.id===sid;})[0];
-  if(sess&&sess.state==='done'){
-    sessions=sessions.filter(function(x){return x.id!==sid;});
-    pill();demoRows();
-    if(popOpen) popList();
-  }
-}
-
-function openTerminal(session,customContent){
-  if(isTerminalOpen(session.id)){
-    var ex=openTerminals.filter(function(t){return t.sid===session.id;})[0];
-    if(ex&&ex.el.style.display==='none') ex.el.style.display='';
-    bringTerminalToFront(session.id);
-    return;
-  }
-  var idx=openTerminals.length;
-  var win=document.createElement('div');
-  win.className='term-win';
-  win.style.top=(50+idx*30)+'px';
-  win.style.left=(60+idx*40)+'px';
-  raiseWindow(win);
-  win.addEventListener('mousedown',function(){
-    bringTerminalToFront(session.id);
-    setFocusedTerminal(session.id);
-  });
-
-  var chrome=document.createElement('div');
-  chrome.className='term-chrome';
-
-  /* Traffic lights */
-  var tlGroup=document.createElement('div');
-  tlGroup.className='tl-group';
-  var tlDefs=[
-    {bg:'#FF5F57',sym:'✕',action:'close'},
-    {bg:'#FFBD2E',sym:'−',action:'min'},
-    {bg:'#28C840',sym:'↗',action:'restore'}
-  ];
-  tlDefs.forEach(function(def){
-    var btn=document.createElement('button');
-    btn.className='tl-btn';
-    btn.style.background=def.bg;
-    var sym=document.createElement('span');
-    sym.className='tl-symbol';sym.textContent=def.sym;
-    btn.appendChild(sym);
-    btn.addEventListener('click',(function(d){return function(e){
-      e.stopPropagation();
-      if(d.action==='close') closeTerminalBySid(session.id);
-      else if(d.action==='min'){
-        win.style.display='none';
-        if(focusedSid===session.id) setFocusedTerminal(null);
+    case 'OPEN_TERMINAL': {
+      const existing = ui.openTerminals.find(t => t.sessionId === action.sessionId);
+      const newZ = ui.zCounter + 1;
+      if (existing) {
+        return {
+          ...state,
+          ui: {
+            ...ui, zCounter: newZ, focusedTerminalId: action.sessionId,
+            openTerminals: ui.openTerminals.map(t =>
+              t.sessionId === action.sessionId ? {...t, zIndex: newZ, minimized: false} : t
+            )
+          }
+        };
       }
-      /* green (restore) is a no-op — restore via popover row click */
-    };})(def));
-    tlGroup.appendChild(btn);
-  });
-  chrome.appendChild(tlGroup);
+      const session = state.sessions.find(s => s.id === action.sessionId);
+      const idx = ui.openTerminals.length;
+      return {
+        ...state,
+        ui: {
+          ...ui, zCounter: newZ, focusedTerminalId: action.sessionId,
+          openTerminals: [...ui.openTerminals, {
+            sessionId: action.sessionId,
+            minimized: false,
+            zIndex: newZ,
+            content: action.content || (session ? getInitialTerminalContent(session) : ''),
+            initialPosition: {top: 50 + idx * 30, left: 60 + idx * 40}
+          }]
+        }
+      };
+    }
 
-  var ttl=document.createElement('span');
-  ttl.className='term-title';ttl.textContent=session.name;
-  chrome.appendChild(ttl);
+    case 'CLOSE_TERMINAL': {
+      const session = state.sessions.find(s => s.id === action.sessionId);
+      const newSessions = (session && session.state === 'done')
+        ? state.sessions.filter(s => s.id !== action.sessionId)
+        : state.sessions;
+      return {
+        ...state, sessions: newSessions,
+        ui: {
+          ...ui,
+          openTerminals: ui.openTerminals.filter(t => t.sessionId !== action.sessionId),
+          focusedTerminalId: ui.focusedTerminalId === action.sessionId ? null : ui.focusedTerminalId
+        }
+      };
+    }
 
-  win.appendChild(chrome);
+    case 'MINIMIZE_TERMINAL':
+      return {
+        ...state,
+        ui: {
+          ...ui,
+          openTerminals: ui.openTerminals.map(t =>
+            t.sessionId === action.sessionId ? {...t, minimized: true} : t
+          ),
+          focusedTerminalId: ui.focusedTerminalId === action.sessionId ? null : ui.focusedTerminalId
+        }
+      };
 
-  var body=document.createElement('div');
-  body.className='term-body';
-  body.innerHTML=customContent!==undefined
-    ?customContent
-    :(termLines[session.name]||termLines[session.state]||termLines.idle)(session.name);
-  win.appendChild(body);
+    case 'FOCUS_TERMINAL': {
+      if (action.sessionId === null) {
+        return {...state, ui: {...ui, focusedTerminalId: null}};
+      }
+      const newZ = ui.zCounter + 1;
+      return {
+        ...state,
+        ui: {
+          ...ui, zCounter: newZ, focusedTerminalId: action.sessionId,
+          openTerminals: ui.openTerminals.map(t =>
+            t.sessionId === action.sessionId ? {...t, zIndex: newZ} : t
+          )
+        }
+      };
+    }
 
-  var focusBar=document.createElement('div');
-  focusBar.className='term-focus-bar';
-  focusBar.textContent='terminal focused — y / n to respond';
-  win.appendChild(focusBar);
+    case 'MOVE_TERMINAL':
+      return {
+        ...state,
+        ui: {
+          ...ui,
+          openTerminals: ui.openTerminals.map(t =>
+            t.sessionId === action.sessionId
+              ? {...t, initialPosition: {top: action.top, left: action.left}}
+              : t
+          )
+        }
+      };
 
-  document.getElementById('screen').appendChild(win);
-  void win.offsetWidth;
-  win.classList.add('visible');
-  openTerminals.push({sid:session.id,el:win});
-  makeDraggable(win,chrome,'.tl-btn');
-}
+    case 'TOGGLE_CONTROLS': {
+      const newZ = ui.zCounter + 1;
+      const showing = !ui.controlsVisible;
+      return {
+        ...state,
+        ui: {
+          ...ui,
+          controlsVisible: showing,
+          controlsZIndex: showing ? newZ : ui.controlsZIndex,
+          zCounter: showing ? newZ : ui.zCounter
+        }
+      };
+    }
 
-function closePop(noAck){
-  popOpen=false;
-  var pop=document.getElementById('popover');
-  var wrap=document.getElementById('siWrap');
-  pop.classList.remove('visible');
-  wrap.classList.remove('open');
-  if(!noAck){
-    var before=sessions.length;
-    sessions=sessions.filter(function(x){
-      if(x.state!=='done') return true;
-      return isTerminalOpen(x.id);
-    });
-    if(sessions.length!==before){pill();demoRows();}
+    case 'RAISE_CONTROLS': {
+      const newZ = ui.zCounter + 1;
+      return {...state, ui: {...ui, zCounter: newZ, controlsZIndex: newZ}};
+    }
+
+    case 'OPEN_POPOVER':
+      return {...state, ui: {...ui, popoverOpen: true}};
+
+    case 'CLOSE_POPOVER': {
+      const openIds = new Set(ui.openTerminals.map(t => t.sessionId));
+      const newSessions = state.sessions.filter(s => s.state !== 'done' || openIds.has(s.id));
+      return {...state, sessions: newSessions, ui: {...ui, popoverOpen: false}};
+    }
+
+    case 'CLOSE_POPOVER_NOACK':
+      return {...state, ui: {...ui, popoverOpen: false}};
+
+    case 'SET_VARIATION':
+      return {...state, ui: {...ui, activeVariation: action.name}};
+
+    case 'TOGGLE_DARK_MODE':
+      return {...state, ui: {...ui, lm: !ui.lm}};
+
+    case 'APPEND_TERMINAL_OUTPUT':
+      return {
+        ...state,
+        ui: {
+          ...ui,
+          openTerminals: ui.openTerminals.map(t => {
+            if (t.sessionId !== action.sessionId) return t;
+            const stripped = t.content.replace(/<span class="tc">&#9611;<\/span>/g, '');
+            return {...t, content: stripped + '\n' + action.html};
+          })
+        }
+      };
+
+    case 'REORDER_SESSIONS':
+      return {...state, sessions: action.sessions};
+
+    default:
+      return state;
   }
 }
 
-var poolNames=['deploy-staging','run-linter','generate-types','build-assets','sync-database','run-migrations','compile-shader','index-search','run-tests','analyze-codebase','write-docs','refactor-api','deploy-pipeline'];
-var transitionTimers={};
-
-function scheduleTransition(sid){
-  cancelTransition(sid);
-  var delay=8000+Math.random()*12000;
-  transitionTimers[sid]=setTimeout(function(){fireTransition(sid);},delay);
+/* ══════════════════════════════════════════════
+   PILL DOT COMPONENTS
+══════════════════════════════════════════════ */
+function PulseDot({session, speed}) {
+  return (
+    <div
+      className={`dot ${session.state}`}
+      style={session.state === 'active' ? {animationDuration: speed} : undefined}
+    />
+  );
 }
 
-function cancelTransition(sid){
-  if(transitionTimers[sid]){clearTimeout(transitionTimers[sid]);delete transitionTimers[sid];}
+function PixelHeartDot({session, speed}) {
+  const c = session.state === 'active' ? '#fff'
+    : session.state === 'waiting' ? '#E8952A'
+    : session.state === 'error'   ? '#FF3B30'
+    : session.state === 'done'    ? '#34C759'
+    : 'rgba(255,255,255,0.2)';
+  const style = {
+    display: 'inline-flex', alignItems: 'center', flexShrink: 0,
+    ...(session.state === 'active' ? {animation: `shimmer ${speed} ease-in-out infinite`} : {})
+  };
+  return <span style={style} dangerouslySetInnerHTML={{__html: makePxSVG(PX_HEART, c, 1.1)}} />;
 }
 
-function fireTransition(sid){
-  var sess=sessions.filter(function(x){return x.id===sid;})[0];
-  if(!sess||sess.state!=='active') return;
-  delete transitionTimers[sid];
-  var r=Math.random();
-  var newState,msg;
-  if(r<0.40){
-    newState='done';
-    msg='\n<span style="color:#34C759">✓  Task completed successfully</span>';
-  } else if(r<0.75){
-    newState='waiting';
-    msg=[
-      '',
-      '<span style="color:#E8952A">⚠  Waiting for tool approval</span>',
-      '',
-      '  Tool:    <span style="color:rgba(255,255,255,0.55)">bash</span>',
-      '  Command: <span style="color:rgba(255,255,255,0.55)">read -p "Approve?" confirm</span>',
-      '',
-      '<span style="color:rgba(255,255,255,0.4)">y to approve  /  n to reject</span><span class="tc">▋</span>'
-    ].join('\n');
+function PixelArtDot({session}) {
+  let svg, anim;
+  if      (session.state === 'active')  { svg = makePxSVG(PX_FIRE,  '#ff8030', 1.1); anim = 'pxflk 1.2s ease-in-out infinite'; }
+  else if (session.state === 'waiting')   svg = makePxSVG(PX_ICE,   '#5bc8f5', 1.1);
+  else if (session.state === 'error')   { svg = makePxSVG(PX_BOLT,  '#f5e020', 1.1); anim = 'pxblk 0.9s step-end infinite'; }
+  else if (session.state === 'done')      svg = makePxSVG(PX_STAR,  '#34C759', 1.1);
+  else                                    svg = makePxSVG(PX_SKULL, 'rgba(255,255,255,0.2)', 1.1);
+  return (
+    <span
+      style={{display:'inline-flex', alignItems:'center', flexShrink:0, animation: anim || undefined}}
+      dangerouslySetInnerHTML={{__html: svg}}
+    />
+  );
+}
+
+function PixelFlameDot({session}) {
+  const PA = ['pfl1','pfl2','pfl3'];
+  const PT = ['0.9s','1.1s','0.75s','1.0s','0.85s','1.15s'];
+  let s = {width:'5px', flexShrink:0, borderRadius:'40% 40% 0 0'};
+  if      (session.state === 'active')  { s.background = '#ff9a3c'; s.animation = `${PA[session.id%3]} ${PT[session.id%PT.length]} ease-in-out infinite`; }
+  else if (session.state === 'waiting') { s.background = '#E8952A'; s.height = '5px'; }
+  else if (session.state === 'error')   { s.background = '#FF3B30'; s.height = '4px'; }
+  else if (session.state === 'done')    { s.background = '#34C759'; s.height = '8px'; s.borderRadius = '50%'; }
+  else                                  { s.background = 'rgba(255,255,255,0.12)'; s.height = '3px'; }
+  return <div style={s} />;
+}
+
+function WaveformDot({session, ai}) {
+  const WA = ['wf1','wf2','wf3'];
+  const WT = ['0.7s','0.85s','0.95s','0.78s','1.0s','0.9s'];
+  let s = {width:'4px', borderRadius:'1px 1px 0 0', flexShrink:0};
+  if      (session.state === 'active')  { s.background = '#fff'; s.animation = `${WA[ai%3]} ${WT[ai%WT.length]} ease-in-out infinite`; }
+  else if (session.state === 'waiting') { s.background = '#E8952A'; s.height = '5px'; }
+  else if (session.state === 'error')   { s.background = '#FF3B30'; s.height = '3px'; s.animation = 'blink 0.7s step-end infinite'; }
+  else if (session.state === 'done')    { s.background = '#34C759'; s.height = '10px'; }
+  else                                  { s.background = 'rgba(255,255,255,0.15)'; s.height = '3px'; }
+  return <div style={s} />;
+}
+
+function AgentMeterDot({session}) {
+  const bars = [];
+  if (session.state === 'active') {
+    ['s5','s4','s3','s2','s1'].forEach(c => bars.push({cls:`sg-p on ${c} anim`}));
+  } else if (session.state === 'waiting') {
+    for (let i = 0; i < 4; i++) bars.push({cls:'sg-p'});
+    bars.push({cls:'sg-p on', style:{background:'#E8952A'}});
+  } else if (session.state === 'error') {
+    for (let i = 0; i < 4; i++) bars.push({cls:'sg-p'});
+    bars.push({cls:'sg-p on', style:{background:'#FF3B30', animation:'blink 0.8s step-end infinite'}});
+  } else if (session.state === 'done') {
+    for (let i = 0; i < 5; i++) bars.push({cls:'sg-p on s1'});
   } else {
-    newState='error';
-    msg='\n<span style="color:#FF3B30">✗  Unexpected error &mdash; connection lost</span>';
+    for (let i = 0; i < 5; i++) bars.push({cls:'sg-p'});
   }
-  sess.state=newState;
-  pill();
-  if(popOpen) popList();
-  demoRows();
-  if(isTerminalOpen(sid)) appendToTerminal(sid,msg);
+  return (
+    <div className="am-col-proto">
+      {bars.map((b,i) => <div key={i} className={b.cls} style={b.style} />)}
+    </div>
+  );
 }
 
-function addSession(){
-  var used=sessions.map(function(s){return s.name;});
-  var avail=poolNames.filter(function(n){return used.indexOf(n)===-1;});
-  if(!avail.length) return null;
-  var maxId=sessions.reduce(function(m,s){return Math.max(m,s.id);},0);
-  var ns={id:maxId+1,name:avail[0],state:'active',time:'0s'};
-  sessions.push(ns);
-  scheduleTransition(ns.id);
-  pill();
-  if(popOpen) popList();
-  demoRows();
-  return ns;
+function OrbitalDot({session, ai}) {
+  const OSPD = ['0.7s','1.2s','1.7s'];
+  let s = {};
+  if      (session.state === 'active')  s = {borderTopColor:'#fff', animation:`orb-spin ${OSPD[ai%3]} linear infinite`};
+  else if (session.state === 'waiting') s = {borderTopColor:'#E8952A', transform:'rotate(60deg)'};
+  else if (session.state === 'error')   s = {borderTopColor:'#FF3B30'};
+  else if (session.state === 'done')    s = {borderColor:'#34C759'};
+  else                                  s = {borderColor:'rgba(255,255,255,0.2)'};
+  return <div className="orb-proto" style={s} />;
 }
 
-function makeBtn(label,primary,action){
-  var b=document.createElement('button');
-  b.className='s-btn'+(primary?' primary':'');
-  b.textContent=label;
-  b.dataset.action=action;
-  return b;
+function ClaudeNativeDot({session, speed}) {
+  let s = {};
+  if      (session.state === 'active')  s = {background:'#ff9a6c', animation:`cdglow ${speed} ease-in-out infinite`};
+  else if (session.state === 'waiting') s = {background:'#c47a3a', animation:'none'};
+  else if (session.state === 'error')   s = {background:'#FF3B30', animation:'none'};
+  else if (session.state === 'done')    s = {background:'#a8d48a', animation:'none'};
+  else                                  s = {background:'rgba(200,120,80,0.2)', animation:'none'};
+  return <div className={`dot ${session.state}`} style={s} />;
 }
 
-function handleAction(action,sid){
-  var sess=sessions.filter(function(x){return x.id===sid;})[0];
-  if(!sess) return;
-  var alreadyOpen=isTerminalOpen(sid);
+function PillDot({session, variation, activeIndex}) {
+  const speed = session.shimmerSpeed || ACTIVE_SPEEDS[activeIndex % 3];
+  switch (variation) {
+    case 'Pixel Heart':   return <PixelHeartDot   session={session} speed={speed} />;
+    case 'Pixel Art':     return <PixelArtDot     session={session} />;
+    case 'Pixel Flame':   return <PixelFlameDot   session={session} />;
+    case 'Waveform':      return <WaveformDot     session={session} ai={activeIndex} />;
+    case 'Agent Meter':   return <AgentMeterDot   session={session} />;
+    case 'Orbital':       return <OrbitalDot      session={session} ai={activeIndex} />;
+    case 'Claude Native': return <ClaudeNativeDot session={session} speed={speed} />;
+    default:              return <PulseDot        session={session} speed={speed} />;
+  }
+}
 
-  function doAppend(html){
-    if(alreadyOpen){
-      appendToTerminal(sid,html);
+/* ══════════════════════════════════════════════
+   PILL
+══════════════════════════════════════════════ */
+function Pill({sessions, variation}) {
+  const overflow = Math.max(0, sessions.length - 4);
+  const visible  = sessions.slice(0, 4);
+
+  let pillStyle = {};
+  if      (variation === 'Claude Native')                               pillStyle = {background:'rgba(38,24,20,0.95)', border:'.5px solid rgba(180,100,70,0.45)'};
+  else if (variation === 'Agent Meter')                                 pillStyle = {height:'22px', alignItems:'flex-end'};
+  else if (variation === 'Waveform' || variation === 'Pixel Flame')     pillStyle = {height:'18px', alignItems:'flex-end'};
+  else if (variation === 'Pixel Art')                                   pillStyle = {height:'20px'};
+  else if (variation === 'Pixel Heart')                                 pillStyle = {height:'18px'};
+
+  let ai = 0;
+  return (
+    <div className="si-pill" style={pillStyle}>
+      {sessions.length === 0 && (
+        <span style={{fontSize:'9px',color:'rgba(255,255,255,0.25)',padding:'0 2px'}}>none</span>
+      )}
+      {visible.map(s => {
+        const idx = ai;
+        if (s.state === 'active') ai++;
+        return <PillDot key={s.id} session={s} variation={variation} activeIndex={idx} />;
+      })}
+      {overflow > 0 && (
+        <span style={{fontSize:'9px',color:'rgba(255,255,255,0.6)',background:'rgba(255,255,255,0.12)',borderRadius:'8px',padding:'1px 5px'}}>
+          +{overflow}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   VARIATION LABEL
+══════════════════════════════════════════════ */
+function VariationLabel({text, phase}) {
+  const style = {
+    display: phase === 'hidden' ? 'none' : 'block',
+    opacity: phase === 'fading' ? 0 : 1,
+    transition: phase === 'fading' ? 'opacity 0.4s ease' : undefined,
+    animation: phase === 'showing' ? 'varLabelIn 0.2s ease forwards' : undefined,
+  };
+  return <span id="varLabel" style={style}>{text}</span>;
+}
+
+/* ══════════════════════════════════════════════
+   POPOVER
+══════════════════════════════════════════════ */
+function Popover({sessions, lm, open, popoverRight, onAction, onRowClick, onReorder}) {
+  const [dragOverId, setDragOverId] = useState(null);
+  const draggedRef   = useRef(null);
+  const happenedRef  = useRef(false);
+  const colors = lm ? STATE_COLORS_LM : STATE_COLORS;
+
+  return (
+    <div className={`popover${open ? ' visible' : ''}`} style={{right: (popoverRight || 6) + 'px'}}>
+      <div className="pop-header">
+        <span className="pop-title">Agent Sessions</span>
+        <span className="pop-badge">{sessions.length} session{sessions.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div>
+        {sessions.map(s => {
+          const hasActions = s.state === 'error' || s.state === 'waiting';
+          return (
+            <div
+              key={s.id}
+              className={`s-row${hasActions ? ' has-actions' : ''}${dragOverId === s.id ? ' drag-over' : ''}`}
+              draggable
+              onDragStart={e => {
+                draggedRef.current = s.id;
+                happenedRef.current = true;
+                e.dataTransfer.effectAllowed = 'move';
+              }}
+              onDragEnd={() => setTimeout(() => { happenedRef.current = false; }, 50)}
+              onDragOver={e => { e.preventDefault(); setDragOverId(s.id); }}
+              onDragLeave={() => setDragOverId(null)}
+              onDrop={e => {
+                e.preventDefault();
+                setDragOverId(null);
+                const fromId = draggedRef.current;
+                if (fromId === s.id) return;
+                const fi = sessions.findIndex(x => x.id === fromId);
+                const ti = sessions.findIndex(x => x.id === s.id);
+                if (fi === -1 || ti === -1) return;
+                const ns = [...sessions];
+                const [moved] = ns.splice(fi, 1);
+                ns.splice(ti, 0, moved);
+                onReorder(ns);
+                draggedRef.current = null;
+              }}
+              onClick={() => { if (!happenedRef.current) onRowClick(s); }}
+            >
+              <span className="s-handle">&#10303;</span>
+              <div className="s-dot" style={{background: colors[s.state]}} />
+              <span className="s-name">{s.name}</span>
+              {hasActions ? (
+                <div className="s-btns">
+                  {s.state === 'error' ? (
+                    <>
+                      <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('retry', s.id); }}>Retry</button>
+                      <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('dismiss', s.id); }}>Dismiss</button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('continue', s.id); }}>Continue</button>
+                      <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('cancel', s.id); }}>Cancel</button>
+                    </>
+                  )}
+                </div>
+              ) : s.state !== 'done' ? (
+                <>
+                  <span className="s-status">{STATE_LABELS[s.state]}</span>
+                  <span className="s-time">{s.time}</span>
+                </>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   TERMINAL
+══════════════════════════════════════════════ */
+function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
+  const termRef   = useRef(null);
+  const chromeRef = useRef(null);
+  const bodyRef   = useRef(null);
+  const dragRef   = useRef({active:false, sx:0, sy:0, sl:0, st:0});
+  const [animated, setAnimated] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = termRef.current;
+    if (el) {
+      el.style.top    = terminal.initialPosition.top + 'px';
+      el.style.left   = terminal.initialPosition.left + 'px';
+      el.style.zIndex = terminal.zIndex;
+    }
+    setAnimated(true);
+  }, []);
+
+  useEffect(() => {
+    if (termRef.current) termRef.current.style.zIndex = terminal.zIndex;
+  }, [terminal.zIndex]);
+
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+  }, [terminal.content]);
+
+  useEffect(() => {
+    const chrome = chromeRef.current;
+    const win    = termRef.current;
+    if (!chrome || !win) return;
+
+    const onMove = e => {
+      if (!dragRef.current.active) return;
+      const sr = screenRef.current.getBoundingClientRect();
+      const nl = Math.max(0, Math.min(dragRef.current.sl + (e.clientX - dragRef.current.sx), sr.width  - win.offsetWidth));
+      const nt = Math.max(0, Math.min(dragRef.current.st + (e.clientY - dragRef.current.sy), sr.height - win.offsetHeight));
+      win.style.left = nl + 'px';
+      win.style.top  = nt + 'px';
+    };
+    const onUp = () => {
+      if (!dragRef.current.active) return;
+      dragRef.current.active = false;
+      chrome.classList.remove('dragging');
+    };
+    const onDown = e => {
+      if (e.button !== 0 || e.target.closest('.tl-btn')) return;
+      const sr = screenRef.current.getBoundingClientRect();
+      const wr = win.getBoundingClientRect();
+      win.style.bottom = ''; win.style.transform = '';
+      dragRef.current = {active:true, sx:e.clientX, sy:e.clientY, sl:wr.left-sr.left, st:wr.top-sr.top};
+      win.style.left = dragRef.current.sl + 'px';
+      win.style.top  = dragRef.current.st + 'px';
+      chrome.classList.add('dragging');
+      e.preventDefault();
+    };
+
+    chrome.addEventListener('mousedown', onDown);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    return () => {
+      chrome.removeEventListener('mousedown', onDown);
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={termRef}
+      className={`term-win js-terminal-win${animated ? ' visible' : ''}`}
+      style={{display: terminal.minimized ? 'none' : undefined}}
+      onMouseDown={() => dispatch({type:'FOCUS_TERMINAL', sessionId:session.id})}
+    >
+      <div ref={chromeRef} className="term-chrome">
+        <div className="tl-group">
+          <button className="tl-btn" style={{background:'#FF5F57'}}
+            onClick={e => { e.stopPropagation(); dispatch({type:'CLOSE_TERMINAL', sessionId:session.id}); }}>
+            <span className="tl-symbol">&#10005;</span>
+          </button>
+          <button className="tl-btn" style={{background:'#FFBD2E'}}
+            onClick={e => { e.stopPropagation(); dispatch({type:'MINIMIZE_TERMINAL', sessionId:session.id}); }}>
+            <span className="tl-symbol">&#8722;</span>
+          </button>
+          <button className="tl-btn" style={{background:'#28C840'}}>
+            <span className="tl-symbol">&#8599;</span>
+          </button>
+        </div>
+        <span className="term-title">{session.name}</span>
+      </div>
+      <div ref={bodyRef} className="term-body" dangerouslySetInnerHTML={{__html: terminal.content}} />
+      <div className="term-focus-bar" style={{display: isFocused && session.state === 'waiting' ? 'block' : 'none'}}>
+        terminal focused &#8212; y / n to respond
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   CONTROLS PANEL
+══════════════════════════════════════════════ */
+function ControlsPanel({sessions, visible, zIndex, lm, screenRef, onStateChange, onToggleDarkMode, dispatch}) {
+  const panelRef  = useRef(null);
+  const handleRef = useRef(null);
+  const dragRef   = useRef({active:false, sx:0, sy:0, sl:0, st:0, init:false});
+
+  useLayoutEffect(() => {
+    if (panelRef.current) panelRef.current.style.zIndex = zIndex;
+  }, [zIndex]);
+
+  useEffect(() => {
+    const handle = handleRef.current;
+    const panel  = panelRef.current;
+    if (!handle || !panel) return;
+
+    const onMove = e => {
+      if (!dragRef.current.active) return;
+      const sr = screenRef.current.getBoundingClientRect();
+      const nl = Math.max(0, Math.min(dragRef.current.sl + (e.clientX - dragRef.current.sx), sr.width  - panel.offsetWidth));
+      const nt = Math.max(0, Math.min(dragRef.current.st + (e.clientY - dragRef.current.sy), sr.height - panel.offsetHeight));
+      panel.style.left = nl + 'px';
+      panel.style.top  = nt + 'px';
+    };
+    const onUp = () => {
+      if (!dragRef.current.active) return;
+      dragRef.current.active = false;
+      handle.classList.remove('dragging');
+    };
+    const onDown = e => {
+      if (e.button !== 0) return;
+      const sr = screenRef.current.getBoundingClientRect();
+      const pr = panel.getBoundingClientRect();
+      if (!dragRef.current.init) {
+        panel.style.bottom    = '';
+        panel.style.transform = '';
+        panel.style.left      = (pr.left - sr.left) + 'px';
+        panel.style.top       = (pr.top  - sr.top)  + 'px';
+        dragRef.current.init  = true;
+      }
+      dragRef.current = {
+        ...dragRef.current, active:true, sx:e.clientX, sy:e.clientY,
+        sl: parseFloat(panel.style.left) || 0,
+        st: parseFloat(panel.style.top)  || 0,
+      };
+      handle.classList.add('dragging');
+      e.preventDefault();
+    };
+
+    handle.addEventListener('mousedown', onDown);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    return () => {
+      handle.removeEventListener('mousedown', onDown);
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+  }, []);
+
+  const states = ['idle','active','waiting','error','done'];
+  return (
+    <div
+      ref={panelRef}
+      className="demo"
+      style={{display: visible ? 'block' : 'none'}}
+      onMouseDown={() => dispatch({type:'RAISE_CONTROLS'})}
+    >
+      <p ref={handleRef} className="demo-label demo-drag">&#10495; Prototype Controls</p>
+      <div>
+        {sessions.map(s => (
+          <div key={s.id} className="demo-row">
+            <span className="demo-name">{s.name}</span>
+            {states.map(st => (
+              <button
+                key={st}
+                className={`sbtn${s.state===st?' on':''}${st==='error'?' e':''}${st==='done'?' d':''}`}
+                onClick={() => onStateChange(s.id, st)}
+              >
+                {STATE_LABELS[st]}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="demo-bottom">
+        <span className="demo-hint">Click the pill in the menu bar to see the popover</span>
+        <button className="tbtn" onClick={onToggleDarkMode}>{lm ? 'Dark mode' : 'Light mode'}</button>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   MENU BAR
+══════════════════════════════════════════════ */
+function MenuBar({sessions, ui, siWrapRef, varLabel, onTogglePopover}) {
+  return (
+    <div className="menubar">
+      <div className="mb-left">
+        <span className="mb-item" style={{fontSize:'15px',opacity:'.82'}}>&#63743;</span>
+        <span className="mb-item mb-bold">Finder</span>
+        <span className="mb-item">File</span>
+        <span className="mb-item">Edit</span>
+        <span className="mb-item">View</span>
+        <span className="mb-item">Go</span>
+        <span className="mb-item">Window</span>
+        <span className="mb-item">Help</span>
+      </div>
+      <div className="mb-right">
+        <div
+          ref={siWrapRef}
+          className={`si-wrap${ui.popoverOpen ? ' open' : ''}`}
+          onClick={onTogglePopover}
+        >
+          <Pill sessions={sessions} variation={ui.activeVariation} />
+          <VariationLabel text={varLabel.text} phase={varLabel.phase} />
+        </div>
+        <span className="mb-item">
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor">
+            <circle cx="7.5" cy="9.5" r="1.5"/>
+            <path d="M7.5 6.2c1.5 0 2.8.6 3.8 1.5l1.2-1.2C11.1 5.2 9.4 4.4 7.5 4.4S3.9 5.2 2.5 6.5l1.2 1.2c1-.9 2.3-1.5 3.8-1.5z"/>
+            <path d="M7.5 2.9c2.4 0 4.5 1 6.1 2.5L15 4C13 2 10.4.9 7.5.9S2 2 0 4l1.4 1.4c1.6-1.5 3.7-2.5 6.1-2.5z" opacity=".5"/>
+          </svg>
+        </span>
+        <span className="mb-item">
+          <svg width="23" height="11" viewBox="0 0 23 11" fill="none">
+            <rect x=".5" y=".5" width="18" height="10" rx="2.5" stroke="currentColor" strokeOpacity=".5"/>
+            <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+            <path d="M20 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="currentColor" fillOpacity=".4"/>
+          </svg>
+        </span>
+        <span className="mb-item" style={{fontSize:'12px',letterSpacing:'.01em',opacity:'.88'}}>
+          Thu May 28&nbsp;&nbsp;1:47&nbsp;PM
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   DESKTOP
+══════════════════════════════════════════════ */
+function Desktop({state, dispatch, onAction, varLabel}) {
+  const {sessions, ui} = state;
+  const screenRef  = useRef(null);
+  const siWrapRef  = useRef(null);
+  const popOpenRef = useRef(ui.popoverOpen);
+  const [popoverRight, setPopoverRight] = useState(6);
+
+  popOpenRef.current = ui.popoverOpen;
+
+  const handleTogglePopover = () => {
+    if (!ui.popoverOpen && siWrapRef.current && screenRef.current) {
+      const wr = siWrapRef.current.getBoundingClientRect();
+      const sr = screenRef.current.getBoundingClientRect();
+      setPopoverRight(sr.right - wr.right + 6);
+    }
+    dispatch({type: ui.popoverOpen ? 'CLOSE_POPOVER' : 'OPEN_POPOVER'});
+  };
+
+  useEffect(() => {
+    const onClick = e => {
+      if (!popOpenRef.current) return;
+      const wrap = siWrapRef.current;
+      const pop  = screenRef.current?.querySelector('.popover');
+      if (wrap && !wrap.contains(e.target) && pop && !pop.contains(e.target)) {
+        dispatch({type: 'CLOSE_POPOVER'});
+      }
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+
+  return (
+    <div className="screen" id="screen" ref={screenRef}>
+      <div className="notch"></div>
+      <div className="wallpaper"></div>
+
+      <MenuBar
+        sessions={sessions}
+        ui={ui}
+        siWrapRef={siWrapRef}
+        varLabel={varLabel}
+        onTogglePopover={handleTogglePopover}
+      />
+
+      <Popover
+        sessions={sessions}
+        lm={ui.lm}
+        open={ui.popoverOpen}
+        popoverRight={popoverRight}
+        onAction={onAction}
+        onRowClick={session => {
+          dispatch({type:'CLOSE_POPOVER_NOACK'});
+          dispatch({type:'OPEN_TERMINAL', sessionId:session.id});
+        }}
+        onReorder={newSessions => dispatch({type:'REORDER_SESSIONS', sessions:newSessions})}
+      />
+
+      {ui.openTerminals.map(terminal => {
+        const session = sessions.find(s => s.id === terminal.sessionId);
+        if (!session) return null;
+        return (
+          <Terminal
+            key={terminal.sessionId}
+            session={session}
+            terminal={terminal}
+            isFocused={ui.focusedTerminalId === terminal.sessionId}
+            screenRef={screenRef}
+            dispatch={dispatch}
+          />
+        );
+      })}
+
+      <ControlsPanel
+        sessions={sessions}
+        visible={ui.controlsVisible}
+        zIndex={ui.controlsZIndex}
+        lm={ui.lm}
+        screenRef={screenRef}
+        onStateChange={(id, newState) => dispatch({type:'SET_SESSION_STATE', id, state:newState})}
+        onToggleDarkMode={() => dispatch({type:'TOGGLE_DARK_MODE'})}
+        dispatch={dispatch}
+      />
+
+      <div className="ctrl-hints">
+        <div className="ctrl-hint">V &middot; Indicator Variation</div>
+        <div className="ctrl-hint">P &middot; show prototype controls</div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   ONE-PAGE CONTENT (static)
+══════════════════════════════════════════════ */
+function OnePageContent() {
+  return (
+    <>
+      <section className="problem">
+        <p>When multiple AI agents run in parallel, developers lose awareness. The Session Indicator restores it &mdash; without interrupting focus.</p>
+      </section>
+
+      <section className="legend">
+        <p className="legend-title">Five states. No learning curve.</p>
+        <div className="legend-row">
+          {[
+            {state:'idle',    name:'Idle',    desc:'No active agent. Dot stays dim and quiet.'},
+            {state:'active',  name:'Active',  desc:'Shimmer · actively executing right now'},
+            {state:'waiting', name:'Waiting', desc:'Amber · alive but not progressing'},
+            {state:'error',   name:'Error',   desc:'Needs attention. Red, static, no animation.'},
+            {state:'done',    name:'Done',    desc:'Green · stays visible until you close the popover — closing is your acknowledgment.'},
+          ].map(item => (
+            <div key={item.state} className="legend-item">
+              <div className="legend-pill">
+                <div className={`legend-dot ${item.state}`}></div>
+                <span className="legend-name">{item.name}</span>
+              </div>
+              <span className="legend-desc">{item.desc}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="principles">
+        <p className="principles-title">How it was designed</p>
+        <div className="principles-grid">
+          <div className="principle">
+            <p className="principle-title">Borrowed, not invented</p>
+            <p className="principle-body">Same visual grammar as Ethernet LEDs and the macOS camera indicator. Zero new concepts to learn.</p>
+          </div>
+          <div className="principle">
+            <p className="principle-title">Motion = state. Color = exception.</p>
+            <p className="principle-body">White dots handle 90% of cases. Color only fires for error and completion.</p>
+          </div>
+          <div className="principle">
+            <p className="principle-title">Hardware and software share one language.</p>
+            <p className="principle-body">The same dot pill lives in the SD card slot when the lid is closed.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="avw">
+        <p className="avw-title">Eight indicator variations &mdash; try them live with keys 1&ndash;8</p>
+        <p className="avw-subtitle">Each dot above is live. Press 1&ndash;8 on your keyboard to switch the prototype.</p>
+        <div className="avw-grid">
+
+          <div className="avw-card">
+            <div className="avw-card-header">
+              <div className="avw-card-header-text">
+                <p className="avw-var">Minimal</p>
+                <p className="avw-subvar">no motion, white only</p>
+              </div>
+            </div>
+            <div className="avw-bar">
+              <div className="avw-pill">
+                <div className="avw-d aa"></div>
+                <div className="avw-d aw"></div>
+              </div>
+            </div>
+            <div className="avw-labels">
+              <div className="avw-dl"><div className="avw-d aa"></div><span className="avw-dlabel">Active &mdash; solid white</span></div>
+              <div className="avw-dl"><div className="avw-d aw"></div><span className="avw-dlabel">Waiting &mdash; dim white, no motion</span></div>
+            </div>
+            <div className="avw-divider"></div>
+            <div className="avw-pc">
+              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Zero distraction. Works with Reduce Motion on.</span></div>
+              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">No color language at all &mdash; purely ambient.</span></div>
+              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Active looks identical to idle at a glance.</span></div>
+              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">No color means waiting has no urgency signal.</span></div>
+            </div>
+          </div>
+
+          <div className="avw-card">
+            <div className="avw-card-header">
+              <div className="avw-card-header-text">
+                <p className="avw-var">Pulse</p>
+                <p className="avw-subvar">pulse speed as the only signal</p>
+              </div>
+            </div>
+            <div className="avw-bar">
+              <div className="avw-pill">
+                <div className="avw-d ba"></div>
+                <div className="avw-d bw"></div>
+              </div>
+            </div>
+            <div className="avw-labels">
+              <div className="avw-dl"><div className="avw-d ba"></div><span className="avw-dlabel">Active &mdash; fast pulse</span></div>
+              <div className="avw-dl"><div className="avw-d bw"></div><span className="avw-dlabel">Waiting &mdash; slow pulse</span></div>
+            </div>
+            <div className="avw-divider"></div>
+            <div className="avw-pc">
+              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Speed communicates urgency intuitively.</span></div>
+              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Feels alive and responsive.</span></div>
+              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Two speeds can be subtle &mdash; easy to miss at a glance.</span></div>
+              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Fast pulse can be distracting in peripheral vision all day.</span></div>
+            </div>
+            <p className="avw-note">Speed is the only signal &mdash; no color difference</p>
+          </div>
+
+          <div className="avw-card rec">
+            <div className="avw-card-header">
+              <div className="avw-card-header-text">
+                <p className="avw-var">Semantic</p>
+                <p className="avw-subvar">motion + color each carry one meaning</p>
+              </div>
+              <span className="avw-badge">Recommended</span>
+            </div>
+            <div className="avw-bar">
+              <div className="avw-pill">
+                <div className="avw-d ca"></div>
+                <div className="avw-d cw"></div>
+              </div>
+            </div>
+            <div className="avw-labels">
+              <div className="avw-dl"><div className="avw-d ca"></div><span className="avw-dlabel">Active &mdash; shimmer</span></div>
+              <div className="avw-dl"><div className="avw-d cw"></div><span className="avw-dlabel">Waiting &mdash; amber, static</span></div>
+            </div>
+            <div className="avw-divider"></div>
+            <div className="avw-pc">
+              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Color carries meaning: amber = held up, white = running. Two distinct signals.</span></div>
+              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Shimmer is subtle enough for all-day peripheral use.</span></div>
+              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Requires learning the color language once.</span></div>
+              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Motion and color are two simultaneous signals.</span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div className="avw-rec">
+          <p><strong>Our recommendation: Semantic (Pulse, key 1).</strong> The core insight is that these variations change the color language, not just motion. Semantic is recommended because color carries meaning &mdash; amber for blocked, white for running. Keeping motion and color as separate channels means each signal stays clean and readable at a glance.</p>
+          <p style={{marginTop:'10px',fontSize:'11px',color:'rgba(255,255,255,0.22)',lineHeight:'1.6'}}>Six additional variations &mdash; Pixel Heart (2), Pixel Art (3), Pixel Flame (4), Waveform (5), Agent Meter (6), Orbital (7), and Claude Native (8) &mdash; are available in the prototype via keys 2&ndash;8.</p>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <p>Session Indicator &middot; Design Spec v0.1 &middot; Working Document &middot; Not for distribution</p>
+      </footer>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   APP (root)
+══════════════════════════════════════════════ */
+function App() {
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  /* variation label */
+  const [varLabel, setVarLabel] = useState({text:'', phase:'hidden'});
+  const vlTimerRef  = useRef(null);
+  const vlFadeRef   = useRef(null);
+
+  const showVarLabel = useCallback(name => {
+    if (vlTimerRef.current)  clearTimeout(vlTimerRef.current);
+    if (vlFadeRef.current)   clearTimeout(vlFadeRef.current);
+    setVarLabel({text:name, phase:'showing'});
+    vlTimerRef.current = setTimeout(() => {
+      setVarLabel(p => ({...p, phase:'fading'}));
+      vlFadeRef.current = setTimeout(() => {
+        setVarLabel(p => ({...p, phase:'hidden'}));
+      }, 400);
+    }, 5000);
+  }, []);
+
+  /* sync body.lm class */
+  useEffect(() => {
+    document.body.classList.toggle('lm', state.ui.lm);
+  }, [state.ui.lm]);
+
+  /* auto-transition timers */
+  const timersRef = useRef({});
+
+  const fireTransition = useCallback(sessionId => {
+    const s = stateRef.current;
+    const session = s.sessions.find(x => x.id === sessionId);
+    if (!session || session.state !== 'active') return;
+
+    const r = Math.random();
+    let newState, html;
+    if (r < 0.40) {
+      newState = 'done';
+      html = `\n<span style="color:#34C759">&#10003;  Task completed successfully</span>`;
+    } else if (r < 0.75) {
+      newState = 'waiting';
+      html = [
+        '',
+        '<span style="color:#E8952A">&#9888;  Waiting for tool approval</span>',
+        '',
+        '  Tool:    <span style="color:rgba(255,255,255,0.55)">bash</span>',
+        '  Command: <span style="color:rgba(255,255,255,0.55)">read -p "Approve?" confirm</span>',
+        '',
+        '<span style="color:rgba(255,255,255,0.4)">y to approve  /  n to reject</span><span class="tc">&#9611;</span>'
+      ].join('\n');
     } else {
-      openTerminal(sess);
-      setTimeout(function(){appendToTerminal(sid,html);},300);
+      newState = 'error';
+      html = `\n<span style="color:#FF3B30">&#10007;  Unexpected error &#8212; connection lost</span>`;
     }
-  }
 
-  if(action==='retry'){
-    var retryLines=[
-      '',
-      '<span style="color:rgba(255,255,255,0.35)">→ Retrying connection...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Reconnecting to deployment service...</span><span class="tc">▋</span>'
-    ].join('\n');
-    doAppend(retryLines);
-    sess.state='active';
-    scheduleTransition(sid);
-    pill();popList();demoRows();
-    setFocusedTerminal(focusedSid);
+    dispatch({type:'SET_SESSION_STATE', id:sessionId, state:newState});
+    if (s.ui.openTerminals.some(t => t.sessionId === sessionId)) {
+      dispatch({type:'APPEND_TERMINAL_OUTPUT', sessionId, html});
+    }
+  }, []);
 
-  } else if(action==='dismiss'){
-    var dismissLines=[
-      '',
-      '<span style="color:rgba(255,255,255,0.3)">✗  Error dismissed &mdash; session idle</span>'
-    ].join('\n');
-    doAppend(dismissLines);
-    sess.state='idle';
-    cancelTransition(sid);
-    pill();popList();demoRows();
-    setFocusedTerminal(focusedSid);
+  useEffect(() => {
+    const {sessions} = state;
+    sessions.forEach(s => {
+      if (s.state === 'active' && !timersRef.current[s.id]) {
+        const delay = 8000 + Math.random() * 12000;
+        timersRef.current[s.id] = setTimeout(() => {
+          delete timersRef.current[s.id];
+          fireTransition(s.id);
+        }, delay);
+      }
+    });
+    Object.keys(timersRef.current).forEach(idStr => {
+      const id = parseInt(idStr);
+      const s  = sessions.find(x => x.id === id);
+      if (!s || s.state !== 'active') {
+        clearTimeout(timersRef.current[id]);
+        delete timersRef.current[id];
+      }
+    });
+  }, [state.sessions, fireTransition]);
 
-  } else if(action==='continue'){
-    var contLines=[
-      '',
-      '<span style="color:rgba(255,255,255,0.4)">y</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Resuming analysis...</span>',
-      '<span style="color:rgba(255,255,255,0.35)">→ Processing remaining files...</span><span class="tc">▋</span>'
-    ].join('\n');
-    doAppend(contLines);
-    sess.state='active';
-    scheduleTransition(sid);
-    pill();popList();demoRows();
-    setFocusedTerminal(focusedSid);
+  useEffect(() => {
+    return () => Object.values(timersRef.current).forEach(clearTimeout);
+  }, []);
 
-  } else if(action==='cancel'){
-    var cancelLines=[
-      '',
-      '<span style="color:rgba(255,255,255,0.4)">n to reject</span>',
-      '<span style="color:rgba(255,255,255,0.3)">✗  Task cancelled &mdash; session idle</span>'
-    ].join('\n');
-    doAppend(cancelLines);
-    sess.state='idle';
-    cancelTransition(sid);
-    pill();popList();demoRows();
-    setFocusedTerminal(focusedSid);
-  }
-}
+  /* handleAction: retry / dismiss / continue / cancel */
+  const handleAction = useCallback((action, sessionId) => {
+    const s = stateRef.current;
+    const session = s.sessions.find(x => x.id === sessionId);
+    if (!session) return;
+    const isOpen = s.ui.openTerminals.some(t => t.sessionId === sessionId);
 
-var draggedSid=null,dragHappened=false;
+    const append = html => {
+      if (isOpen) {
+        dispatch({type:'APPEND_TERMINAL_OUTPUT', sessionId, html});
+      } else {
+        dispatch({type:'OPEN_TERMINAL', sessionId});
+        setTimeout(() => dispatch({type:'APPEND_TERMINAL_OUTPUT', sessionId, html}), 50);
+      }
+    };
 
-function popList(){
-  var l=document.getElementById('popList');
-  l.innerHTML='';
-  var b=document.getElementById('popBadge');
-  b.textContent=sessions.length+' session'+(sessions.length!==1?'s':'');
-  var c=lm?colorsLM:colors;
-  sessions.forEach(function(s){
-    var r=document.createElement('div');
-    var hasActions=s.state==='error'||s.state==='waiting';
-    r.className='s-row'+(hasActions?' has-actions':'');
-    r.setAttribute('draggable','true');
+    if (action === 'retry') {
+      append('\n<span style="color:rgba(255,255,255,0.35)">&#8594; Retrying connection...</span>\n<span style="color:rgba(255,255,255,0.35)">&#8594; Reconnecting to deployment service...</span><span class="tc">&#9611;</span>');
+      dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'active'});
+    } else if (action === 'dismiss') {
+      append('\n<span style="color:rgba(255,255,255,0.3)">&#10007;  Error dismissed &#8212; session idle</span>');
+      dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'idle'});
+    } else if (action === 'continue') {
+      append('\n<span style="color:rgba(255,255,255,0.4)">y</span>\n<span style="color:rgba(255,255,255,0.35)">&#8594; Resuming analysis...</span>\n<span style="color:rgba(255,255,255,0.35)">&#8594; Processing remaining files...</span><span class="tc">&#9611;</span>');
+      dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'active'});
+    } else if (action === 'cancel') {
+      append('\n<span style="color:rgba(255,255,255,0.4)">n to reject</span>\n<span style="color:rgba(255,255,255,0.3)">&#10007;  Task cancelled &#8212; session idle</span>');
+      dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'idle'});
+    }
+  }, []);
 
-    var handle=document.createElement('span');
-    handle.className='s-handle';handle.textContent='⠿';
-    r.appendChild(handle);
+  /* keyboard shortcuts */
+  useEffect(() => {
+    const onKey = e => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
-    var dot=document.createElement('div');
-    dot.className='s-dot';
-    dot.style.background=c[s.state];
-    r.appendChild(dot);
+      const s = stateRef.current;
 
-    var nm=document.createElement('span');
-    nm.className='s-name';nm.textContent=s.name;
-    r.appendChild(nm);
+      /* Y / N for focused waiting terminal */
+      if (s.ui.focusedTerminalId !== null) {
+        const foc = s.sessions.find(x => x.id === s.ui.focusedTerminalId);
+        if (foc && foc.state === 'waiting') {
+          if (e.key === 'y' || e.key === 'Y') { e.preventDefault(); handleAction('continue', s.ui.focusedTerminalId); return; }
+          if (e.key === 'n' || e.key === 'N') { e.preventDefault(); handleAction('cancel',   s.ui.focusedTerminalId); return; }
+        }
+      }
 
-    if(hasActions){
-      var btns=document.createElement('div');
-      btns.className='s-btns';
-      var btnDefs=s.state==='error'
-        ? [['Retry',true,'retry'],['Dismiss',false,'dismiss']]
-        : [['Continue',true,'continue'],['Cancel',false,'cancel']];
-      btnDefs.forEach(function(def){
-        var btn=makeBtn(def[0],def[1],def[2]);
-        btn.addEventListener('click',(function(action,sid){return function(e){
-          e.stopPropagation();
-          handleAction(action,sid);
-        };})(def[2],s.id));
-        btns.appendChild(btn);
+      if (e.key === 'p' || e.key === 'P') dispatch({type:'TOGGLE_CONTROLS'});
+
+      if (e.key === 'v' || e.key === 'V') {
+        const next = VARIATIONS[(VARIATIONS.indexOf(s.ui.activeVariation) + 1) % VARIATIONS.length];
+        dispatch({type:'SET_VARIATION', name:next});
+        showVarLabel(next);
+      }
+
+      VARIATIONS.forEach((v, i) => {
+        if (e.key === String(i + 1)) {
+          dispatch({type:'SET_VARIATION', name:v});
+          showVarLabel(v);
+        }
       });
-      r.appendChild(btns);
-    } else if(s.state!=='done'){
-      var st=document.createElement('span');
-      st.className='s-status';st.textContent=labels[s.state];
-      r.appendChild(st);
-      var tm=document.createElement('span');
-      tm.className='s-time';tm.textContent=s.time;
-      r.appendChild(tm);
-    }
 
-    r.addEventListener('dragstart',(function(sid){return function(e){
-      draggedSid=sid;dragHappened=true;
-      e.dataTransfer.effectAllowed='move';
-    };})(s.id));
-    r.addEventListener('dragend',function(){
-      setTimeout(function(){dragHappened=false;},50);
-    });
-    r.addEventListener('dragover',function(e){
-      e.preventDefault();r.classList.add('drag-over');
-    });
-    r.addEventListener('dragleave',function(){r.classList.remove('drag-over');});
-    r.addEventListener('drop',(function(sid){return function(e){
-      e.preventDefault();r.classList.remove('drag-over');
-      if(draggedSid===sid) return;
-      var fi=sessions.findIndex(function(x){return x.id===draggedSid;});
-      var ti=sessions.findIndex(function(x){return x.id===sid;});
-      if(fi===-1||ti===-1) return;
-      var moved=sessions.splice(fi,1)[0];
-      sessions.splice(ti,0,moved);
-      pill();popList();demoRows();
-      draggedSid=null;
-    };})(s.id));
-
-    r.addEventListener('click',(function(sess){return function(){
-      if(dragHappened) return;
-      closePop(true);
-      openTerminal(sess);
-    };})(s));
-
-    l.appendChild(r);
-  });
-}
-
-function demoRows(){
-  var c=document.getElementById('demoRows');
-  c.innerHTML='';
-  var states=['idle','active','waiting','error','done'];
-  sessions.forEach(function(s){
-    var row=document.createElement('div');
-    row.className='demo-row';
-    var nm=document.createElement('span');
-    nm.className='demo-name';nm.textContent=s.name;
-    row.appendChild(nm);
-    states.forEach(function(st){
-      var b=document.createElement('button');
-      var cls='sbtn'+(s.state===st?' on':'')+(st==='error'?' e':'')+(st==='done'?' d':'');
-      b.className=cls;b.textContent=labels[st];
-      b.onclick=(function(sid,state){return function(){
-        sessions.forEach(function(x){if(x.id===sid)x.state=state;});
-        if(state==='active') scheduleTransition(sid);
-        else cancelTransition(sid);
-        pill();popList();demoRows();
-      };})(s.id,st);
-      row.appendChild(b);
-    });
-    c.appendChild(row);
-  });
-}
-
-function positionPop(){
-  var pop=document.getElementById('popover');
-  var wrap=document.getElementById('siWrap');
-  var screen=document.getElementById('screen');
-  var wr=wrap.getBoundingClientRect();
-  var sr=screen.getBoundingClientRect();
-  var right=sr.right-wr.right+6;
-  pop.style.right=right+'px';
-}
-
-function togglePop(){
-  if(popOpen){closePop();return;}
-  popOpen=true;
-  var pop=document.getElementById('popover');
-  var wrap=document.getElementById('siWrap');
-  popList();
-  positionPop();
-  pop.classList.add('visible');
-  wrap.classList.add('open');
-}
-
-function toggleTheme(){
-  lm=!lm;
-  document.body.classList.toggle('lm',lm);
-  document.getElementById('tbtn').textContent=lm?'Dark mode':'Light mode';
-  popList();
-}
-
-document.addEventListener('click',function(e){
-  if(!popOpen)return;
-  var w=document.getElementById('siWrap');
-  var p=document.getElementById('popover');
-  if(!w.contains(e.target)&&!p.contains(e.target))closePop();
-});
-
-function setVarMode(mode){
-  varMode=mode;
-  showVarLabel(mode);
-  pill();
-}
-
-document.addEventListener('keydown',function(e){
-  var tag=document.activeElement&&document.activeElement.tagName;
-  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
-
-  /* Y/N for focused waiting terminal */
-  if(focusedSid!==null){
-    var focSess=sessions.filter(function(x){return x.id===focusedSid;})[0];
-    if(focSess&&focSess.state==='waiting'){
-      if(e.key==='y'||e.key==='Y'){
-        e.preventDefault();
-        handleAction('continue',focusedSid);
-        return;
+      if (e.key === 's' || e.key === 'S') {
+        const used  = s.sessions.map(x => x.name);
+        const avail = POOL_NAMES.filter(n => !used.includes(n));
+        if (!avail.length) return;
+        const maxId = s.sessions.reduce((m, x) => Math.max(m, x.id), 0);
+        const ns = {id:maxId+1, name:avail[0], state:'active', time:'0s'};
+        const blank = `<span style="color:rgba(255,255,255,0.5)">$ claude ${ns.name}</span>\n<span class="tc">&#9611;</span>`;
+        dispatch({type:'ADD_SESSION', session:ns});
+        dispatch({type:'OPEN_TERMINAL', sessionId:ns.id, content:blank});
       }
-      if(e.key==='n'||e.key==='N'){
-        e.preventDefault();
-        handleAction('cancel',focusedSid);
-        return;
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
+  /* clear terminal focus when clicking outside */
+  useEffect(() => {
+    const onDown = e => {
+      if (!e.target.closest('.js-terminal-win')) {
+        dispatch({type:'FOCUS_TERMINAL', sessionId:null});
       }
-    }
-  }
+    };
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, []);
 
-  if(e.key==='p'||e.key==='P'){
-    var d=document.getElementById('demo');
-    var showing=d.style.display==='block';
-    d.style.display=showing?'none':'block';
-    if(!showing) raiseWindow(d);
-  }
-  if(e.key==='v'||e.key==='V'){
-    var idx=(VARIATIONS.indexOf(varMode)+1)%VARIATIONS.length;
-    setVarMode(VARIATIONS[idx]);
-  }
-  if(e.key==='1') setVarMode(VARIATIONS[0]);
-  if(e.key==='2') setVarMode(VARIATIONS[1]);
-  if(e.key==='3') setVarMode(VARIATIONS[2]);
-  if(e.key==='4') setVarMode(VARIATIONS[3]);
-  if(e.key==='5') setVarMode(VARIATIONS[4]);
-  if(e.key==='6') setVarMode(VARIATIONS[5]);
-  if(e.key==='7') setVarMode(VARIATIONS[6]);
-  if(e.key==='8') setVarMode(VARIATIONS[7]);
-  if(e.key==='s'||e.key==='S'){
-    var ns=addSession();
-    if(ns){
-      var blankContent='<span style="color:rgba(255,255,255,0.5)">$ claude '+ns.name+'</span>\n<span class="tc">▋</span>';
-      openTerminal(ns,blankContent);
-    }
-  }
-});
-
-function setFocusedTerminal(sid){
-  focusedSid=sid;
-  openTerminals.forEach(function(t){
-    var isFocused=t.sid===sid;
-    var bar=t.el.querySelector('.term-focus-bar');
-    if(bar){
-      var sess=sessions.filter(function(x){return x.id===t.sid;})[0];
-      bar.style.display=(isFocused&&sess&&sess.state==='waiting')?'block':'none';
-    }
-  });
+  return (
+    <div className="page">
+      <div className="hero">
+        <Desktop
+          state={state}
+          dispatch={dispatch}
+          onAction={handleAction}
+          varLabel={varLabel}
+        />
+        <p className="caption">Session Indicator &mdash; a native macOS menu bar component for AI agent supervision</p>
+      </div>
+      <OnePageContent />
+    </div>
+  );
 }
 
-document.addEventListener('mousedown',function(e){
-  var inTerminal=openTerminals.some(function(t){return t.el.contains(e.target);});
-  if(!inTerminal) setFocusedTerminal(null);
-});
-
-function makeDraggable(win,handle,excludeSel){
-  var dragging=false,sx,sy,sl,st;
-  handle.addEventListener('mousedown',function(e){
-    if(e.button!==0) return;
-    if(excludeSel&&e.target.closest(excludeSel)) return;
-    var screen=document.getElementById('screen');
-    var sr=screen.getBoundingClientRect();
-    var wr=win.getBoundingClientRect();
-    sl=wr.left-sr.left; st=wr.top-sr.top;
-    win.style.left=sl+'px'; win.style.top=st+'px';
-    win.style.bottom=''; win.style.transform='';
-    dragging=true; sx=e.clientX; sy=e.clientY;
-    handle.classList.add('dragging');
-    e.preventDefault();
-  });
-  document.addEventListener('mousemove',function(e){
-    if(!dragging) return;
-    var screen=document.getElementById('screen');
-    var sr=screen.getBoundingClientRect();
-    var nl=sl+(e.clientX-sx);
-    var nt=st+(e.clientY-sy);
-    nl=Math.max(0,Math.min(nl,sr.width-win.offsetWidth));
-    nt=Math.max(0,Math.min(nt,sr.height-win.offsetHeight));
-    win.style.left=nl+'px'; win.style.top=nt+'px';
-  });
-  document.addEventListener('mouseup',function(){
-    if(dragging){dragging=false;handle.classList.remove('dragging');}
-  });
-}
-
-pill();demoRows();
-
-sessions.forEach(function(s){if(s.state==='active') scheduleTransition(s.id);});
-
-/* Specific page-load transitions */
-cancelTransition(1);cancelTransition(2);cancelTransition(3);
-setTimeout(function(){
-  var s=sessions.filter(function(x){return x.id===1;})[0];
-  if(!s||s.state!=='active') return;
-  s.state='done'; pill(); if(popOpen) popList(); demoRows();
-  if(isTerminalOpen(1)) appendToTerminal(1,'\n<span style="color:#34C759">✓  Task completed successfully</span>');
-},2000);
-setTimeout(function(){
-  var s=sessions.filter(function(x){return x.id===2;})[0];
-  if(!s||s.state!=='active') return;
-  s.state='error'; pill(); if(popOpen) popList(); demoRows();
-  if(isTerminalOpen(2)) appendToTerminal(2,'\n<span style="color:#FF3B30">✗  Unexpected error &mdash; connection lost</span>');
-},3000);
-
-var demo=document.getElementById('demo');
-demo.addEventListener('mousedown',function(){raiseWindow(demo);});
-makeDraggable(demo,demo.querySelector('.demo-drag'));
+/* ══════════════════════════════════════════════
+   MOUNT
+══════════════════════════════════════════════ */
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 </body>
 </html>

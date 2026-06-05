@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Indicator &mdash; Design Spec</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;padding:40px 24px;min-height:100vh}
+.frame{max-width:680px;margin:0 auto;background:#1a1a1a;border-radius:16px;padding:32px;border:.5px solid #2e2e2e}
+.frame-title{font-size:11px;font-weight:500;color:#666;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px}
+.sec{font-size:11px;font-weight:500;color:#666;letter-spacing:.07em;text-transform:uppercase;margin:1.6rem 0 .6rem}
+.card{background:#222;border:.5px solid #333;border-radius:12px;padding:20px 24px;margin-bottom:4px}
+.hr{border:none;border-top:.5px solid #2e2e2e;margin:16px 0}
+.row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.row:last-child{margin-bottom:0}
+.dot-label{width:120px;flex-shrink:0}
+.dot-name{font-size:12px;font-weight:500;color:#e0e0e0}
+.dot-sub{font-size:11px;color:#666;margin-top:2px}
+.note{font-size:12px;color:#888;line-height:1.6;flex:1}
+.mb{background:#111;border-radius:6px;height:32px;display:inline-flex;align-items:center;padding:0 12px;flex-shrink:0;width:64px;justify-content:center}
+.pill{background:#1e1e1e;border:.5px solid #444;border-radius:20px;height:17px;display:inline-flex;align-items:center;padding:0 7px;gap:6px}
+.d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.d-idle{background:#3a3a3a}
+.d-active{background:#fff}
+.d-waiting{background:#fff;animation:pulse 2.8s ease-in-out infinite}
+.d-error{background:#FF3B30}
+.d-done{background:#34C759}
+.d-done-fade{background:#34C759;animation:fadeout 3s ease-in-out 2s forwards}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.12}}
+@keyframes fadeout{0%{opacity:1}100%{opacity:0;transform:scale(0)}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gcol{display:flex;flex-direction:column;align-items:center;gap:10px}
+.gcol-top{font-size:12px;font-weight:500;color:#ccc;text-align:center}
+.gcol-sub{font-size:11px;color:#666;text-align:center;line-height:1.5}
+.rec{border:.5px solid #333;border-radius:8px;padding:14px 16px}
+.rec-title{font-size:13px;font-weight:500;color:#e0e0e0;margin-bottom:6px}
+.rec-body{font-size:12px;color:#888;line-height:1.7}
+.principle-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.principle-key{font-size:12px;font-weight:500;color:#ccc;white-space:nowrap;min-width:90px}
+.principle-val{font-size:12px;color:#888;line-height:1.6}
+.badge-rec{font-size:10px;background:#1a2a3a;color:#5aabee;border:.5px solid #2a4a6a;border-radius:20px;padding:2px 8px;display:inline-block;margin-bottom:8px}
+.name-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.name-card{border:.5px solid #333;border-radius:8px;padding:14px 16px}
+.name-card.pick{border-color:#2a4a6a;background:#111e2a}
+.name-word{font-size:18px;font-weight:500;color:#e0e0e0;margin-bottom:6px}
+.name-card.pick .name-word{color:#5aabee}
+.name-why{font-size:11px;color:#666;line-height:1.6}
+.name-card.pick .name-why{color:#5aabee;opacity:.8}
+.fade-note{background:#1e2a1e;border:.5px solid #2a4a2a;border-radius:8px;padding:12px 16px;margin-top:14px}
+.fade-title{font-size:12px;font-weight:500;color:#4cd964;margin-bottom:4px}
+.fade-body{font-size:11px;color:#6a8a6a;line-height:1.6}
+.footer{font-size:11px;color:#444;text-align:center;margin-top:32px;padding-top:20px;border-top:.5px solid #2a2a2a}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <p class="frame-title">Session Indicator &mdash; Design Spec v0.1 &mdash; Working Document</p>
+
+  <p class="sec">01 &middot; Dot state vocabulary</p>
+  <div class="card">
+    <p style="font-size:12px;color:#888;margin-bottom:20px;line-height:1.6">Each dot in the pill represents exactly one agent session. Dots are fully independent &mdash; each responds only to its own session state.</p>
+
+    <div class="row">
+      <div class="dot-label">
+        <p class="dot-name">Idle</p>
+        <p class="dot-sub">connected, no task</p>
+      </div>
+      <div class="mb"><div class="pill"><div class="d d-idle"></div></div></div>
+      <p class="note">Dim, no motion. The session is open and linked but has nothing running. Recedes without disappearing.</p>
+    </div>
+
+    <div class="row">
+      <div class="dot-label">
+        <p class="dot-name">Active</p>
+        <p class="dot-sub">running right now</p>
+      </div>
+      <div class="mb"><div class="pill"><div class="d d-active"></div></div></div>
+      <p class="note">Solid white, no motion. Bright and present &mdash; like a lit LED. Stillness signals confidence, not inactivity.</p>
+    </div>
+
+    <div class="row">
+      <div class="dot-label">
+        <p class="dot-name">Waiting</p>
+        <p class="dot-sub">paused or queued</p>
+      </div>
+      <div class="mb"><div class="pill"><div class="d d-waiting"></div></div></div>
+      <p class="note">White, slow pulse. Alive but not progressing. The breathing rhythm signals patience, not urgency.</p>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="row">
+      <div class="dot-label">
+        <p class="dot-name">Error</p>
+        <p class="dot-sub">needs attention</p>
+      </div>
+      <div class="mb"><div class="pill"><div class="d d-error"></div></div></div>
+      <p class="note">Red, static. Color alone is the signal &mdash; no motion. Motion on an error creates panic. Static red is the universal hardware fault indicator.</p>
+    </div>
+
+    <div class="row">
+      <div class="dot-label">
+        <p class="dot-name">Done</p>
+        <p class="dot-sub">task completed</p>
+      </div>
+      <div class="mb"><div class="pill"><div class="d d-done-fade"></div></div></div>
+      <p class="note">Green, holds 3 seconds then fades out &mdash; the dot shrinks and disappears. Hovering the pill pauses the fade. The session closing is itself the confirmation.</p>
+    </div>
+
+    <div class="fade-note">
+      <p class="fade-title">Green fade &mdash; timing rationale</p>
+      <p class="fade-body">3 seconds: long enough to register at peripheral vision, short enough not to linger. Auto-fade keeps the pill self-managing. Hover-to-pause gives users a way to inspect if they missed it. Exact duration is a candidate for user research and a possible preference setting.</p>
+    </div>
+  </div>
+
+  <p class="sec">02 &middot; Mixed state &mdash; real-world pill</p>
+  <div class="card">
+    <p style="font-size:12px;color:#888;margin-bottom:20px;line-height:1.6">Four sessions open simultaneously. Each dot is independent &mdash; no synchronised motion.</p>
+    <div class="g3">
+      <div class="gcol">
+        <p class="gcol-top">3 active, 1 idle</p>
+        <div class="mb" style="width:100%;justify-content:center">
+          <div class="pill">
+            <div class="d d-active"></div>
+            <div class="d d-active"></div>
+            <div class="d d-active"></div>
+            <div class="d d-idle"></div>
+          </div>
+        </div>
+        <p class="gcol-sub">Three sessions working.<br>One open but parked.</p>
+      </div>
+      <div class="gcol">
+        <p class="gcol-top">1 error, 2 active, 1 done</p>
+        <div class="mb" style="width:100%;justify-content:center">
+          <div class="pill">
+            <div class="d d-error"></div>
+            <div class="d d-active"></div>
+            <div class="d d-active"></div>
+            <div class="d d-done"></div>
+          </div>
+        </div>
+        <p class="gcol-sub">Error stands out immediately.<br>Other sessions continue.</p>
+      </div>
+      <div class="gcol">
+        <p class="gcol-top">2 waiting, 1 active</p>
+        <div class="mb" style="width:100%;justify-content:center">
+          <div class="pill">
+            <div class="d d-waiting"></div>
+            <div class="d d-waiting" style="animation-delay:.9s"></div>
+            <div class="d d-active"></div>
+          </div>
+        </div>
+        <p class="gcol-sub">Two sessions queued.<br>One still progressing.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec">03 &middot; Design principles</p>
+  <div class="card">
+    <div class="rec">
+      <p class="rec-title">Motion = state. Color = exception.</p>
+      <p class="rec-body" style="margin-bottom:14px">For 90% of usage the pill shows white dots with varying motion states. Color only fires for error (red) and done (green briefly). This keeps the indicator calm and reserves color for moments that genuinely need attention.</p>
+      <div class="principle-row">
+        <p class="principle-key">No amber</p>
+        <p class="principle-val">Amber universally reads as caution in LED language. White shimmer communicates active work without the anxiety amber introduces.</p>
+      </div>
+      <div class="principle-row">
+        <p class="principle-key">Reduce Motion</p>
+        <p class="principle-val">When macOS Accessibility &gt; Reduce Motion is enabled: all dots render as static colored dots. No animation at all.</p>
+      </div>
+      <div class="principle-row">
+        <p class="principle-key">Per-dot only</p>
+        <p class="principle-val">The pill never animates as a unit. Each dot follows only its own session. No synchronised motion across the group.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="sec">04 &middot; Name</p>
+  <div class="name-grid">
+    <div class="name-card">
+      <p class="name-word">Sessions</p>
+      <p class="name-why">Honest and OS-native. Already used in Xcode and Terminal. Zero learning curve. Slightly generic.</p>
+    </div>
+    <div class="name-card">
+      <p class="name-word">Flow</p>
+      <p class="name-why">Short and human. Describes the state of work without technical baggage. Risks being too abstract.</p>
+    </div>
+    <div class="name-card pick">
+      <p class="badge-rec">selected</p>
+      <p class="name-word">Session Indicator</p>
+      <p class="name-why">Follows Apple HIG naming exactly &mdash; noun plus Indicator. Already in their vocabulary. Precise, descriptive, zero ambiguity.</p>
+    </div>
+  </div>
+
+  <p class="footer">Session Indicator &mdash; Working Document &mdash; Not for distribution</p>
+
+</div>
+</body>
+</html>

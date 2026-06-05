@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Indicator &mdash; Competitive Landscape</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0a0a0a;
+  --bg2:#111;
+  --bg3:#1a1a1a;
+  --border:rgba(255,255,255,0.08);
+  --text:#e8e8e8;
+  --text2:#888;
+  --text3:#555;
+  --green:#34C759;
+  --amber:#E8952A;
+  --red:#FF3B30;
+  --blue:#4ab0ff;
+  --green-bg:rgba(52,199,89,0.08);
+  --green-border:rgba(52,199,89,0.2);
+  --red-bg:rgba(255,59,48,0.08);
+  --red-border:rgba(255,59,48,0.2);
+  --amber-bg:rgba(232,149,42,0.08);
+  --amber-border:rgba(232,149,42,0.2);
+  --blue-bg:rgba(74,176,255,0.08);
+  --blue-border:rgba(74,176,255,0.2);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  line-height:1.6;
+  padding:0 0 80px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Header */
+.header{
+  padding:60px 0 48px;
+  text-align:center;
+  border-bottom:.5px solid var(--border);
+  margin-bottom:56px;
+}
+
+.header-eyebrow{
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--text3);
+  margin-bottom:16px;
+  font-family:'JetBrains Mono',monospace;
+}
+
+.header-title{
+  font-size:28px;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:-.02em;
+  margin-bottom:12px;
+}
+
+.header-sub{
+  font-size:15px;
+  color:var(--text2);
+  max-width:520px;
+  margin:0 auto;
+  line-height:1.65;
+}
+
+/* Layout */
+.container{
+  max-width:780px;
+  margin:0 auto;
+  padding:0 32px;
+}
+
+/* Section headers */
+.sec-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.sec-label{
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+  white-space:nowrap;
+}
+
+.sec-line{
+  flex:1;
+  height:.5px;
+  background:var(--border);
+}
+
+.sec-note{
+  font-size:11px;
+  color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+  white-space:nowrap;
+}
+
+section{margin-bottom:48px}
+
+/* Product cards */
+.product{
+  background:var(--bg2);
+  border:.5px solid var(--border);
+  border-radius:10px;
+  padding:20px 22px;
+  margin-bottom:10px;
+  transition:border-color .15s;
+}
+
+.product:hover{border-color:rgba(255,255,255,0.14)}
+
+.product-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:4px;
+}
+
+.product-name{
+  font-size:14px;
+  font-weight:600;
+  color:var(--text);
+}
+
+.product-link{
+  font-size:11px;
+  color:var(--blue);
+  text-decoration:none;
+  font-family:'JetBrains Mono',monospace;
+  opacity:.8;
+  transition:opacity .1s;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+
+.product-link:hover{opacity:1;text-decoration:underline}
+
+.product-meta{
+  font-size:11px;
+  color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+  margin-bottom:10px;
+}
+
+.product-body{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.7;
+  margin-bottom:12px;
+}
+
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+
+.tag{
+  font-size:10px;
+  padding:2px 8px;
+  border-radius:20px;
+  border:.5px solid;
+  font-weight:500;
+  letter-spacing:.01em;
+}
+
+.tag-g{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.tag-r{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.tag-a{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.tag-b{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+
+/* Divider between tag groups */
+.tag-divider{width:.5px;background:var(--border);margin:0 3px;align-self:stretch}
+
+/* Also worth knowing — compact list */
+.compact-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.compact-item{
+  background:var(--bg2);
+  border:.5px solid var(--border);
+  border-radius:10px;
+  padding:16px 22px;
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  transition:border-color .15s;
+}
+
+.compact-item:hover{border-color:rgba(255,255,255,0.14)}
+
+.compact-name{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  white-space:nowrap;
+  flex-shrink:0;
+  width:160px;
+}
+
+.compact-body{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.65;
+  flex:1;
+}
+
+.compact-link{
+  font-size:11px;
+  color:var(--blue);
+  text-decoration:none;
+  font-family:'JetBrains Mono',monospace;
+  white-space:nowrap;
+  flex-shrink:0;
+  opacity:.8;
+  transition:opacity .1s;
+  margin-top:1px;
+}
+
+.compact-link:hover{opacity:1;text-decoration:underline}
+
+/* Recommendation callout */
+.rec{
+  background:var(--bg3);
+  border:.5px solid var(--border);
+  border-radius:10px;
+  padding:20px 22px;
+  margin-top:48px;
+}
+
+.rec-title{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:8px;
+}
+
+.rec-body{
+  font-size:13px;
+  color:var(--text2);
+  line-height:1.7;
+}
+
+.rec-body strong{
+  color:var(--text);
+  font-weight:600;
+}
+
+/* Footer */
+.footer{
+  text-align:center;
+  margin-top:64px;
+  padding-top:24px;
+  border-top:.5px solid var(--border);
+  font-size:11px;
+  color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.04em;
+}
+
+/* Inline code */
+code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  background:rgba(255,255,255,0.06);
+  border:.5px solid var(--border);
+  border-radius:4px;
+  padding:1px 5px;
+  color:#c0d0e0;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <p class="header-eyebrow">Session Indicator &mdash; Research</p>
+  <h1 class="header-title">Competitive Landscape</h1>
+  <p class="header-sub">Every existing tool that touches AI agent monitoring on macOS &mdash; what each one does, where each one stops.</p>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1 -->
+  <section>
+    <div class="sec-header">
+      <span class="sec-label">Live session monitors</span>
+      <div class="sec-line"></div>
+      <span class="sec-note">closest to what we are building</span>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">c9watch</p>
+        <a href="https://github.com/minchenlee/c9watch" target="_blank" class="product-link">github.com/minchenlee/c9watch</a>
+      </div>
+      <p class="product-meta">Tauri &middot; Rust &middot; Svelte &middot; MIT &middot; open source</p>
+      <p class="product-body">Auto-discovers every running Claude Code session by scanning OS-level processes. No plugins needed, works with any terminal or IDE. Shows Working, Need Attention, or Idle per session in a dashboard. Reads JSONL files for deep content and session search. Built by one developer who was running 10+ sessions across Zed and Ghostty. Also has a YouTube demo.</p>
+      <div class="tags">
+        <span class="tag tag-g">auto-discovery</span>
+        <span class="tag tag-g">no plugins needed</span>
+        <span class="tag tag-g">Tauri, minimal footprint</span>
+        <span class="tag tag-g">session search</span>
+        <span class="tag tag-r">no dot pill design</span>
+        <span class="tag tag-r">no hardware surface</span>
+        <span class="tag tag-r">list UI, not ambient</span>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">CC Status Bar</p>
+        <a href="https://github.com/usedhonda/cc-status-bar" target="_blank" class="product-link">github.com/usedhonda/cc-status-bar</a>
+      </div>
+      <p class="product-meta">Swift &middot; native macOS &middot; open source &middot; Jan 2026</p>
+      <p class="product-body">The most feature-complete in this category. Red and yellow alerts when sessions need attention. One-click focus jumps to the exact terminal window or IDE tab. Autofocus mode brings the right window to front automatically when Claude needs input. Works with both Claude Code and Codex CLI. iPhone companion app via vibeterm. Cmd+Shift+C shortcut for quick session focus. Color theme customization.</p>
+      <div class="tags">
+        <span class="tag tag-g">one-click terminal focus</span>
+        <span class="tag tag-g">autofocus mode</span>
+        <span class="tag tag-g">iPhone companion</span>
+        <span class="tag tag-g">Claude Code + Codex</span>
+        <span class="tag tag-r">color and label UI, no dot pill</span>
+        <span class="tag tag-r">no ambient design</span>
+        <span class="tag tag-r">no hardware surface</span>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">claude-status</p>
+        <a href="https://github.com/gmr/claude-status" target="_blank" class="product-link">github.com/gmr/claude-status</a>
+      </div>
+      <p class="product-meta">Swift &middot; Claude Code plugin &middot; Mar 2026</p>
+      <p class="product-body">Uses a bundled Claude Code plugin that hooks into session lifecycle events. The plugin writes <code>.cstatus</code> files and posts Darwin notifications for instant state updates &mdash; real-time push, not polling. Also includes a macOS Desktop Widget. Supports VS Code, Zed, Xcode, JetBrains, iTerm2, Warp, Ghostty, tmux and more. Includes productivity scoring.</p>
+      <div class="tags">
+        <span class="tag tag-g">plugin hook architecture</span>
+        <span class="tag tag-g">real-time push</span>
+        <span class="tag tag-g">desktop widget</span>
+        <span class="tag tag-g">broadest IDE support</span>
+        <span class="tag tag-r">no dot pill design</span>
+        <span class="tag tag-r">no hardware surface</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section>
+    <div class="sec-header">
+      <span class="sec-label">Quota monitors</span>
+      <div class="sec-line"></div>
+      <span class="sec-note">solving a different problem</span>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">ClaudeBar</p>
+        <a href="https://github.com/tddworks/ClaudeBar" target="_blank" class="product-link">github.com/tddworks/ClaudeBar</a>
+      </div>
+      <p class="product-meta">Swift 6.2 &middot; native macOS &middot; open source &middot; active May 2026</p>
+      <p class="product-body">Monitors usage quotas across 9 providers simultaneously: Claude, Codex, Gemini, GitHub Copilot, Amp, Kiro and more. Color-coded progress bars, system notifications when limits approach. Multiple themes. Native Swift, system appearance adaptive.</p>
+      <div class="tags">
+        <span class="tag tag-g">9 providers</span>
+        <span class="tag tag-g">native Swift</span>
+        <span class="tag tag-g">multiple themes</span>
+        <span class="tag tag-r">quota only, no session states</span>
+        <span class="tag tag-r">no per-session live status</span>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">ClaudeWatch</p>
+        <a href="https://github.com/elliotykim/claudewatch" target="_blank" class="product-link">github.com/elliotykim/claudewatch</a>
+      </div>
+      <p class="product-meta">Swift &middot; open source &middot; Apr 2026</p>
+      <p class="product-body">Tracks 5-hour session windows with a 26-week usage heatmap, session streaks, burn rate, and peak usage stats. Popover with calendar view showing daily session counts. Writes usage data via a shell statusline hook. Focused on quota analytics over time, not live session state.</p>
+      <div class="tags">
+        <span class="tag tag-g">26-week usage heatmap</span>
+        <span class="tag tag-g">session streaks</span>
+        <span class="tag tag-r">no live session monitoring</span>
+        <span class="tag tag-r">analytics only</span>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">claude-monitor</p>
+        <a href="https://github.com/rjwalters/claude-monitor" target="_blank" class="product-link">github.com/rjwalters/claude-monitor</a>
+      </div>
+      <p class="product-meta">Open source &middot; API-based &middot; updated May 2026</p>
+      <p class="product-body">Reads usage from API response headers with a single <code>curl</code> call. Multi-account support with pinning, sorting, and per-account charts. The entire app wraps one API call. Extremely lightweight and transparent about what it does.</p>
+      <div class="tags">
+        <span class="tag tag-g">multi-account</span>
+        <span class="tag tag-g">minimal footprint</span>
+        <span class="tag tag-g">fully transparent</span>
+        <span class="tag tag-r">no session states</span>
+        <span class="tag tag-r">quota only</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section>
+    <div class="sec-header">
+      <span class="sec-label">Terminal statusline plugins</span>
+      <div class="sec-line"></div>
+      <span class="sec-note">inside the terminal, not the menu bar</span>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">Claude HUD</p>
+        <a href="https://github.com/jarrodwatts/claude-hud" target="_blank" class="product-link">github.com/jarrodwatts/claude-hud</a>
+      </div>
+      <p class="product-meta">Claude Code plugin &middot; 18k GitHub stars &middot; Apr 2026</p>
+      <p class="product-body">The most popular in this space by far. Shows context usage, active tools, running subagents, and todo progress directly in the terminal statusline. Displays detail like &ldquo;explore [haiku]: Finding auth code (2m 15s)&rdquo;. Highly configurable element order, colors, and git status integration. Described by reviewers as &ldquo;the status bar Claude Code should have built in.&rdquo;</p>
+      <div class="tags">
+        <span class="tag tag-g">18k stars</span>
+        <span class="tag tag-g">subagent tracking</span>
+        <span class="tag tag-g">todo progress</span>
+        <span class="tag tag-g">most popular in category</span>
+        <span class="tag tag-r">terminal only, not OS-level</span>
+        <span class="tag tag-r">no ambient menu bar presence</span>
+      </div>
+    </div>
+
+    <div class="product">
+      <div class="product-header">
+        <p class="product-name">claude-code-usage-bar</p>
+        <a href="https://github.com/leeguooooo/claude-code-usage-bar" target="_blank" class="product-link">github.com/leeguooooo/claude-code-usage-bar</a>
+      </div>
+      <p class="product-meta">Python &middot; Claude Code statusline plugin &middot; Apr 2026</p>
+      <p class="product-body">Lightweight terminal statusline showing 5h/7d rate limits, reset countdowns, model name, context window percentage, and prompt-cache age &mdash; all in one compact line. Three display styles and nine themes. Daemon fast-mode keeps CPU usage under 1% continuously. Install with one pip command.</p>
+      <div class="tags">
+        <span class="tag tag-g">9 themes</span>
+        <span class="tag tag-g">very lightweight</span>
+        <span class="tag tag-g">one-line install</span>
+        <span class="tag tag-a">statusline only</span>
+        <span class="tag tag-r">no menu bar presence</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section>
+    <div class="sec-header">
+      <span class="sec-label">Also worth knowing</span>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="compact-list">
+      <div class="compact-item">
+        <p class="compact-name">Agent Sessions</p>
+        <p class="compact-body">A Rust desktop app for managing multiple agent sessions at once. Listed on AlternativeTo alongside c9watch. Less publicly documented but worth awareness.</p>
+        <a href="https://alternativeto.net/software/claudecodemonitor" target="_blank" class="compact-link">alternativeto.net &rarr;</a>
+      </div>
+      <div class="compact-item">
+        <p class="compact-name">CC Usage Bar</p>
+        <p class="compact-body">Interesting security-conscious approach: spawns a real Claude Code session in a pseudo-terminal and captures <code>/usage</code> output directly. No API scraping, no Keychain access. Entirely transparent about data sourcing.</p>
+        <a href="https://github.com/lionhylra/cc-usage-bar" target="_blank" class="compact-link">github.com/lionhylra &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMENDATION -->
+  <div class="rec">
+    <p class="rec-title">The three worth installing before you build</p>
+    <p class="rec-body"><strong>c9watch</strong>, <strong>CC Status Bar</strong>, and <strong>Claude HUD</strong>. Between those three you will feel exactly what exists, what works well, and what the dot pill design does that none of them do. The gap is real and it is unoccupied.</p>
+  </div>
+
+</div>
+
+<div class="container">
+  <div class="footer">
+    Session Indicator &middot; Competitive Research &middot; Working Document &middot; Not for distribution
+  </div>
+</div>
+
+</body>
+</html>

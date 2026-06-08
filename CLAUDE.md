@@ -1,32 +1,21 @@
-# Session Indicator — Project Context
+# Session Indicator — Project Rules
 
-## What this is
-A macOS menu bar status indicator prototype for AI agent sessions.
-Interactive HTML prototype built in React. Portfolio piece.
+See README.md for what this project is, the tech stack, architecture, and file list.
 
-## Tech stack
-- React 18 loaded from CDN
-- Self-contained single HTML file (index.html)
-- Playwright tests in tests/prototype.spec.js
-- Wallpapers: helios-dark.jpg and helios-light.jpg (local files)
-- Deployed on GitHub Pages at https://ladanjohari.github.io/session-indicator
-
-## State architecture
-useReducer at root. Sessions array with id, name, state, time, shimmerSpeed.
-States: idle, active, waiting, error, done.
-UI state: openTerminals, controlsVisible, activeVariation, popoverOpen, zCounter.
+## File structure
+This project must always stay as one single self-contained index.html.
+Never suggest splitting it into multiple files or adding a build process
+(no bundler, no npm install, no separate JS/CSS files). React is loaded
+from CDN inline. This is a portfolio prototype — simplicity of "open the
+file in a browser" is the point.
 
 ## Session behavior rules
 - Dismiss: error → idle (never removes session)
-- Cancel: waiting → idle (never removes session)  
+- Cancel: waiting → idle (never removes session)
 - Continue: waiting → active
 - Retry: error → active
 - Done sessions clear when popover closes with no open terminal
 - Minimize hides window completely, reopens from popover row click
-
-## Active variations (8 total)
-Pulse, Pixel Heart, Pixel Art, Pixel Flame, Waveform, Agent Meter, Orbital, Claude Native
-Cycle with V key. Select directly with keys 1-8.
 
 ## Keyboard shortcuts
 S: add new session (unique name)
@@ -47,20 +36,23 @@ Each dot independent — no synchronized animations.
 - Z-index managed by last-clicked order
 - Wallpaper full color, menu bar items slightly dimmed except the pill
 
+## Gotchas
+- No localStorage/sessionStorage — this is a static prototype with no
+  persistence; state must always start fresh on page load.
+- No unicode characters anywhere in the file (not even in comments or
+  strings rendered to the page) — use HTML entities (&mdash; &middot;
+  &rarr;) instead, or characters can render as boxes on some systems.
+- Z-index is controlled only through the zCounter in state — never set
+  z-index directly in CSS or inline styles, or windows will stack
+  incorrectly relative to click order.
+- Dragging only works from title bars (.term-chrome / popover headers) —
+  clicking elsewhere on a window must not start a drag.
+
 ## Before every code change
 Run existing Playwright tests first.
 Only change what is needed.
 Run tests again after change.
 Fix failures before moving on.
-
-## Files in this project
-- index.html (main prototype)
-- indicator-variations.html (variation showcase)
-- competitive-landscape.html (competitive research)
-- session-indicator-spec.html (design spec)
-- tests/prototype.spec.js (Playwright tests)
-- SKILL.md (portfolio design skill)
-- project-prompts.md (starter prompts)
 
 ## GitHub
 Repo: git@github.com:ladanjohari/session-indicator.git

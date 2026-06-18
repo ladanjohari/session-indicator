@@ -336,6 +336,13 @@ body.lm .kbd-hint kbd{color:rgba(0,0,0,0.5);background:rgba(0,0,0,0.06);border-c
   height:88px;display:flex;flex-direction:column;justify-content:center;
 }
 body.lm .principle-viz{background:rgba(0,0,0,0.02);border:.5px solid rgba(0,0,0,0.055)}
+body.lm .principle-viz span{color:rgba(0,0,0,0.38) !important}
+body.lm .principle-viz p{color:rgba(0,0,0,0.35) !important}
+body.lm .principle-viz .pviz-mock span{color:rgba(255,255,255,0.5) !important}
+body.lm .avw-dlabel{color:rgba(0,0,0,0.35)}
+body.lm .avw-pct{color:rgba(0,0,0,0.35)}
+body.lm .avw-con{color:rgba(0,0,0,0.22)}
+body.lm .avw-divider{background:rgba(0,0,0,0.06)}
 
 /* ─── IMPLEMENTATION SECTION ─── */
 .swift{padding:0 0 72px}
@@ -626,8 +633,8 @@ body.lm .s-dismiss:hover{color:rgba(0,0,0,0.6)}
 }
 .avw-card.rec{border-color:rgba(255,255,255,0.13)}
 .avw-card-header{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  margin-bottom:12px;min-height:58px;
+  display:flex;flex-direction:column;align-items:flex-start;
+  margin-bottom:8px;
 }
 .avw-card-header-text{flex:1;min-width:0}
 .avw-badge{
@@ -637,7 +644,7 @@ body.lm .s-dismiss:hover{color:rgba(0,0,0,0.6)}
   border:.5px solid rgba(0,102,204,0.25);
   padding:2px 8px;border-radius:20px;
   letter-spacing:.04em;text-transform:uppercase;
-  white-space:nowrap;flex-shrink:0;margin-left:8px;margin-top:1px;
+  white-space:nowrap;flex-shrink:0;margin-top:5px;
 }
 .avw-var{
   font-size:10px;font-weight:500;
@@ -1807,7 +1814,7 @@ function OnePageContent() {
                 <div style={{height:.5,background:'rgba(255,255,255,0.05)',marginLeft:72}}/>
                 <div style={{display:'flex',alignItems:'center',gap:10}}>
                   <span style={{fontSize:'9px',color:'rgba(255,255,255,0.18)',fontFamily:"'SF Mono',monospace",letterSpacing:'.06em',width:62,flexShrink:0}}>INDICATOR</span>
-                  <div style={{background:'rgba(48,48,48,0.95)',border:'.5px solid rgba(155,155,155,0.28)',borderRadius:9,height:15,display:'flex',alignItems:'center',padding:'0 6px',gap:5}}>
+                  <div className="pviz-mock" style={{background:'rgba(48,48,48,0.95)',border:'.5px solid rgba(155,155,155,0.28)',borderRadius:9,height:15,display:'flex',alignItems:'center',padding:'0 6px',gap:5}}>
                     <div className="dot done"    style={{width:6,height:6}}/>
                     <div className="dot active"  style={{width:6,height:6}}/>
                     <div className="dot idle"    style={{width:6,height:6}}/>
@@ -1847,7 +1854,7 @@ function OnePageContent() {
           {/* 03 Native menu bar */}
           <div className="principle">
             <div className="principle-viz">
-              <div style={{background:'rgba(22,22,22,0.95)',borderRadius:6,height:22,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 8px',border:'.5px solid rgba(255,255,255,0.07)',marginBottom:7}}>
+              <div className="pviz-mock" style={{background:'rgba(22,22,22,0.95)',borderRadius:6,height:22,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 8px',border:'.5px solid rgba(255,255,255,0.07)',marginBottom:7}}>
                 <div style={{display:'flex',gap:5,alignItems:'center'}}>
                   <span style={{fontSize:'13px',color:'rgba(255,255,255,0.35)'}}>&#63743;</span>
                   <span style={{fontSize:'9px',color:'rgba(255,255,255,0.22)'}}>Finder</span>
@@ -1884,8 +1891,8 @@ function OnePageContent() {
               <div className="avw-card-header-text">
                 <p className="avw-var">Pulse</p>
                 <p className="avw-subvar">shimmer active, amber waiting</p>
+                <span className="avw-badge">Recommended</span>
               </div>
-              <span className="avw-badge">Recommended</span>
             </div>
             <div className="avw-bar">
               <div className="avw-pill">

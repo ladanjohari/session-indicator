@@ -101,11 +101,14 @@ body.lm .screen .mb-right > .mb-item{
 .si-wrap.open{background:rgba(255,255,255,0.13)}
 
 .si-pill{
-  background:rgba(48,48,48,0.95);
-  border:.5px solid rgba(155,155,155,0.38);
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:.5px solid rgba(255,255,255,0.22);
   border-radius:10px;height:16px;
   display:flex;align-items:center;
   padding:0 6px;gap:5px;min-width:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.16),0 2px 8px rgba(0,0,0,0.25);
 }
 
 .dot{
@@ -123,10 +126,12 @@ body.lm .screen .mb-right > .mb-item{
 .popover{
   position:absolute;z-index:200;
   top:30px;width:276px;
-  background:rgba(36,36,36,0.97);
-  border:.5px solid rgba(255,255,255,0.13);
-  border-radius:13px;
-  box-shadow:0 10px 50px rgba(0,0,0,0.55);
+  background:rgba(22,22,28,0.58);
+  backdrop-filter:blur(50px) saturate(200%);
+  -webkit-backdrop-filter:blur(50px) saturate(200%);
+  border:.5px solid rgba(255,255,255,0.18);
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.14);
   display:none;overflow:hidden;
 }
 .popover.visible{display:block;animation:popIn .14s ease-out}
@@ -146,7 +151,7 @@ body.lm .screen .mb-right > .mb-item{
 }
 .s-row:hover{background:rgba(255,255,255,0.05)}
 .s-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.s-name{flex:1;font-size:12px;color:rgba(255,255,255,0.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-name{flex:1;font-size:13px;color:rgba(255,255,255,0.82);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .s-status{font-size:11px;color:rgba(255,255,255,0.32);white-space:nowrap}
 .s-time{font-size:10px;color:rgba(255,255,255,0.22);white-space:nowrap;margin-left:3px}
 .s-row.has-actions{cursor:pointer}
@@ -168,10 +173,11 @@ body.lm .screen .mb-right > .mb-item{
   display:none;
   position:absolute;
   bottom:28px;left:50%;transform:translateX(-50%);
-  background:rgba(18,18,18,0.9);
-  border:.5px solid rgba(255,255,255,0.1);
-  border-radius:14px;padding:16px 20px;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(18,18,24,0.6);
+  border:.5px solid rgba(255,255,255,0.16);
+  border-radius:16px;padding:16px 20px;
+  backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+  box-shadow:0 16px 48px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.1);
   min-width:520px;
 }
 .demo-label{font-size:10px;font-weight:500;color:rgba(255,255,255,0.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
@@ -387,11 +393,11 @@ body.lm .mb-item{color:rgba(0,0,0,0.82)}
 body.lm .mb-item:hover{background:rgba(0,0,0,0.07)}
 body.lm .si-wrap:hover{background:rgba(0,0,0,0.07)}
 body.lm .si-wrap.open{background:rgba(0,0,0,0.1)}
-body.lm .si-pill{background:rgba(205,205,205,0.95);border:.5px solid rgba(0,0,0,0.22)}
+body.lm .si-pill{background:rgba(0,0,0,0.08);border:.5px solid rgba(0,0,0,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 2px 8px rgba(0,0,0,0.12)}
 body.lm .dot.idle{background:rgba(0,0,0,0.18)}
 body.lm .dot.active{background:#1a1a1a}
 body.lm .dot.waiting{background:#E8952A}
-body.lm .popover{background:rgba(240,240,240,0.98);border:.5px solid rgba(0,0,0,0.1);box-shadow:0 8px 40px rgba(0,0,0,0.2)}
+body.lm .popover{background:rgba(240,240,248,0.65);border:.5px solid rgba(0,0,0,0.12);box-shadow:0 16px 50px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.8)}
 body.lm .pop-header{border-bottom:.5px solid rgba(0,0,0,0.07)}
 body.lm .pop-title{color:rgba(0,0,0,0.85)}
 body.lm .pop-badge{color:rgba(0,0,0,0.38);background:rgba(0,0,0,0.07)}
@@ -437,9 +443,12 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
   display:none;
   position:absolute;
   width:75%;max-width:680px;
-  background:#1a1a1a;
-  border-radius:10px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.65),0 0 0 .5px rgba(255,255,255,0.1);
+  background:rgba(16,16,20,0.72);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  border-radius:12px;
+  border:.5px solid rgba(255,255,255,0.14);
+  box-shadow:0 24px 70px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.1);
   overflow:hidden;
   cursor:default;
 }
@@ -453,10 +462,10 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
 }
 
 .term-chrome{
-  height:32px;background:#252525;
+  height:32px;background:rgba(255,255,255,0.05);
   display:flex;align-items:center;
   padding:0 12px;position:relative;
-  border-bottom:.5px solid rgba(255,255,255,0.07);
+  border-bottom:.5px solid rgba(255,255,255,0.09);
   flex-shrink:0;
   cursor:grab;user-select:none;
 }
@@ -1383,7 +1392,7 @@ function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
       <div ref={chromeRef} className="term-chrome">
         <div className="tl-group">
           <button className="tl-btn" style={{background:'#FF5F57'}}
-            onClick={e => { e.stopPropagation(); dispatch({type:'CLOSE_TERMINAL', sessionId:session.id}); }}>
+            onClick={e => { e.stopPropagation(); dispatch({type:'REMOVE_SESSION', id:session.id}); }}>
             <span className="tl-symbol">&#10005;</span>
           </button>
           <button className="tl-btn" style={{background:'#FFBD2E'}}
@@ -1398,7 +1407,7 @@ function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
       </div>
       <div ref={bodyRef} className="term-body" dangerouslySetInnerHTML={{__html: terminal.content}} />
       <div className="term-focus-bar" style={{display: isFocused && session.state === 'waiting' ? 'block' : 'none'}}>
-        terminal focused &#8212; y / n to respond
+        terminal focused: y / n to respond
       </div>
     </div>
   );

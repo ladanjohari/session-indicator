@@ -492,19 +492,28 @@ body.lm .footer p{color:rgba(0,0,0,0.2)}
 .demo-drag{cursor:grab;user-select:none;}
 .demo-drag.dragging{cursor:grabbing;}
 
-.s-section{
-  font-size:9px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;
-  color:rgba(255,255,255,0.22);padding:6px 13px 3px;
+.s-handle{
+  opacity:0;transition:opacity .12s;
+  color:rgba(255,255,255,0.25);cursor:grab;
+  font-size:11px;flex-shrink:0;
+  padding:0 3px 0 0;user-select:none;line-height:1;
 }
-.s-divider{height:.5px;background:rgba(255,255,255,0.06);margin:4px 0}
+.s-row:hover .s-handle{opacity:1}
+.s-row-wrap{position:relative}
+.s-drop-line{
+  position:absolute;left:13px;right:13px;height:2px;
+  background:#0a84ff;border-radius:1px;z-index:2;pointer-events:none;
+}
+.s-drop-line.top{top:-1px}
+.s-drop-line.bot{bottom:-1px}
 .s-dismiss{
   background:none;border:none;padding:0 2px;
   color:rgba(255,255,255,0.2);font-size:10px;cursor:pointer;
   line-height:1;flex-shrink:0;transition:color .1s;font-family:inherit;
 }
 .s-dismiss:hover{color:rgba(255,255,255,0.6)}
-body.lm .s-section{color:rgba(0,0,0,0.28)}
-body.lm .s-divider{background:rgba(0,0,0,0.07)}
+body.lm .s-handle{color:rgba(0,0,0,0.25)}
+body.lm .s-drop-line{background:#007AFF}
 body.lm .s-dismiss{color:rgba(0,0,0,0.25)}
 body.lm .s-dismiss:hover{color:rgba(0,0,0,0.6)}
 .term-body{
@@ -1173,20 +1182,62 @@ function VariationLabel({text, phase}) {
 }
 
 /* ══════════════════════════════════════════════
-   POPOVER
+   POPOVER DOT — matches active variation
 ══════════════════════════════════════════════ */
-function Popover({sessions, lm, open, popoverRight, onAction, onRowClick}) {
+function PopoverDot({session, variation, lm}) {
   const colors = lm ? STATE_COLORS_LM : STATE_COLORS;
 
-  const PRIORITY = {error:0, waiting:1, active:2, done:3, idle:4};
-  const sorted = [...sessions].sort((a,b) => PRIORITY[a.state] - PRIORITY[b.state]);
+  if (variation === 'Pixel Art') {
+    const pxMap  = {active:PX_FIRE, waiting:PX_ICE, error:PX_BOLT, done:PX_STAR, idle:PX_SKULL};
+    const colMap = {active:'#ff8030', waiting:'#5bc8f5', error:'#f5e020', done:'#34C759', idle:'rgba(255,255,255,0.18)'};
+    const anim   = session.state === 'active' ? 'pxflk 1.2s ease-in-out infinite'
+                 : session.state === 'error'  ? 'pxblk 0.9s step-end infinite' : undefined;
+    return (
+      <span style={{display:'inline-flex',alignItems:'center',flexShrink:0,animation:anim}}
+            dangerouslySetInnerHTML={{__html:makePxSVG(pxMap[session.state]||PX_SKULL, colMap[session.state], 0.85)}}/>
+    );
+  }
 
-  const groups = [
-    {label:'Needs Attention', items: sorted.filter(s => s.state==='error' || s.state==='waiting')},
-    {label:'Running',         items: sorted.filter(s => s.state==='active')},
-    {label:'Completed',       items: sorted.filter(s => s.state==='done')},
-    {label:'Idle',            items: sorted.filter(s => s.state==='idle')},
-  ].filter(g => g.items.length > 0);
+  if (variation === 'Agent Meter') {
+    const bars = [];
+    if      (session.state === 'active')  ['s5','s4','s3','s2','s1'].forEach(c => bars.push({cls:`sg-p on ${c} anim`}));
+    else if (session.state === 'waiting') { for(let i=0;i<4;i++) bars.push({cls:'sg-p'}); bars.push({cls:'sg-p on',style:{background:'#E8952A'}}); }
+    else if (session.state === 'error')   { for(let i=0;i<4;i++) bars.push({cls:'sg-p'}); bars.push({cls:'sg-p on',style:{background:'#FF3B30'}}); }
+    else if (session.state === 'done')    for(let i=0;i<5;i++) bars.push({cls:'sg-p on s1'});
+    else                                  for(let i=0;i<5;i++) bars.push({cls:'sg-p'});
+    return (
+      <div className="am-col-proto" style={{flexShrink:0}}>
+        {bars.map((b,i) => <div key={i} className={b.cls} style={b.style}/>)}
+      </div>
+    );
+  }
+
+  /* Pulse (default) */
+  return <div className="s-dot" style={{background: colors[session.state], flexShrink:0}}/>;
+}
+
+/* ══════════════════════════════════════════════
+   POPOVER
+══════════════════════════════════════════════ */
+function Popover({sessions, variation, lm, open, popoverRight, onAction, onRowClick, onReorder}) {
+  const [dropInfo, setDropInfo] = useState(null); // {targetId, before}
+  const draggedIdRef = useRef(null);
+
+  const handleDrop = (targetId) => {
+    const fromId = draggedIdRef.current;
+    if (!fromId || fromId === targetId) { setDropInfo(null); return; }
+    const fi = sessions.findIndex(x => x.id === fromId);
+    const ti = sessions.findIndex(x => x.id === targetId);
+    if (fi === -1 || ti === -1) { setDropInfo(null); return; }
+    const ns = [...sessions];
+    const [moved] = ns.splice(fi, 1);
+    let insertAt = dropInfo?.before ? ti : ti + 1;
+    if (fi < ti) insertAt--;
+    ns.splice(Math.max(0, insertAt), 0, moved);
+    onReorder(ns);
+    setDropInfo(null);
+    draggedIdRef.current = null;
+  };
 
   return (
     <div className={`popover${open ? ' visible' : ''}`} style={{right: (popoverRight || 6) + 'px'}}>
@@ -1195,50 +1246,60 @@ function Popover({sessions, lm, open, popoverRight, onAction, onRowClick}) {
         <span className="pop-badge">{sessions.length} session{sessions.length !== 1 ? 's' : ''}</span>
       </div>
       <div>
-        {groups.map((group, gi) => (
-          <React.Fragment key={group.label}>
-            {gi > 0 && <div className="s-divider"/>}
-            <div className="s-section">{group.label}</div>
-            {group.items.map(s => {
-              const hasActions = s.state === 'error' || s.state === 'waiting';
-              return (
-                <div
-                  key={s.id}
-                  className={`s-row${hasActions ? ' has-actions' : ''}`}
-                  onClick={() => onRowClick(s)}
-                >
-                  <div className="s-dot" style={{background: colors[s.state]}} />
-                  <span className="s-name">{s.name}</span>
-                  {hasActions ? (
-                    <div className="s-btns">
-                      {s.state === 'error' ? (
-                        <>
-                          <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('retry', s.id); }}>Retry</button>
-                          <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('dismiss', s.id); }}>Dismiss</button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('continue', s.id); }}>Continue</button>
-                          <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('cancel', s.id); }}>Cancel</button>
-                        </>
-                      )}
-                    </div>
-                  ) : s.state === 'done' || s.state === 'idle' ? (
-                    <>
-                      {s.state === 'done' && <span className="s-time">{s.time}</span>}
-                      <button className="s-dismiss" onClick={e => { e.stopPropagation(); onAction('dismiss', s.id); }}>&#10005;</button>
-                    </>
-                  ) : (
-                    <>
-                      <span className="s-status">{STATE_LABELS[s.state]}</span>
-                      <span className="s-time">{s.time}</span>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </React.Fragment>
-        ))}
+        {sessions.map(s => {
+          const hasActions = s.state === 'error' || s.state === 'waiting';
+          const showTop    = dropInfo?.targetId === s.id && dropInfo?.before;
+          const showBot    = dropInfo?.targetId === s.id && !dropInfo?.before;
+          return (
+            <div key={s.id} className="s-row-wrap">
+              {showTop && <div className="s-drop-line top"/>}
+              <div
+                className={`s-row${hasActions ? ' has-actions' : ''}`}
+                draggable
+                onDragStart={e => { draggedIdRef.current = s.id; e.dataTransfer.effectAllowed = 'move'; }}
+                onDragEnd={() => { draggedIdRef.current = null; setDropInfo(null); }}
+                onDragOver={e => {
+                  e.preventDefault();
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  setDropInfo({targetId: s.id, before: e.clientY < rect.top + rect.height / 2});
+                }}
+                onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setDropInfo(null); }}
+                onDrop={() => handleDrop(s.id)}
+                onClick={() => { if (!draggedIdRef.current) onRowClick(s); }}
+              >
+                <span className="s-handle">&#10303;</span>
+                <PopoverDot session={s} variation={variation} lm={lm}/>
+                <span className="s-name">{s.name}</span>
+                {hasActions ? (
+                  <div className="s-btns">
+                    {s.state === 'error' ? (
+                      <>
+                        <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('retry', s.id); }}>Retry</button>
+                        <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('dismiss', s.id); }}>Dismiss</button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('continue', s.id); }}>Continue</button>
+                        <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('cancel', s.id); }}>Cancel</button>
+                      </>
+                    )}
+                  </div>
+                ) : s.state === 'done' || s.state === 'idle' ? (
+                  <>
+                    {s.state === 'done' && <span className="s-time">{s.time}</span>}
+                    <button className="s-dismiss" onClick={e => { e.stopPropagation(); onAction('dismiss', s.id); }}>&#10005;</button>
+                  </>
+                ) : (
+                  <>
+                    <span className="s-status">{STATE_LABELS[s.state]}</span>
+                    <span className="s-time">{s.time}</span>
+                  </>
+                )}
+              </div>
+              {showBot && <div className="s-drop-line bot"/>}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -1545,6 +1606,7 @@ function Desktop({state, dispatch, onAction, varLabel}) {
 
       <Popover
         sessions={sessions}
+        variation={ui.activeVariation}
         lm={ui.lm}
         open={ui.popoverOpen}
         popoverRight={popoverRight}
@@ -1553,6 +1615,7 @@ function Desktop({state, dispatch, onAction, varLabel}) {
           dispatch({type:'CLOSE_POPOVER_NOACK'});
           dispatch({type:'OPEN_TERMINAL', sessionId:session.id});
         }}
+        onReorder={newSessions => dispatch({type:'REORDER_SESSIONS', sessions:newSessions})}
       />
 
       {ui.openTerminals.map(terminal => {

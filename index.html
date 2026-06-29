@@ -3,9 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Session Indicator</title>
+<title>Session Indicator — Ladan Johari</title>
+<meta name="description" content="A native macOS menu bar component that restores awareness when multiple AI agents run in parallel, without interrupting focus.">
+<meta property="og:title" content="Session Indicator — Ladan Johari">
+<meta property="og:description" content="A native macOS menu bar component for AI agent supervision. Built in SwiftUI.">
+<meta property="og:image" content="https://session-indicator.ladanjohari.com/helios-dark.jpg">
+<meta property="og:url" content="https://session-indicator.ladanjohari.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Session Indicator — Ladan Johari">
+<meta name="twitter:description" content="A native macOS menu bar component for AI agent supervision.">
+<meta name="twitter:image" content="https://session-indicator.ladanjohari.com/helios-dark.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%2334C759'/></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+h2{font-size:inherit;font-weight:inherit}
 
 :root{
   --ok-bg:rgba(52,199,89,0.08);--ok-fg:#34C759;--ok-bd:rgba(52,199,89,0.25);
@@ -229,18 +241,18 @@ body.lm .screen .mb-right > .mb-item{
 
 .caption{
   margin-top:18px;
-  font-size:12px;color:rgba(255,255,255,0.25);
+  font-size:12px;color:rgba(255,255,255,0.38);
   text-align:center;letter-spacing:.01em;
 }
 
 /* ─── SECTION 2: PROBLEM ─── */
 .problem{
-  padding:56px 0 64px;
+  padding:40px 0 48px;
   text-align:center;
 }
 .problem p{
   font-size:18px;line-height:1.65;
-  color:rgba(255,255,255,0.4);
+  color:rgba(255,255,255,0.58);
   font-weight:400;
   max-width:580px;margin:0 auto;
 }
@@ -252,7 +264,7 @@ body.lm .screen .mb-right > .mb-item{
 }
 .legend-title{
   font-size:11px;font-weight:500;
-  color:rgba(255,255,255,0.28);
+  color:rgba(255,255,255,0.45);
   letter-spacing:.08em;text-transform:uppercase;
   margin-bottom:36px;
 }
@@ -277,14 +289,14 @@ body.lm .screen .mb-right > .mb-item{
 .legend-dot.waiting{background:#E8952A}
 .legend-dot.error{background:#FF3B30}
 .legend-dot.done{background:#34C759}
-.legend-name{font-size:11px;font-weight:500;color:rgba(255,255,255,0.5)}
-.legend-desc{font-size:10px;color:rgba(255,255,255,0.22);text-align:center;line-height:1.5}
+.legend-name{font-size:11px;font-weight:500;color:rgba(255,255,255,0.6)}
+.legend-desc{font-size:10px;color:rgba(255,255,255,0.38);text-align:center;line-height:1.5}
 
 /* ─── SECTION 4: DESIGN PRINCIPLES ─── */
 .principles{padding:0 0 72px}
 .principles-title{
   font-size:11px;font-weight:500;
-  color:rgba(255,255,255,0.28);
+  color:rgba(255,255,255,0.45);
   letter-spacing:.08em;text-transform:uppercase;
   text-align:center;margin-bottom:32px;
 }
@@ -299,12 +311,12 @@ body.lm .screen .mb-right > .mb-item{
 }
 .principle-title{
   font-size:12px;font-weight:500;
-  color:rgba(255,255,255,0.65);
+  color:rgba(255,255,255,0.72);
   margin-bottom:9px;line-height:1.4;
 }
 .principle-body{
   font-size:11px;
-  color:rgba(255,255,255,0.28);
+  color:rgba(255,255,255,0.42);
   line-height:1.65;
 }
 
@@ -316,7 +328,7 @@ body.lm .screen .mb-right > .mb-item{
 }
 .kbd-hint{
   display:flex;align-items:center;gap:6px;
-  font-size:11px;color:rgba(255,255,255,0.28);
+  font-size:11px;color:rgba(255,255,255,0.42);
 }
 .kbd-hint kbd{
   font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
@@ -348,11 +360,11 @@ body.lm .avw-divider{background:rgba(0,0,0,0.06)}
 .swift{padding:0 0 72px}
 .swift-title{
   font-size:11px;font-weight:500;
-  color:rgba(255,255,255,0.28);
+  color:rgba(255,255,255,0.45);
   letter-spacing:.08em;text-transform:uppercase;
   text-align:center;margin-bottom:8px;
 }
-.swift-sub{font-size:12px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:28px}
+.swift-sub{font-size:12px;color:rgba(255,255,255,0.42);text-align:center;margin-bottom:28px}
 
 .swift-block{
   background:#0f0f0f;
@@ -395,11 +407,11 @@ body.lm .sx-dim{color:rgba(0,0,0,0.6)}
   background:rgba(255,255,255,0.025);
   display:inline-block;text-align:left;max-width:520px;
 }
-.problem-quote-text{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.65;font-style:italic}
-.problem-quote-attr{font-size:10px;color:rgba(255,255,255,0.2);margin-top:6px;letter-spacing:.04em}
+.problem-quote-text{font-size:12px;color:rgba(255,255,255,0.48);line-height:1.65;font-style:italic}
+.problem-quote-attr{font-size:10px;color:rgba(255,255,255,0.32);margin-top:6px;letter-spacing:.04em}
 body.lm .problem-quote{border-color:rgba(0,0,0,0.08);background:rgba(0,0,0,0.03)}
-body.lm .problem-quote-text{color:rgba(0,0,0,0.4)}
-body.lm .problem-quote-attr{color:rgba(0,0,0,0.25)}
+body.lm .problem-quote-text{color:rgba(0,0,0,0.55)}
+body.lm .problem-quote-attr{color:rgba(0,0,0,0.38)}
 
 /* ─── FOOTER ─── */
 .footer{
@@ -409,7 +421,7 @@ body.lm .problem-quote-attr{color:rgba(0,0,0,0.25)}
 }
 .footer p{
   font-size:10px;
-  color:rgba(255,255,255,0.18);
+  color:rgba(255,255,255,0.32);
   letter-spacing:.04em;
 }
 
@@ -467,25 +479,25 @@ body.lm .tbtn{border-color:rgba(0,0,0,0.14);color:rgba(0,0,0,0.38)}
 body.lm .tbtn:hover{background:rgba(0,0,0,0.05);color:rgba(0,0,0,0.65)}
 body.lm .notch{background:#c8c8c8}
 body.lm .ctrl-hint{color:rgba(0,0,0,0.55);background:rgba(255,255,255,0.55)}
-body.lm .caption{color:rgba(0,0,0,0.25)}
-body.lm .problem p{color:rgba(0,0,0,0.4)}
-body.lm .legend-title{color:rgba(0,0,0,0.3)}
+body.lm .caption{color:rgba(0,0,0,0.42)}
+body.lm .problem p{color:rgba(0,0,0,0.58)}
+body.lm .legend-title{color:rgba(0,0,0,0.5)}
 body.lm .legend-pill{background:rgba(200,200,200,0.95);border:.5px solid rgba(0,0,0,0.1)}
 body.lm .legend-dot.idle{background:rgba(0,0,0,0.18)}
 body.lm .legend-dot.active{background:#1a1a1a}
 body.lm .legend-dot.waiting{background:#E8952A}
 body.lm .legend-name{color:rgba(0,0,0,0.5)}
-body.lm .legend-desc{color:rgba(0,0,0,0.25)}
-body.lm .principles-title{color:rgba(0,0,0,0.3)}
+body.lm .legend-desc{color:rgba(0,0,0,0.42)}
+body.lm .principles-title{color:rgba(0,0,0,0.5)}
 body.lm .principle{background:rgba(0,0,0,0.025);border:.5px solid rgba(0,0,0,0.06)}
 body.lm .principle-title{color:rgba(0,0,0,0.65)}
-body.lm .principle-body{color:rgba(0,0,0,0.32)}
+body.lm .principle-body{color:rgba(0,0,0,0.48)}
 body.lm .footer{border-top:.5px solid rgba(0,0,0,0.07)}
-body.lm .footer p{color:rgba(0,0,0,0.2)}
+body.lm .footer p{color:rgba(0,0,0,0.38)}
 
 /* ─── LIGHT MODE: MISSING ELEMENTS ─── */
-body.lm .problem p{color:rgba(0,0,0,0.4)}
-body.lm .legend-desc{color:rgba(0,0,0,0.25)}
+body.lm .problem p{color:rgba(0,0,0,0.58)}
+body.lm .legend-desc{color:rgba(0,0,0,0.42)}
 
 /* terminal window */
 body.lm .term-win{background:rgba(248,248,252,0.82);border:.5px solid rgba(0,0,0,0.1)}
@@ -620,11 +632,11 @@ body.lm .s-dismiss:hover{color:rgba(0,0,0,0.6)}
 .avw{padding:0 0 72px}
 .avw-title{
   font-size:11px;font-weight:500;
-  color:rgba(255,255,255,0.28);
+  color:rgba(255,255,255,0.45);
   letter-spacing:.08em;text-transform:uppercase;
   text-align:center;margin-bottom:8px;
 }
-.avw-subtitle{font-size:12px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:32px}
+.avw-subtitle{font-size:12px;color:rgba(255,255,255,0.42);text-align:center;margin-bottom:32px}
 .avw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
 .avw-card{
   background:rgba(255,255,255,0.025);
@@ -648,7 +660,7 @@ body.lm .s-dismiss:hover{color:rgba(0,0,0,0.6)}
 }
 .avw-var{
   font-size:10px;font-weight:500;
-  color:rgba(255,255,255,0.28);
+  color:rgba(255,255,255,0.45);
   letter-spacing:.07em;text-transform:uppercase;
   margin-bottom:2px;
 }
@@ -692,29 +704,29 @@ body.lm .avw-d.aw{background:#1a1a1a;opacity:0.35}
 
 .avw-labels{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;padding:0 1px;min-height:42px}
 .avw-dl{display:flex;align-items:center;gap:7px}
-.avw-dlabel{font-size:10px;color:rgba(255,255,255,0.26)}
+.avw-dlabel{font-size:10px;color:rgba(255,255,255,0.42)}
 
 .avw-divider{height:.5px;background:rgba(255,255,255,0.05);margin-bottom:10px}
 .avw-pc{display:flex;flex-direction:column;gap:6px}
 .avw-pci{display:flex;align-items:flex-start;gap:6px;font-size:10px;line-height:1.5}
 .avw-pro{color:#34C759;flex-shrink:0;margin-top:1px}
 .avw-con{color:rgba(255,255,255,0.18);flex-shrink:0;margin-top:1px}
-.avw-pct{color:rgba(255,255,255,0.27)}
+.avw-pct{color:rgba(255,255,255,0.42)}
 
 .avw-rec{
   background:rgba(255,255,255,0.03);
   border:.5px solid rgba(255,255,255,0.07);
   border-radius:12px;padding:18px 22px;
 }
-.avw-rec p{font-size:12px;color:rgba(255,255,255,0.32);line-height:1.7}
-.avw-rec strong{color:rgba(255,255,255,0.52);font-weight:500}
+.avw-rec p{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.7}
+.avw-rec strong{color:rgba(255,255,255,0.65);font-weight:500}
 
-body.lm .avw-title{color:rgba(0,0,0,0.3)}
-body.lm .avw-subtitle{color:rgba(0,0,0,0.3)}
+body.lm .avw-title{color:rgba(0,0,0,0.5)}
+body.lm .avw-subtitle{color:rgba(0,0,0,0.48)}
 body.lm .avw-card{background:rgba(0,0,0,0.02);border:.5px solid rgba(0,0,0,0.07)}
 body.lm .avw-card.rec{border-color:rgba(0,0,0,0.14)}
 body.lm .avw-badge{color:#0066CC;background:rgba(0,102,204,0.07);border:.5px solid rgba(0,102,204,0.2)}
-body.lm .avw-var{color:rgba(0,0,0,0.3)}
+body.lm .avw-var{color:rgba(0,0,0,0.5)}
 body.lm .avw-bar{background:rgba(220,220,220,0.96);border:.5px solid rgba(0,0,0,0.08)}
 body.lm .avw-pill{background:rgba(180,180,180,0.95);border:.5px solid rgba(0,0,0,0.15)}
 body.lm .avw-d.aa{background:#1a1a1a}
@@ -725,8 +737,8 @@ body.lm .avw-divider{background:rgba(0,0,0,0.06)}
 body.lm .avw-pct{color:rgba(0,0,0,0.3)}
 body.lm .avw-con{color:rgba(0,0,0,0.18)}
 body.lm .avw-rec{background:rgba(0,0,0,0.025);border:.5px solid rgba(0,0,0,0.07)}
-body.lm .avw-rec p{color:rgba(0,0,0,0.32)}
-body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
+body.lm .avw-rec p{color:rgba(0,0,0,0.48)}
+body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 
 /* ─── VARIATION EXTRAS ─── */
 .am-pill-proto{display:inline-flex;align-items:flex-end;gap:2px;padding:0 6px;height:16px}
@@ -757,6 +769,34 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
 @keyframes pxflk{0%{opacity:1}50%{opacity:.72}}
 @keyframes pxblk{0%{opacity:1}55%{opacity:.2}}
 @keyframes varLabelIn{from{opacity:0}to{opacity:1}}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .page{padding:40px 20px 60px}
+  .ph-nav{padding:16px 20px 0}
+  .ph-body{padding:32px 20px 40px}
+  .ph-title{font-size:36px}
+  .ph-desc{font-size:16px}
+  .ph-meta{flex-wrap:wrap;gap:8px;font-size:12px}
+  .principles-grid{grid-template-columns:1fr}
+  .avw-grid{grid-template-columns:1fr}
+  .kbd-row{display:none}
+  .demo{min-width:unset;width:90%}
+  .problem{padding:40px 0 48px}
+  .problem p{font-size:16px}
+  .legend-row{flex-direction:column;align-items:center;gap:16px}
+  .legend-item{width:200px}
+  .screen{aspect-ratio:16/10;min-height:220px}
+  .ctrl-hints{display:none}
+}
+@media(max-width:480px){
+  .ph-title{font-size:28px}
+  .ph-links{gap:16px}
+  .ph-link{font-size:13px}
+  .screen{border-radius:10px}
+  .menubar{padding:0 6px}
+  .mb-item{font-size:10px;padding:0 3px}
+}
 </style>
 </head>
 <body>
@@ -781,7 +821,7 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.55)}
 </div>
 </div>
 </div>
-<div id="root"></div>
+<main id="root"></main>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
@@ -882,7 +922,7 @@ function getInitialTerminalContent(session) {
       '  Files scanned:   <span style="color:rgba(255,255,255,0.6)">847</span>',
       '  Modules mapped:  <span style="color:rgba(255,255,255,0.6)">23</span>',
       '  Issues found:    <span style="color:rgba(255,255,255,0.6)">3</span>',
-      '  Report: <span style="color:rgba(255,255,255,0.6)">.claude/analysis-2024-05-28.md</span>',
+      '  Report: <span style="color:rgba(255,255,255,0.6)">.claude/analysis-2026-06-28.md</span>',
       '',
       `<span style="color:#E8952A">&#9679;  Session marked complete</span>`
     ].join('\n');
@@ -916,7 +956,7 @@ const INITIAL_STATE = {
     controlsVisible: false,
     controlsZIndex: 100,
     activeVariation: 'Pulse',
-    lm: false,
+    lm: window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches,
     focusedTerminalId: null,
     popoverOpen: false,
     zCounter: 100,
@@ -1464,15 +1504,15 @@ function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
     >
       <div ref={chromeRef} className="term-chrome">
         <div className="tl-group">
-          <button className="tl-btn" style={{background:'#FF5F57'}}
-            onClick={e => { e.stopPropagation(); dispatch({type:'REMOVE_SESSION', id:session.id}); }}>
+          <button className="tl-btn" style={{background:'#FF5F57'}} aria-label="Close terminal"
+            onClick={e => { e.stopPropagation(); dispatch({type:'CLOSE_TERMINAL', sessionId:session.id}); }}>
             <span className="tl-symbol">&#10005;</span>
           </button>
-          <button className="tl-btn" style={{background:'#FFBD2E'}}
+          <button className="tl-btn" style={{background:'#FFBD2E'}} aria-label="Minimize terminal"
             onClick={e => { e.stopPropagation(); dispatch({type:'MINIMIZE_TERMINAL', sessionId:session.id}); }}>
             <span className="tl-symbol">&#8722;</span>
           </button>
-          <button className="tl-btn" style={{background:'#28C840'}}>
+          <button className="tl-btn" style={{background:'#28C840'}} aria-label="Maximize terminal">
             <span className="tl-symbol">&#8599;</span>
           </button>
         </div>
@@ -1612,6 +1652,9 @@ function MenuBar({sessions, ui, siWrapRef, varLabel, onTogglePopover}) {
         <div
           ref={siWrapRef}
           className={`si-wrap${ui.popoverOpen ? ' open' : ''}`}
+          role="button"
+          aria-label="Agent sessions"
+          aria-expanded={ui.popoverOpen}
           onClick={onTogglePopover}
         >
           <Pill sessions={sessions} variation={ui.activeVariation} />
@@ -1764,16 +1807,16 @@ function OnePageContent() {
     <>
       {/* ── PROBLEM ── */}
       <section className="problem">
-        <p>When multiple AI agents run in parallel, developers lose awareness. The Session Indicator restores it, without interrupting focus.</p>
+        <p>Developers running parallel Claude Code sessions lose track of which agent is blocked, which one errored, and which finished minutes ago. The only way to check is to click into each terminal one by one.</p>
         <div className="problem-quote">
           <p className="problem-quote-text">&ldquo;I had four sessions open and no idea which one stopped to wait for me. I had to click into each terminal to find it.&rdquo;</p>
-          <p className="problem-quote-attr">Developer using Claude Code, parallel sessions</p>
+          <p className="problem-quote-attr">— Observation from user research, Claude Code parallel sessions</p>
         </div>
       </section>
 
       {/* ── LEGEND ── */}
       <section className="legend">
-        <p className="legend-title">Five states. No learning curve.</p>
+        <h2 className="legend-title">Five states. No learning curve.</h2>
         <div className="legend-row">
           {[
             {state:'idle',    name:'Idle',    desc:'No active agent. Dot stays dim and quiet.'},
@@ -1795,7 +1838,7 @@ function OnePageContent() {
 
       {/* ── DESIGN DECISIONS ── */}
       <section className="principles">
-        <p className="principles-title">Three decisions that define it</p>
+        <h2 className="principles-title">Three decisions that define it</h2>
         <div className="principles-grid">
 
           {/* 01 Borrowed, not invented */}
@@ -1881,7 +1924,7 @@ function OnePageContent() {
 
       {/* ── VARIATIONS ── */}
       <section className="avw">
-        <p className="avw-title">Design space: three visual languages</p>
+        <h2 className="avw-title">Design space: three visual languages</h2>
         <p className="avw-subtitle">All three variations are live in the prototype above. Keys 1&ndash;3 to switch.</p>
         <div className="avw-grid">
 
@@ -2001,7 +2044,7 @@ function OnePageContent() {
 
       {/* ── IMPLEMENTATION ── */}
       <section className="swift">
-        <p className="swift-title">Implementation</p>
+        <h2 className="swift-title">Implementation</h2>
         <p className="swift-sub">Native SwiftUI menu bar extra. No Electron, no web view.</p>
         <div className="swift-block">
           <div className="swift-chrome">
@@ -2017,7 +2060,7 @@ function OnePageContent() {
       </section>
 
       <footer className="footer">
-        <p>Session Indicator &middot; Ladan Johari &middot; 2026</p>
+        <p>Session Indicator &middot; <a href="https://ladanjohari.com" style={{color:'inherit',textDecoration:'none'}}>Ladan Johari</a> &middot; 2026</p>
       </footer>
     </>
   );

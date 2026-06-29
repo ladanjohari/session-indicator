@@ -837,10 +837,9 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 <main id="root"></main>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone@7.23.10/babel.min.js"></script>
-<script type="text/babel">
+<script>
 'use strict';
-const { useState, useReducer, useEffect, useRef, useCallback, useLayoutEffect } = React;
+const { useState, useReducer, useEffect, useRef, useCallback, useLayoutEffect, createElement: h, Fragment: F } = React;
 
 /* ══════════════════════════════════════════════
    CONSTANTS
@@ -1152,120 +1151,89 @@ function reducer(state, action) {
    PILL DOT COMPONENTS
 ══════════════════════════════════════════════ */
 function PulseDot({session, speed}) {
-  return (
-    <div
-      className={`dot ${session.state}`}
-      style={session.state === 'active' ? {animationDuration: speed} : undefined}
-    />
-  );
+  return h('div', {className:'dot '+session.state, style:session.state==='active'?{animationDuration:speed}:undefined});
 }
 
 function PixelHeartDot({session, speed}) {
-  const c = session.state === 'active' ? '#fff'
-    : session.state === 'waiting' ? '#E8952A'
-    : session.state === 'error'   ? '#FF3B30'
-    : session.state === 'done'    ? '#34C759'
-    : 'rgba(255,255,255,0.2)';
-  const style = {
-    display: 'inline-flex', alignItems: 'center', flexShrink: 0,
-    ...(session.state === 'active' ? {animation: `shimmer ${speed} ease-in-out infinite`} : {})
-  };
-  return <span style={style} dangerouslySetInnerHTML={{__html: makePxSVG(PX_HEART, c, 1.1)}} />;
+  const c = session.state==='active'?'#fff':session.state==='waiting'?'#E8952A':session.state==='error'?'#FF3B30':session.state==='done'?'#34C759':'rgba(255,255,255,0.2)';
+  const style = {display:'inline-flex',alignItems:'center',flexShrink:0,...(session.state==='active'?{animation:'shimmer '+speed+' ease-in-out infinite'}:{})};
+  return h('span', {style, dangerouslySetInnerHTML:{__html:makePxSVG(PX_HEART,c,1.1)}});
 }
 
 function PixelArtDot({session}) {
   let svg, anim;
-  if      (session.state === 'active')  { svg = makePxSVG(PX_FIRE,  '#ff8030', 1.1); anim = 'pxflk 1.2s ease-in-out infinite'; }
-  else if (session.state === 'waiting')   svg = makePxSVG(PX_ICE,   '#5bc8f5', 1.1);
-  else if (session.state === 'error')   { svg = makePxSVG(PX_BOLT,  '#f5e020', 1.1); anim = 'pxblk 0.9s step-end infinite'; }
-  else if (session.state === 'done')      svg = makePxSVG(PX_STAR,  '#34C759', 1.1);
-  else                                    svg = makePxSVG(PX_SKULL, 'rgba(255,255,255,0.2)', 1.1);
-  return (
-    <span
-      style={{display:'inline-flex', alignItems:'center', flexShrink:0, animation: anim || undefined}}
-      dangerouslySetInnerHTML={{__html: svg}}
-    />
-  );
+  if (session.state==='active') {svg=makePxSVG(PX_FIRE,'#ff8030',1.1);anim='pxflk 1.2s ease-in-out infinite';}
+  else if (session.state==='waiting') svg=makePxSVG(PX_ICE,'#5bc8f5',1.1);
+  else if (session.state==='error') {svg=makePxSVG(PX_BOLT,'#f5e020',1.1);anim='pxblk 0.9s step-end infinite';}
+  else if (session.state==='done') svg=makePxSVG(PX_STAR,'#34C759',1.1);
+  else svg=makePxSVG(PX_SKULL,'rgba(255,255,255,0.2)',1.1);
+  return h('span', {style:{display:'inline-flex',alignItems:'center',flexShrink:0,animation:anim||undefined},dangerouslySetInnerHTML:{__html:svg}});
 }
 
 function PixelFlameDot({session}) {
-  const PA = ['pfl1','pfl2','pfl3'];
-  const PT = ['0.9s','1.1s','0.75s','1.0s','0.85s','1.15s'];
-  let s = {width:'5px', flexShrink:0, borderRadius:'40% 40% 0 0'};
-  if      (session.state === 'active')  { s.background = '#ff9a3c'; s.animation = `${PA[session.id%3]} ${PT[session.id%PT.length]} ease-in-out infinite`; }
-  else if (session.state === 'waiting') { s.background = '#E8952A'; s.height = '5px'; }
-  else if (session.state === 'error')   { s.background = '#FF3B30'; s.height = '4px'; }
-  else if (session.state === 'done')    { s.background = '#34C759'; s.height = '8px'; s.borderRadius = '50%'; }
-  else                                  { s.background = 'rgba(255,255,255,0.12)'; s.height = '3px'; }
-  return <div style={s} />;
+  const PA=['pfl1','pfl2','pfl3'], PT=['0.9s','1.1s','0.75s','1.0s','0.85s','1.15s'];
+  let s={width:'5px',flexShrink:0,borderRadius:'40% 40% 0 0'};
+  if (session.state==='active') {s.background='#ff9a3c';s.animation=PA[session.id%3]+' '+PT[session.id%PT.length]+' ease-in-out infinite';}
+  else if (session.state==='waiting') {s.background='#E8952A';s.height='5px';}
+  else if (session.state==='error') {s.background='#FF3B30';s.height='4px';}
+  else if (session.state==='done') {s.background='#34C759';s.height='8px';s.borderRadius='50%';}
+  else {s.background='rgba(255,255,255,0.12)';s.height='3px';}
+  return h('div', {style:s});
 }
 
 function WaveformDot({session, ai}) {
-  const WA = ['wf1','wf2','wf3'];
-  const WT = ['0.7s','0.85s','0.95s','0.78s','1.0s','0.9s'];
-  let s = {width:'4px', borderRadius:'1px 1px 0 0', flexShrink:0};
-  if      (session.state === 'active')  { s.background = '#fff'; s.animation = `${WA[ai%3]} ${WT[ai%WT.length]} ease-in-out infinite`; }
-  else if (session.state === 'waiting') { s.background = '#E8952A'; s.height = '5px'; }
-  else if (session.state === 'error')   { s.background = '#FF3B30'; s.height = '3px'; s.animation = 'blink 0.7s step-end infinite'; }
-  else if (session.state === 'done')    { s.background = '#34C759'; s.height = '10px'; }
-  else                                  { s.background = 'rgba(255,255,255,0.15)'; s.height = '3px'; }
-  return <div style={s} />;
+  const WA=['wf1','wf2','wf3'], WT=['0.7s','0.85s','0.95s','0.78s','1.0s','0.9s'];
+  let s={width:'4px',borderRadius:'1px 1px 0 0',flexShrink:0};
+  if (session.state==='active') {s.background='#fff';s.animation=WA[ai%3]+' '+WT[ai%WT.length]+' ease-in-out infinite';}
+  else if (session.state==='waiting') {s.background='#E8952A';s.height='5px';}
+  else if (session.state==='error') {s.background='#FF3B30';s.height='3px';s.animation='blink 0.7s step-end infinite';}
+  else if (session.state==='done') {s.background='#34C759';s.height='10px';}
+  else {s.background='rgba(255,255,255,0.15)';s.height='3px';}
+  return h('div', {style:s});
 }
 
 function AgentMeterDot({session}) {
-  const bars = [];
-  if (session.state === 'active') {
-    ['s5','s4','s3','s2','s1'].forEach(c => bars.push({cls:`sg-p on ${c} anim`}));
-  } else if (session.state === 'waiting') {
-    for (let i = 0; i < 4; i++) bars.push({cls:'sg-p'});
-    bars.push({cls:'sg-p on', style:{background:'#E8952A'}});
-  } else if (session.state === 'error') {
-    for (let i = 0; i < 4; i++) bars.push({cls:'sg-p'});
-    bars.push({cls:'sg-p on', style:{background:'#FF3B30', animation:'blink 0.8s step-end infinite'}});
-  } else if (session.state === 'done') {
-    for (let i = 0; i < 5; i++) bars.push({cls:'sg-p on s1'});
-  } else {
-    for (let i = 0; i < 5; i++) bars.push({cls:'sg-p'});
-  }
-  return (
-    <div className="am-col-proto">
-      {bars.map((b,i) => <div key={i} className={b.cls} style={b.style} />)}
-    </div>
-  );
+  const bars=[];
+  if (session.state==='active') ['s5','s4','s3','s2','s1'].forEach(c=>bars.push({cls:'sg-p on '+c+' anim'}));
+  else if (session.state==='waiting') {for(let i=0;i<4;i++)bars.push({cls:'sg-p'});bars.push({cls:'sg-p on',style:{background:'#E8952A'}});}
+  else if (session.state==='error') {for(let i=0;i<4;i++)bars.push({cls:'sg-p'});bars.push({cls:'sg-p on',style:{background:'#FF3B30',animation:'blink 0.8s step-end infinite'}});}
+  else if (session.state==='done') for(let i=0;i<5;i++)bars.push({cls:'sg-p on s1'});
+  else for(let i=0;i<5;i++)bars.push({cls:'sg-p'});
+  return h('div', {className:'am-col-proto'}, bars.map((b,i)=>h('div',{key:i,className:b.cls,style:b.style})));
 }
 
 function OrbitalDot({session, ai}) {
-  const OSPD = ['0.7s','1.2s','1.7s'];
-  let s = {};
-  if      (session.state === 'active')  s = {borderTopColor:'#fff', animation:`orb-spin ${OSPD[ai%3]} linear infinite`};
-  else if (session.state === 'waiting') s = {borderTopColor:'#E8952A', transform:'rotate(60deg)'};
-  else if (session.state === 'error')   s = {borderTopColor:'#FF3B30'};
-  else if (session.state === 'done')    s = {borderColor:'#34C759'};
-  else                                  s = {borderColor:'rgba(255,255,255,0.2)'};
-  return <div className="orb-proto" style={s} />;
+  const OSPD=['0.7s','1.2s','1.7s'];
+  let s={};
+  if (session.state==='active') s={borderTopColor:'#fff',animation:'orb-spin '+OSPD[ai%3]+' linear infinite'};
+  else if (session.state==='waiting') s={borderTopColor:'#E8952A',transform:'rotate(60deg)'};
+  else if (session.state==='error') s={borderTopColor:'#FF3B30'};
+  else if (session.state==='done') s={borderColor:'#34C759'};
+  else s={borderColor:'rgba(255,255,255,0.2)'};
+  return h('div', {className:'orb-proto',style:s});
 }
 
 function ClaudeNativeDot({session, speed}) {
-  let s = {};
-  if      (session.state === 'active')  s = {background:'#ff9a6c', animation:`cdglow ${speed} ease-in-out infinite`};
-  else if (session.state === 'waiting') s = {background:'#c47a3a', animation:'none'};
-  else if (session.state === 'error')   s = {background:'#FF3B30', animation:'none'};
-  else if (session.state === 'done')    s = {background:'#a8d48a', animation:'none'};
-  else                                  s = {background:'rgba(200,120,80,0.2)', animation:'none'};
-  return <div className={`dot ${session.state}`} style={s} />;
+  let s={};
+  if (session.state==='active') s={background:'#ff9a6c',animation:'cdglow '+speed+' ease-in-out infinite'};
+  else if (session.state==='waiting') s={background:'#c47a3a',animation:'none'};
+  else if (session.state==='error') s={background:'#FF3B30',animation:'none'};
+  else if (session.state==='done') s={background:'#a8d48a',animation:'none'};
+  else s={background:'rgba(200,120,80,0.2)',animation:'none'};
+  return h('div', {className:'dot '+session.state,style:s});
 }
 
 function PillDot({session, variation, activeIndex}) {
   const speed = session.shimmerSpeed || ACTIVE_SPEEDS[activeIndex % 3];
   switch (variation) {
-    case 'Pixel Heart':   return <PixelHeartDot   session={session} speed={speed} />;
-    case 'Pixel Art':     return <PixelArtDot     session={session} />;
-    case 'Pixel Flame':   return <PixelFlameDot   session={session} />;
-    case 'Waveform':      return <WaveformDot     session={session} ai={activeIndex} />;
-    case 'Agent Meter':   return <AgentMeterDot   session={session} />;
-    case 'Orbital':       return <OrbitalDot      session={session} ai={activeIndex} />;
-    case 'Claude Native': return <ClaudeNativeDot session={session} speed={speed} />;
-    default:              return <PulseDot        session={session} speed={speed} />;
+    case 'Pixel Heart':   return h(PixelHeartDot,{session,speed});
+    case 'Pixel Art':     return h(PixelArtDot,{session});
+    case 'Pixel Flame':   return h(PixelFlameDot,{session});
+    case 'Waveform':      return h(WaveformDot,{session,ai:activeIndex});
+    case 'Agent Meter':   return h(AgentMeterDot,{session});
+    case 'Orbital':       return h(OrbitalDot,{session,ai:activeIndex});
+    case 'Claude Native': return h(ClaudeNativeDot,{session,speed});
+    default:              return h(PulseDot,{session,speed});
   }
 }
 
@@ -1284,22 +1252,14 @@ function Pill({sessions, variation}) {
   else if (variation === 'Pixel Heart')                                 pillStyle = {height:'18px'};
 
   let ai = 0;
-  return (
-    <div className="si-pill" style={pillStyle}>
-      {sessions.length === 0 && (
-        <span style={{fontSize:'9px',color:'rgba(255,255,255,0.25)',padding:'0 2px'}}>none</span>
-      )}
-      {visible.map(s => {
-        const idx = ai;
-        if (s.state === 'active') ai++;
-        return <PillDot key={s.id} session={s} variation={variation} activeIndex={idx} />;
-      })}
-      {overflow > 0 && (
-        <span style={{fontSize:'9px',color:'rgba(255,255,255,0.6)',background:'rgba(255,255,255,0.12)',borderRadius:'8px',padding:'1px 5px'}}>
-          +{overflow}
-        </span>
-      )}
-    </div>
+  return h('div', {className:'si-pill', style:pillStyle},
+    sessions.length === 0 && h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.25)',padding:'0 2px'}}, 'none'),
+    visible.map(s => {
+      const idx = ai;
+      if (s.state === 'active') ai++;
+      return h(PillDot, {key:s.id, session:s, variation:variation, activeIndex:idx});
+    }),
+    overflow > 0 && h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.6)',background:'rgba(255,255,255,0.12)',borderRadius:'8px',padding:'1px 5px'}}, '+'+overflow)
   );
 }
 
@@ -1313,7 +1273,7 @@ function VariationLabel({text, phase}) {
     transition: phase === 'fading' ? 'opacity 0.4s ease' : undefined,
     animation: phase === 'showing' ? 'varLabelIn 0.2s ease forwards' : undefined,
   };
-  return <span id="varLabel" style={style}>{text}</span>;
+  return h('span', {id:'varLabel', style:style}, text);
 }
 
 /* ══════════════════════════════════════════════
@@ -1327,10 +1287,7 @@ function PopoverDot({session, variation, lm}) {
     const colMap = {active:'#ff8030', waiting:'#5bc8f5', error:'#f5e020', done:'#34C759', idle:'rgba(255,255,255,0.18)'};
     const anim   = session.state === 'active' ? 'pxflk 1.2s ease-in-out infinite'
                  : session.state === 'error'  ? 'pxblk 0.9s step-end infinite' : undefined;
-    return (
-      <span style={{display:'inline-flex',alignItems:'center',flexShrink:0,animation:anim}}
-            dangerouslySetInnerHTML={{__html:makePxSVG(pxMap[session.state]||PX_SKULL, colMap[session.state], 0.85)}}/>
-    );
+    return h('span', {style:{display:'inline-flex',alignItems:'center',flexShrink:0,animation:anim}, dangerouslySetInnerHTML:{__html:makePxSVG(pxMap[session.state]||PX_SKULL, colMap[session.state], 0.85)}});
   }
 
   if (variation === 'Agent Meter') {
@@ -1340,15 +1297,13 @@ function PopoverDot({session, variation, lm}) {
     else if (session.state === 'error')   { for(let i=0;i<4;i++) bars.push({cls:'sg-p'}); bars.push({cls:'sg-p on',style:{background:'#FF3B30'}}); }
     else if (session.state === 'done')    for(let i=0;i<5;i++) bars.push({cls:'sg-p on s1'});
     else                                  for(let i=0;i<5;i++) bars.push({cls:'sg-p'});
-    return (
-      <div className="am-col-proto" style={{flexShrink:0}}>
-        {bars.map((b,i) => <div key={i} className={b.cls} style={b.style}/>)}
-      </div>
+    return h('div', {className:'am-col-proto', style:{flexShrink:0}},
+      bars.map((b,i) => h('div', {key:i, className:b.cls, style:b.style}))
     );
   }
 
   /* Pulse (default) */
-  return <div className="s-dot" style={{background: colors[session.state], flexShrink:0}}/>;
+  return h('div', {className:'s-dot', style:{background: colors[session.state], flexShrink:0}});
 }
 
 /* ══════════════════════════════════════════════
@@ -1374,69 +1329,55 @@ function Popover({sessions, variation, lm, open, popoverRight, onAction, onRowCl
     draggedIdRef.current = null;
   };
 
-  return (
-    <div className={`popover${open ? ' visible' : ''}`} style={{right: (popoverRight || 6) + 'px'}}>
-      <div className="pop-header">
-        <span className="pop-title">Agent Sessions</span>
-        <span className="pop-badge">{sessions.length} session{sessions.length !== 1 ? 's' : ''}</span>
-      </div>
-      <div>
-        {sessions.map(s => {
-          const hasActions = s.state === 'error' || s.state === 'waiting';
-          const showTop    = dropInfo?.targetId === s.id && dropInfo?.before;
-          const showBot    = dropInfo?.targetId === s.id && !dropInfo?.before;
-          return (
-            <div key={s.id} className="s-row-wrap">
-              {showTop && <div className="s-drop-line top"/>}
-              <div
-                className={`s-row${hasActions ? ' has-actions' : ''}`}
-                draggable
-                onDragStart={e => { draggedIdRef.current = s.id; e.dataTransfer.effectAllowed = 'move'; }}
-                onDragEnd={() => { draggedIdRef.current = null; setDropInfo(null); }}
-                onDragOver={e => {
-                  e.preventDefault();
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  setDropInfo({targetId: s.id, before: e.clientY < rect.top + rect.height / 2});
-                }}
-                onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setDropInfo(null); }}
-                onDrop={() => handleDrop(s.id)}
-                onClick={() => { if (!draggedIdRef.current) onRowClick(s); }}
-              >
-                <span className="s-handle">&#10303;</span>
-                <PopoverDot session={s} variation={variation} lm={lm}/>
-                <span className="s-name">{s.name}</span>
-                {hasActions ? (
-                  <div className="s-btns">
-                    {s.state === 'error' ? (
-                      <>
-                        <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('retry', s.id); }}>Retry</button>
-                        <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('dismiss', s.id); }}>Dismiss</button>
-                      </>
-                    ) : (
-                      <>
-                        <button className="s-btn primary" onClick={e => { e.stopPropagation(); onAction('continue', s.id); }}>Continue</button>
-                        <button className="s-btn"         onClick={e => { e.stopPropagation(); onAction('cancel', s.id); }}>Cancel</button>
-                      </>
-                    )}
-                  </div>
-                ) : s.state === 'done' || s.state === 'idle' ? (
-                  <>
-                    {s.state === 'done' && <span className="s-time">{s.time}</span>}
-                    <button className="s-dismiss" onClick={e => { e.stopPropagation(); onAction('dismiss', s.id); }}>&#10005;</button>
-                  </>
-                ) : (
-                  <>
-                    <span className="s-status">{STATE_LABELS[s.state]}</span>
-                    <span className="s-time">{s.time}</span>
-                  </>
-                )}
-              </div>
-              {showBot && <div className="s-drop-line bot"/>}
-            </div>
-          );
-        })}
-      </div>
-    </div>
+  return h('div', {className:'popover'+(open ? ' visible' : ''), style:{right: (popoverRight || 6) + 'px'}},
+    h('div', {className:'pop-header'},
+      h('span', {className:'pop-title'}, 'Agent Sessions'),
+      h('span', {className:'pop-badge'}, sessions.length + ' session' + (sessions.length !== 1 ? 's' : ''))
+    ),
+    h('div', null,
+      sessions.map(s => {
+        const hasActions = s.state === 'error' || s.state === 'waiting';
+        const showTop    = dropInfo?.targetId === s.id && dropInfo?.before;
+        const showBot    = dropInfo?.targetId === s.id && !dropInfo?.before;
+        return h('div', {key:s.id, className:'s-row-wrap'},
+          showTop && h('div', {className:'s-drop-line top'}),
+          h('div', {
+              className:'s-row'+(hasActions ? ' has-actions' : ''),
+              draggable:true,
+              onDragStart:e => { draggedIdRef.current = s.id; e.dataTransfer.effectAllowed = 'move'; },
+              onDragEnd:() => { draggedIdRef.current = null; setDropInfo(null); },
+              onDragOver:e => {
+                e.preventDefault();
+                const rect = e.currentTarget.getBoundingClientRect();
+                setDropInfo({targetId: s.id, before: e.clientY < rect.top + rect.height / 2});
+              },
+              onDragLeave:e => { if (!e.currentTarget.contains(e.relatedTarget)) setDropInfo(null); },
+              onDrop:() => handleDrop(s.id),
+              onClick:() => { if (!draggedIdRef.current) onRowClick(s); }
+            },
+            h('span', {className:'s-handle'}, '⠿'),
+            h(PopoverDot, {session:s, variation:variation, lm:lm}),
+            h('span', {className:'s-name'}, s.name),
+            hasActions ? h('div', {className:'s-btns'},
+              s.state === 'error' ? h(F, null,
+                h('button', {className:'s-btn primary', onClick:e => { e.stopPropagation(); onAction('retry', s.id); }}, 'Retry'),
+                h('button', {className:'s-btn', onClick:e => { e.stopPropagation(); onAction('dismiss', s.id); }}, 'Dismiss')
+              ) : h(F, null,
+                h('button', {className:'s-btn primary', onClick:e => { e.stopPropagation(); onAction('continue', s.id); }}, 'Continue'),
+                h('button', {className:'s-btn', onClick:e => { e.stopPropagation(); onAction('cancel', s.id); }}, 'Cancel')
+              )
+            ) : s.state === 'done' || s.state === 'idle' ? h(F, null,
+              s.state === 'done' && h('span', {className:'s-time'}, s.time),
+              h('button', {className:'s-dismiss', onClick:e => { e.stopPropagation(); onAction('dismiss', s.id); }}, '✕')
+            ) : h(F, null,
+              h('span', {className:'s-status'}, STATE_LABELS[s.state]),
+              h('span', {className:'s-time'}, s.time)
+            )
+          ),
+          showBot && h('div', {className:'s-drop-line bot'})
+        );
+      })
+    )
   );
 }
 
@@ -1508,34 +1449,32 @@ function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
     };
   }, []);
 
-  return (
-    <div
-      ref={termRef}
-      className={`term-win js-terminal-win${animated ? ' visible' : ''}`}
-      style={{display: terminal.minimized ? 'none' : undefined}}
-      onMouseDown={() => dispatch({type:'FOCUS_TERMINAL', sessionId:session.id})}
-    >
-      <div ref={chromeRef} className="term-chrome">
-        <div className="tl-group">
-          <button className="tl-btn" style={{background:'#FF5F57'}} aria-label="Close terminal"
-            onClick={e => { e.stopPropagation(); dispatch({type:'CLOSE_TERMINAL', sessionId:session.id}); }}>
-            <span className="tl-symbol">&#10005;</span>
-          </button>
-          <button className="tl-btn" style={{background:'#FFBD2E'}} aria-label="Minimize terminal"
-            onClick={e => { e.stopPropagation(); dispatch({type:'MINIMIZE_TERMINAL', sessionId:session.id}); }}>
-            <span className="tl-symbol">&#8722;</span>
-          </button>
-          <button className="tl-btn" style={{background:'#28C840'}} aria-label="Maximize terminal">
-            <span className="tl-symbol">&#8599;</span>
-          </button>
-        </div>
-        <span className="term-title">{session.name}</span>
-      </div>
-      <div ref={bodyRef} className="term-body" dangerouslySetInnerHTML={{__html: terminal.content}} />
-      <div className="term-focus-bar" style={{display: isFocused && session.state === 'waiting' ? 'block' : 'none'}}>
-        terminal focused: y / n to respond
-      </div>
-    </div>
+  return h('div', {
+      ref:termRef,
+      className:'term-win js-terminal-win'+(animated ? ' visible' : ''),
+      style:{display: terminal.minimized ? 'none' : undefined},
+      onMouseDown:() => dispatch({type:'FOCUS_TERMINAL', sessionId:session.id})
+    },
+    h('div', {ref:chromeRef, className:'term-chrome'},
+      h('div', {className:'tl-group'},
+        h('button', {className:'tl-btn', style:{background:'#FF5F57'}, 'aria-label':'Close terminal',
+          onClick:e => { e.stopPropagation(); dispatch({type:'CLOSE_TERMINAL', sessionId:session.id}); }},
+          h('span', {className:'tl-symbol'}, '✕')
+        ),
+        h('button', {className:'tl-btn', style:{background:'#FFBD2E'}, 'aria-label':'Minimize terminal',
+          onClick:e => { e.stopPropagation(); dispatch({type:'MINIMIZE_TERMINAL', sessionId:session.id}); }},
+          h('span', {className:'tl-symbol'}, '−')
+        ),
+        h('button', {className:'tl-btn', style:{background:'#28C840'}, 'aria-label':'Maximize terminal'},
+          h('span', {className:'tl-symbol'}, '↗')
+        )
+      ),
+      h('span', {className:'term-title'}, session.name)
+    ),
+    h('div', {ref:bodyRef, className:'term-body', dangerouslySetInnerHTML:{__html: terminal.content}}),
+    h('div', {className:'term-focus-bar', style:{display: isFocused && session.state === 'waiting' ? 'block' : 'none'}},
+      'terminal focused: y / n to respond'
+    )
   );
 }
 
@@ -1600,35 +1539,31 @@ function ControlsPanel({sessions, visible, zIndex, lm, screenRef, onStateChange,
   }, []);
 
   const states = ['idle','active','waiting','error','done'];
-  return (
-    <div
-      ref={panelRef}
-      className="demo"
-      style={{display: visible ? 'block' : 'none'}}
-      onMouseDown={() => dispatch({type:'RAISE_CONTROLS'})}
-    >
-      <p ref={handleRef} className="demo-label demo-drag">&#10495; Prototype Controls</p>
-      <div>
-        {sessions.map(s => (
-          <div key={s.id} className="demo-row">
-            <span className="demo-name">{s.name}</span>
-            {states.map(st => (
-              <button
-                key={st}
-                className={`sbtn${s.state===st?' on':''}${st==='error'?' e':''}${st==='done'?' d':''}`}
-                onClick={() => onStateChange(s.id, st)}
-              >
-                {STATE_LABELS[st]}
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
-      <div className="demo-bottom">
-        <span className="demo-hint">Click the pill in the menu bar to see the popover</span>
-        <button className="tbtn" onClick={onToggleDarkMode}>{lm ? 'Dark mode' : 'Light mode'}</button>
-      </div>
-    </div>
+  return h('div', {
+      ref:panelRef,
+      className:'demo',
+      style:{display: visible ? 'block' : 'none'},
+      onMouseDown:() => dispatch({type:'RAISE_CONTROLS'})
+    },
+    h('p', {ref:handleRef, className:'demo-label demo-drag'}, '⠿ Prototype Controls'),
+    h('div', null,
+      sessions.map(s =>
+        h('div', {key:s.id, className:'demo-row'},
+          h('span', {className:'demo-name'}, s.name),
+          states.map(st =>
+            h('button', {
+              key:st,
+              className:'sbtn'+(s.state===st?' on':'')+(st==='error'?' e':'')+(st==='done'?' d':''),
+              onClick:() => onStateChange(s.id, st)
+            }, STATE_LABELS[st])
+          )
+        )
+      )
+    ),
+    h('div', {className:'demo-bottom'},
+      h('span', {className:'demo-hint'}, 'Click the pill in the menu bar to see the popover'),
+      h('button', {className:'tbtn', onClick:onToggleDarkMode}, lm ? 'Dark mode' : 'Light mode')
+    )
   );
 }
 
@@ -1643,56 +1578,52 @@ function MenuBar({sessions, ui, siWrapRef, varLabel, onTogglePopover}) {
   }, []);
   const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const h24  = now.getHours();
-  const ampm = h24 >= 12 ? 'PM' : 'AM';
-  const h12  = h24 % 12 || 12;
+  const hr24  = now.getHours();
+  const ampm = hr24 >= 12 ? 'PM' : 'AM';
+  const hr12  = hr24 % 12 || 12;
   const mins = String(now.getMinutes()).padStart(2,'0');
-  const dateStr = `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()}  ${h12}:${mins} ${ampm}`;
+  const dateStr = `${days[now.getDay()]} ${months[now.getMonth()]} ${now.getDate()}  ${hr12}:${mins} ${ampm}`;
 
-  return (
-    <div className="menubar">
-      <div className="mb-left">
-        <span className="mb-item" style={{fontSize:'15px',opacity:'.82'}}>&#63743;</span>
-        <span className="mb-item mb-bold">Finder</span>
-        <span className="mb-item">File</span>
-        <span className="mb-item">Edit</span>
-        <span className="mb-item">View</span>
-        <span className="mb-item">Go</span>
-        <span className="mb-item">Window</span>
-        <span className="mb-item">Help</span>
-      </div>
-      <div className="mb-right">
-        <div
-          ref={siWrapRef}
-          className={`si-wrap${ui.popoverOpen ? ' open' : ''}`}
-          role="button"
-          aria-label="Agent sessions"
-          aria-expanded={ui.popoverOpen}
-          onClick={onTogglePopover}
-        >
-          <Pill sessions={sessions} variation={ui.activeVariation} />
-          <VariationLabel text={varLabel.text} phase={varLabel.phase} />
-        </div>
-        <span className="mb-item">
-          <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
-            <path d="M7 10a1.25 1.25 0 1 0 0-2.5A1.25 1.25 0 0 0 7 10z" fill="currentColor"/>
-            <path d="M4.17 7.17a4 4 0 0 1 5.66 0" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"/>
-            <path d="M1.76 4.76a7.5 7.5 0 0 1 10.48 0" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round"/>
-            <path d="M0 2.34a10.5 10.5 0 0 1 14 0" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity=".45"/>
-          </svg>
-        </span>
-        <span className="mb-item">
-          <svg width="23" height="11" viewBox="0 0 23 11" fill="none">
-            <rect x=".5" y=".5" width="18" height="10" rx="2.5" stroke="currentColor" strokeOpacity=".5"/>
-            <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
-            <path d="M20 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z" fill="currentColor" fillOpacity=".4"/>
-          </svg>
-        </span>
-        <span className="mb-item" style={{fontSize:'12px',letterSpacing:'.01em',opacity:'.88'}}>
-          {dateStr}
-        </span>
-      </div>
-    </div>
+  return h('div', {className:'menubar'},
+    h('div', {className:'mb-left'},
+      h('span', {className:'mb-item', style:{fontSize:'15px',opacity:'.82'}}, ''),
+      h('span', {className:'mb-item mb-bold'}, 'Finder'),
+      h('span', {className:'mb-item'}, 'File'),
+      h('span', {className:'mb-item'}, 'Edit'),
+      h('span', {className:'mb-item'}, 'View'),
+      h('span', {className:'mb-item'}, 'Go'),
+      h('span', {className:'mb-item'}, 'Window'),
+      h('span', {className:'mb-item'}, 'Help')
+    ),
+    h('div', {className:'mb-right'},
+      h('div', {
+        ref:siWrapRef,
+        className:'si-wrap'+(ui.popoverOpen ? ' open' : ''),
+        role:'button',
+        'aria-label':'Agent sessions',
+        'aria-expanded':ui.popoverOpen,
+        onClick:onTogglePopover
+      },
+        h(Pill, {sessions:sessions, variation:ui.activeVariation}),
+        h(VariationLabel, {text:varLabel.text, phase:varLabel.phase})
+      ),
+      h('span', {className:'mb-item'},
+        h('svg', {width:'14', height:'11', viewBox:'0 0 14 11', fill:'none'},
+          h('path', {d:'M7 10a1.25 1.25 0 1 0 0-2.5A1.25 1.25 0 0 0 7 10z', fill:'currentColor'}),
+          h('path', {d:'M4.17 7.17a4 4 0 0 1 5.66 0', stroke:'currentColor', strokeWidth:'1.25', strokeLinecap:'round'}),
+          h('path', {d:'M1.76 4.76a7.5 7.5 0 0 1 10.48 0', stroke:'currentColor', strokeWidth:'1.25', strokeLinecap:'round'}),
+          h('path', {d:'M0 2.34a10.5 10.5 0 0 1 14 0', stroke:'currentColor', strokeWidth:'1.25', strokeLinecap:'round', opacity:'.45'})
+        )
+      ),
+      h('span', {className:'mb-item'},
+        h('svg', {width:'23', height:'11', viewBox:'0 0 23 11', fill:'none'},
+          h('rect', {x:'.5', y:'.5', width:'18', height:'10', rx:'2.5', stroke:'currentColor', strokeOpacity:'.5'}),
+          h('rect', {x:'2', y:'2', width:'13', height:'7', rx:'1.5', fill:'currentColor'}),
+          h('path', {d:'M20 3.5v4c.9-.5 1.5-1.2 1.5-2s-.6-1.5-1.5-2z', fill:'currentColor', fillOpacity:'.4'})
+        )
+      ),
+      h('span', {className:'mb-item', style:{fontSize:'12px',letterSpacing:'.01em',opacity:'.88'}}, dateStr)
+    )
   );
 }
 
@@ -1730,60 +1661,51 @@ function Desktop({state, dispatch, onAction, varLabel}) {
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  return (
-    <div className="screen" id="screen" ref={screenRef}>
-      <div className="notch"></div>
-      <div className="wallpaper"></div>
-
-      <MenuBar
-        sessions={sessions}
-        ui={ui}
-        siWrapRef={siWrapRef}
-        varLabel={varLabel}
-        onTogglePopover={handleTogglePopover}
-      />
-
-      <Popover
-        sessions={sessions}
-        variation={ui.activeVariation}
-        lm={ui.lm}
-        open={ui.popoverOpen}
-        popoverRight={popoverRight}
-        onAction={onAction}
-        onRowClick={session => {
-          dispatch({type:'CLOSE_POPOVER_NOACK'});
-          dispatch({type:'OPEN_TERMINAL', sessionId:session.id});
-        }}
-        onReorder={newSessions => dispatch({type:'REORDER_SESSIONS', sessions:newSessions})}
-      />
-
-      {ui.openTerminals.map(terminal => {
-        const session = sessions.find(s => s.id === terminal.sessionId);
-        if (!session) return null;
-        return (
-          <Terminal
-            key={terminal.sessionId}
-            session={session}
-            terminal={terminal}
-            isFocused={ui.focusedTerminalId === terminal.sessionId}
-            screenRef={screenRef}
-            dispatch={dispatch}
-          />
-        );
-      })}
-
-      <ControlsPanel
-        sessions={sessions}
-        visible={ui.controlsVisible}
-        zIndex={ui.controlsZIndex}
-        lm={ui.lm}
-        screenRef={screenRef}
-        onStateChange={(id, newState) => dispatch({type:'SET_SESSION_STATE', id, state:newState})}
-        onToggleDarkMode={() => dispatch({type:'TOGGLE_DARK_MODE'})}
-        dispatch={dispatch}
-      />
-
-    </div>
+  return h('div', {className:'screen', id:'screen', ref:screenRef},
+    h('div', {className:'notch'}),
+    h('div', {className:'wallpaper'}),
+    h(MenuBar, {
+      sessions:sessions,
+      ui:ui,
+      siWrapRef:siWrapRef,
+      varLabel:varLabel,
+      onTogglePopover:handleTogglePopover
+    }),
+    h(Popover, {
+      sessions:sessions,
+      variation:ui.activeVariation,
+      lm:ui.lm,
+      open:ui.popoverOpen,
+      popoverRight:popoverRight,
+      onAction:onAction,
+      onRowClick:session => {
+        dispatch({type:'CLOSE_POPOVER_NOACK'});
+        dispatch({type:'OPEN_TERMINAL', sessionId:session.id});
+      },
+      onReorder:newSessions => dispatch({type:'REORDER_SESSIONS', sessions:newSessions})
+    }),
+    ui.openTerminals.map(terminal => {
+      const session = sessions.find(s => s.id === terminal.sessionId);
+      if (!session) return null;
+      return h(Terminal, {
+        key:terminal.sessionId,
+        session:session,
+        terminal:terminal,
+        isFocused:ui.focusedTerminalId === terminal.sessionId,
+        screenRef:screenRef,
+        dispatch:dispatch
+      });
+    }),
+    h(ControlsPanel, {
+      sessions:sessions,
+      visible:ui.controlsVisible,
+      zIndex:ui.controlsZIndex,
+      lm:ui.lm,
+      screenRef:screenRef,
+      onStateChange:(id, newState) => dispatch({type:'SET_SESSION_STATE', id, state:newState}),
+      onToggleDarkMode:() => dispatch({type:'TOGGLE_DARK_MODE'}),
+      dispatch:dispatch
+    })
   );
 }
 
@@ -1817,251 +1739,247 @@ const SWIFT_HTML = [
 ].join('\n');
 
 function OnePageContent() {
-  return (
-    <>
-      {/* ── PROBLEM ── */}
-      <section className="problem">
-        <p>Developers running parallel Claude Code sessions lose track of which agent is blocked, which one errored, and which finished minutes ago. The only way to check is to click into each terminal one by one.</p>
-        <div className="problem-quote">
-          <p className="problem-quote-text">&ldquo;I had four sessions open and no idea which one stopped to wait for me. I had to click into each terminal to find it.&rdquo;</p>
-          <p className="problem-quote-attr">— Developer using Claude CLI</p>
-        </div>
-      </section>
+  return h(F, null,
+    /* ── PROBLEM ── */
+    h('section', {className:'problem'},
+      h('p', null, 'Developers running parallel Claude Code sessions lose track of which agent is blocked, which one errored, and which finished minutes ago. The only way to check is to click into each terminal one by one.'),
+      h('div', {className:'problem-quote'},
+        h('p', {className:'problem-quote-text'}, '“I had four sessions open and no idea which one stopped to wait for me. I had to click into each terminal to find it.”'),
+        h('p', {className:'problem-quote-attr'}, '— Developer using Claude CLI')
+      )
+    ),
 
-      {/* ── LEGEND ── */}
-      <section className="legend">
-        <h2 className="legend-title">Five states. No learning curve.</h2>
-        <div className="legend-row">
-          {[
-            {state:'idle',    name:'Idle',    desc:'No active agent. Dot stays dim and quiet.'},
-            {state:'active',  name:'Active',  desc:'Shimmer. Actively executing right now.'},
-            {state:'waiting', name:'Waiting', desc:'Amber. Alive but not progressing.'},
-            {state:'error',   name:'Error',   desc:'Needs attention. Red, static, no animation.'},
-            {state:'done',    name:'Done',    desc:'Green. Stays visible until you close the popover.'},
-          ].map(item => (
-            <div key={item.state} className="legend-item">
-              <div className="legend-pill">
-                <div className={`legend-dot ${item.state}`}></div>
-                <span className="legend-name">{item.name}</span>
-              </div>
-              <span className="legend-desc">{item.desc}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+    /* ── LEGEND ── */
+    h('section', {className:'legend'},
+      h('h2', {className:'legend-title'}, 'Five states. No learning curve.'),
+      h('div', {className:'legend-row'},
+        [
+          {state:'idle',    name:'Idle',    desc:'No active agent. Dot stays dim and quiet.'},
+          {state:'active',  name:'Active',  desc:'Shimmer. Actively executing right now.'},
+          {state:'waiting', name:'Waiting', desc:'Amber. Alive but not progressing.'},
+          {state:'error',   name:'Error',   desc:'Needs attention. Red, static, no animation.'},
+          {state:'done',    name:'Done',    desc:'Green. Stays visible until you close the popover.'},
+        ].map(item =>
+          h('div', {key:item.state, className:'legend-item'},
+            h('div', {className:'legend-pill'},
+              h('div', {className:'legend-dot '+item.state}),
+              h('span', {className:'legend-name'}, item.name)
+            ),
+            h('span', {className:'legend-desc'}, item.desc)
+          )
+        )
+      )
+    ),
 
-      {/* ── DESIGN DECISIONS ── */}
-      <section className="principles">
-        <h2 className="principles-title">Three decisions that define it</h2>
-        <div className="principles-grid">
+    /* ── DESIGN DECISIONS ── */
+    h('section', {className:'principles'},
+      h('h2', {className:'principles-title'}, 'Three decisions that define it'),
+      h('div', {className:'principles-grid'},
 
-          {/* 01 Borrowed, not invented */}
-          <div className="principle">
-            <div className="principle-viz">
-              <div style={{display:'flex',flexDirection:'column',gap:9}}>
-                <div style={{display:'flex',alignItems:'center',gap:10}}>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.18)',fontFamily:"'SF Mono',monospace",letterSpacing:'.06em',width:62,flexShrink:0}}>ETHERNET</span>
-                  <div style={{display:'flex',gap:5,alignItems:'center'}}>
-                    <div style={{width:7,height:7,borderRadius:'50%',background:'#34C759'}}/>
-                    <div style={{width:7,height:7,borderRadius:'50%',background:'#34C759',opacity:.35}}/>
-                    <div style={{width:7,height:7,borderRadius:'50%',background:'rgba(255,255,255,0.14)'}}/>
-                    <div style={{width:7,height:7,borderRadius:'50%',background:'#FF3B30'}}/>
-                  </div>
-                </div>
-                <div className="pviz-divider" style={{height:.5,background:'rgba(255,255,255,0.05)',marginLeft:72}}/>
-                <div style={{display:'flex',alignItems:'center',gap:10}}>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.18)',fontFamily:"'SF Mono',monospace",letterSpacing:'.06em',width:62,flexShrink:0}}>INDICATOR</span>
-                  <div className="pviz-mock" style={{background:'rgba(48,48,48,0.95)',border:'.5px solid rgba(155,155,155,0.28)',borderRadius:9,height:15,display:'flex',alignItems:'center',padding:'0 6px',gap:5}}>
-                    <div className="dot done"    style={{width:6,height:6}}/>
-                    <div className="dot active"  style={{width:6,height:6}}/>
-                    <div className="dot idle"    style={{width:6,height:6}}/>
-                    <div className="dot error"   style={{width:6,height:6}}/>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p className="principle-title">Borrowed, not invented</p>
-            <p className="principle-body">Same visual grammar as Ethernet LEDs and the macOS camera indicator. Developers already read this fluently. No legend required.</p>
-          </div>
+        /* 01 Borrowed, not invented */
+        h('div', {className:'principle'},
+          h('div', {className:'principle-viz'},
+            h('div', {style:{display:'flex',flexDirection:'column',gap:9}},
+              h('div', {style:{display:'flex',alignItems:'center',gap:10}},
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.18)',fontFamily:"'SF Mono',monospace",letterSpacing:'.06em',width:62,flexShrink:0}}, 'ETHERNET'),
+                h('div', {style:{display:'flex',gap:5,alignItems:'center'}},
+                  h('div', {style:{width:7,height:7,borderRadius:'50%',background:'#34C759'}}),
+                  h('div', {style:{width:7,height:7,borderRadius:'50%',background:'#34C759',opacity:.35}}),
+                  h('div', {style:{width:7,height:7,borderRadius:'50%',background:'rgba(255,255,255,0.14)'}}),
+                  h('div', {style:{width:7,height:7,borderRadius:'50%',background:'#FF3B30'}})
+                )
+              ),
+              h('div', {className:'pviz-divider', style:{height:.5,background:'rgba(255,255,255,0.05)',marginLeft:72}}),
+              h('div', {style:{display:'flex',alignItems:'center',gap:10}},
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.18)',fontFamily:"'SF Mono',monospace",letterSpacing:'.06em',width:62,flexShrink:0}}, 'INDICATOR'),
+                h('div', {className:'pviz-mock', style:{background:'rgba(48,48,48,0.95)',border:'.5px solid rgba(155,155,155,0.28)',borderRadius:9,height:15,display:'flex',alignItems:'center',padding:'0 6px',gap:5}},
+                  h('div', {className:'dot done', style:{width:6,height:6}}),
+                  h('div', {className:'dot active', style:{width:6,height:6}}),
+                  h('div', {className:'dot idle', style:{width:6,height:6}}),
+                  h('div', {className:'dot error', style:{width:6,height:6}})
+                )
+              )
+            )
+          ),
+          h('p', {className:'principle-title'}, 'Borrowed, not invented'),
+          h('p', {className:'principle-body'}, 'Same visual grammar as Ethernet LEDs and the macOS camera indicator. Developers already read this fluently. No legend required.')
+        ),
 
-          {/* 02 Motion = state, Color = exception */}
-          <div className="principle">
-            <div className="principle-viz">
-              <div style={{display:'flex',flexDirection:'column',gap:7}}>
-                <div className="pviz-row" style={{display:'flex',alignItems:'center',gap:10,padding:'7px 10px',borderRadius:6,background:'rgba(255,255,255,0.04)',border:'.5px solid rgba(255,255,255,0.07)'}}>
-                  <div className="dot active" style={{width:7,height:7,flexShrink:0}}/>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.22)',letterSpacing:'.07em',textTransform:'uppercase'}}>Motion</span>
-                  <span style={{fontSize:'10px',color:'rgba(255,255,255,0.45)'}}>= running</span>
-                </div>
-                <div className="pviz-row" style={{display:'flex',alignItems:'center',gap:10,padding:'7px 10px',borderRadius:6,background:'rgba(255,255,255,0.03)',border:'.5px solid rgba(255,255,255,0.06)'}}>
-                  <div style={{display:'flex',gap:4,flexShrink:0}}>
-                    <div style={{width:6,height:6,borderRadius:'50%',background:'#E8952A'}}/>
-                    <div style={{width:6,height:6,borderRadius:'50%',background:'#FF3B30'}}/>
-                    <div style={{width:6,height:6,borderRadius:'50%',background:'#34C759'}}/>
-                  </div>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.22)',letterSpacing:'.07em',textTransform:'uppercase'}}>Color</span>
-                  <span style={{fontSize:'10px',color:'rgba(255,255,255,0.45)'}}>= exception</span>
-                </div>
-              </div>
-            </div>
-            <p className="principle-title">Motion = state. Color = exception.</p>
-            <p className="principle-body">White shimmer handles 90% of cases. Color only fires for states that demand attention: amber, red, green.</p>
-          </div>
+        /* 02 Motion = state, Color = exception */
+        h('div', {className:'principle'},
+          h('div', {className:'principle-viz'},
+            h('div', {style:{display:'flex',flexDirection:'column',gap:7}},
+              h('div', {className:'pviz-row', style:{display:'flex',alignItems:'center',gap:10,padding:'7px 10px',borderRadius:6,background:'rgba(255,255,255,0.04)',border:'.5px solid rgba(255,255,255,0.07)'}},
+                h('div', {className:'dot active', style:{width:7,height:7,flexShrink:0}}),
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.22)',letterSpacing:'.07em',textTransform:'uppercase'}}, 'Motion'),
+                h('span', {style:{fontSize:'10px',color:'rgba(255,255,255,0.45)'}}, '= running')
+              ),
+              h('div', {className:'pviz-row', style:{display:'flex',alignItems:'center',gap:10,padding:'7px 10px',borderRadius:6,background:'rgba(255,255,255,0.03)',border:'.5px solid rgba(255,255,255,0.06)'}},
+                h('div', {style:{display:'flex',gap:4,flexShrink:0}},
+                  h('div', {style:{width:6,height:6,borderRadius:'50%',background:'#E8952A'}}),
+                  h('div', {style:{width:6,height:6,borderRadius:'50%',background:'#FF3B30'}}),
+                  h('div', {style:{width:6,height:6,borderRadius:'50%',background:'#34C759'}})
+                ),
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.22)',letterSpacing:'.07em',textTransform:'uppercase'}}, 'Color'),
+                h('span', {style:{fontSize:'10px',color:'rgba(255,255,255,0.45)'}}, '= exception')
+              )
+            )
+          ),
+          h('p', {className:'principle-title'}, 'Motion = state. Color = exception.'),
+          h('p', {className:'principle-body'}, 'White shimmer handles 90% of cases. Color only fires for states that demand attention: amber, red, green.')
+        ),
 
-          {/* 03 Native menu bar */}
-          <div className="principle">
-            <div className="principle-viz">
-              <div className="pviz-mock" style={{background:'rgba(22,22,22,0.95)',borderRadius:6,height:22,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 8px',border:'.5px solid rgba(255,255,255,0.07)',marginBottom:7}}>
-                <div style={{display:'flex',gap:5,alignItems:'center'}}>
-                  <span style={{fontSize:'13px',color:'rgba(255,255,255,0.35)'}}>&#63743;</span>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.22)'}}>Finder</span>
-                </div>
-                <div style={{display:'flex',alignItems:'center',gap:6}}>
-                  <div className="pviz-pill" style={{background:'rgba(48,48,48,0.95)',border:'.5px solid rgba(155,155,155,0.28)',borderRadius:8,height:14,display:'flex',alignItems:'center',padding:'0 5px',gap:4}}>
-                    <div className="dot active"  style={{width:5,height:5}}/>
-                    <div className="dot waiting" style={{width:5,height:5}}/>
-                    <div className="dot done"    style={{width:5,height:5}}/>
-                  </div>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.18)'}}>&#8776;</span>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.18)'}}>&#9646;</span>
-                  <span style={{fontSize:'9px',color:'rgba(255,255,255,0.18)'}}>10:41</span>
-                </div>
-              </div>
-              <p style={{fontSize:'9px',color:'rgba(255,255,255,0.18)',textAlign:'center',letterSpacing:'.04em'}}>alongside Wi-Fi · Battery · Clock</p>
-            </div>
-            <p className="principle-title">Native menu bar, not a floating overlay</p>
-            <p className="principle-body">Built in SwiftUI, placed where hardware status lives. The placement is load-bearing, not cosmetic.</p>
-          </div>
+        /* 03 Native menu bar */
+        h('div', {className:'principle'},
+          h('div', {className:'principle-viz'},
+            h('div', {className:'pviz-mock', style:{background:'rgba(22,22,22,0.95)',borderRadius:6,height:22,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 8px',border:'.5px solid rgba(255,255,255,0.07)',marginBottom:7}},
+              h('div', {style:{display:'flex',gap:5,alignItems:'center'}},
+                h('span', {style:{fontSize:'13px',color:'rgba(255,255,255,0.35)'}}, ''),
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.22)'}}, 'Finder')
+              ),
+              h('div', {style:{display:'flex',alignItems:'center',gap:6}},
+                h('div', {className:'pviz-pill', style:{background:'rgba(48,48,48,0.95)',border:'.5px solid rgba(155,155,155,0.28)',borderRadius:8,height:14,display:'flex',alignItems:'center',padding:'0 5px',gap:4}},
+                  h('div', {className:'dot active', style:{width:5,height:5}}),
+                  h('div', {className:'dot waiting', style:{width:5,height:5}}),
+                  h('div', {className:'dot done', style:{width:5,height:5}})
+                ),
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.18)'}}, '≈'),
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.18)'}}, '▮'),
+                h('span', {style:{fontSize:'9px',color:'rgba(255,255,255,0.18)'}}, '10:41')
+              )
+            ),
+            h('p', {style:{fontSize:'9px',color:'rgba(255,255,255,0.18)',textAlign:'center',letterSpacing:'.04em'}}, 'alongside Wi-Fi · Battery · Clock')
+          ),
+          h('p', {className:'principle-title'}, 'Native menu bar, not a floating overlay'),
+          h('p', {className:'principle-body'}, 'Built in SwiftUI, placed where hardware status lives. The placement is load-bearing, not cosmetic.')
+        )
+      )
+    ),
 
-        </div>
-      </section>
+    /* ── VARIATIONS ── */
+    h('section', {className:'avw'},
+      h('h2', {className:'avw-title'}, 'Design space: three visual languages'),
+      h('p', {className:'avw-subtitle'}, 'All three variations are live in the prototype above. Keys 1–3 to switch.'),
+      h('div', {className:'avw-grid'},
 
-      {/* ── VARIATIONS ── */}
-      <section className="avw">
-        <h2 className="avw-title">Design space: three visual languages</h2>
-        <p className="avw-subtitle">All three variations are live in the prototype above. Keys 1&ndash;3 to switch.</p>
-        <div className="avw-grid">
+        /* Pulse — recommended */
+        h('div', {className:'avw-card rec'},
+          h('div', {className:'avw-card-header'},
+            h('div', {className:'avw-card-header-text'},
+              h('p', {className:'avw-var'}, 'Pulse'),
+              h('p', {className:'avw-subvar'}, 'shimmer active, amber waiting')
+            ),
+            h('span', {className:'avw-badge'}, 'Recommended')
+          ),
+          h('div', {className:'avw-bar'},
+            h('div', {className:'avw-pill'},
+              h('div', {className:'avw-d ca'}),
+              h('div', {className:'avw-d ca', style:{animationDelay:'.55s'}}),
+              h('div', {className:'avw-d cw'})
+            )
+          ),
+          h('div', {className:'avw-labels'},
+            h('div', {className:'avw-dl'}, h('div', {className:'avw-d ca'}), h('span', {className:'avw-dlabel'}, 'Active: white shimmer')),
+            h('div', {className:'avw-dl'}, h('div', {className:'avw-d cw'}), h('span', {className:'avw-dlabel'}, 'Waiting: amber, static'))
+          ),
+          h('div', {className:'avw-divider'}),
+          h('div', {className:'avw-pc'},
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Apple HIG native, fits system UI')),
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Motion and color are independent channels')),
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-con'}, '–'), h('span', {className:'avw-pct'}, 'Color language needs one-time learning'))
+          )
+        ),
 
-          {/* Pulse — recommended */}
-          <div className="avw-card rec">
-            <div className="avw-card-header">
-              <div className="avw-card-header-text">
-                <p className="avw-var">Pulse</p>
-                <p className="avw-subvar">shimmer active, amber waiting</p>
-              </div>
-              <span className="avw-badge">Recommended</span>
-            </div>
-            <div className="avw-bar">
-              <div className="avw-pill">
-                <div className="avw-d ca"></div>
-                <div className="avw-d ca" style={{animationDelay:'.55s'}}></div>
-                <div className="avw-d cw"></div>
-              </div>
-            </div>
-            <div className="avw-labels">
-              <div className="avw-dl"><div className="avw-d ca"></div><span className="avw-dlabel">Active: white shimmer</span></div>
-              <div className="avw-dl"><div className="avw-d cw"></div><span className="avw-dlabel">Waiting: amber, static</span></div>
-            </div>
-            <div className="avw-divider"></div>
-            <div className="avw-pc">
-              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Apple HIG native, fits system UI</span></div>
-              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Motion and color are independent channels</span></div>
-              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Color language needs one-time learning</span></div>
-            </div>
-          </div>
+        /* Pixel Art */
+        h('div', {className:'avw-card'},
+          h('div', {className:'avw-card-header'},
+            h('div', {className:'avw-card-header-text'},
+              h('p', {className:'avw-var'}, 'Pixel Art'),
+              h('p', {className:'avw-subvar'}, 'fire · ice · bolt ·', h('br'), 'star · skull per state')
+            )
+          ),
+          h('div', {className:'avw-bar'},
+            h('div', {style:{background:'rgba(18,18,18,0.95)',border:'.5px solid rgba(255,255,255,0.08)',borderRadius:9,height:16,display:'inline-flex',alignItems:'center',padding:'0 6px',gap:5}},
+              h('span', {style:{animation:'pxflk 1.2s ease-in-out infinite',display:'inline-flex',alignItems:'center'}, dangerouslySetInnerHTML:{__html:makePxSVG(PX_FIRE,'#ff8030',1.0)}}),
+              h('span', {style:{display:'inline-flex',alignItems:'center'}, dangerouslySetInnerHTML:{__html:makePxSVG(PX_ICE,'#5bc8f5',1.0)}}),
+              h('span', {style:{animation:'pxblk 0.9s step-end infinite',display:'inline-flex',alignItems:'center'}, dangerouslySetInnerHTML:{__html:makePxSVG(PX_BOLT,'#f5e020',1.0)}}),
+              h('span', {style:{display:'inline-flex',alignItems:'center'}, dangerouslySetInnerHTML:{__html:makePxSVG(PX_STAR,'#34C759',1.0)}})
+            )
+          ),
+          h('div', {className:'avw-labels'},
+            h('div', {className:'avw-dl'},
+              h('span', {style:{animation:'pxflk 1.2s ease-in-out infinite',display:'inline-flex',alignItems:'center',flexShrink:0}, dangerouslySetInnerHTML:{__html:makePxSVG(PX_FIRE,'#ff8030',0.9)}}),
+              h('span', {className:'avw-dlabel'}, 'Active: fire, animated')
+            ),
+            h('div', {className:'avw-dl'},
+              h('span', {style:{display:'inline-flex',alignItems:'center',flexShrink:0}, dangerouslySetInnerHTML:{__html:makePxSVG(PX_ICE,'#5bc8f5',0.9)}}),
+              h('span', {className:'avw-dlabel'}, 'Waiting: ice, static')
+            )
+          ),
+          h('div', {className:'avw-divider'}),
+          h('div', {className:'avw-pc'},
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Self-describing icons, no legend needed')),
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Developer culture native, memorable')),
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-con'}, '–'), h('span', {className:'avw-pct'}, 'Too expressive for all-day peripheral use'))
+          )
+        ),
 
-          {/* Pixel Art */}
-          <div className="avw-card">
-            <div className="avw-card-header">
-              <div className="avw-card-header-text">
-                <p className="avw-var">Pixel Art</p>
-                <p className="avw-subvar">fire &middot; ice &middot; bolt &middot;<br/>star &middot; skull per state</p>
-              </div>
-            </div>
-            <div className="avw-bar">
-              <div style={{background:'rgba(18,18,18,0.95)',border:'.5px solid rgba(255,255,255,0.08)',borderRadius:9,height:16,display:'inline-flex',alignItems:'center',padding:'0 6px',gap:5}}>
-                <span style={{animation:'pxflk 1.2s ease-in-out infinite',display:'inline-flex',alignItems:'center'}} dangerouslySetInnerHTML={{__html:makePxSVG(PX_FIRE,'#ff8030',1.0)}}/>
-                <span style={{display:'inline-flex',alignItems:'center'}} dangerouslySetInnerHTML={{__html:makePxSVG(PX_ICE,'#5bc8f5',1.0)}}/>
-                <span style={{animation:'pxblk 0.9s step-end infinite',display:'inline-flex',alignItems:'center'}} dangerouslySetInnerHTML={{__html:makePxSVG(PX_BOLT,'#f5e020',1.0)}}/>
-                <span style={{display:'inline-flex',alignItems:'center'}} dangerouslySetInnerHTML={{__html:makePxSVG(PX_STAR,'#34C759',1.0)}}/>
-              </div>
-            </div>
-            <div className="avw-labels">
-              <div className="avw-dl">
-                <span style={{animation:'pxflk 1.2s ease-in-out infinite',display:'inline-flex',alignItems:'center',flexShrink:0}} dangerouslySetInnerHTML={{__html:makePxSVG(PX_FIRE,'#ff8030',0.9)}}/>
-                <span className="avw-dlabel">Active: fire, animated</span>
-              </div>
-              <div className="avw-dl">
-                <span style={{display:'inline-flex',alignItems:'center',flexShrink:0}} dangerouslySetInnerHTML={{__html:makePxSVG(PX_ICE,'#5bc8f5',0.9)}}/>
-                <span className="avw-dlabel">Waiting: ice, static</span>
-              </div>
-            </div>
-            <div className="avw-divider"></div>
-            <div className="avw-pc">
-              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Self-describing icons, no legend needed</span></div>
-              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Developer culture native, memorable</span></div>
-              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Too expressive for all-day peripheral use</span></div>
-            </div>
-          </div>
+        /* Agent Meter */
+        h('div', {className:'avw-card'},
+          h('div', {className:'avw-card-header'},
+            h('div', {className:'avw-card-header-text'},
+              h('p', {className:'avw-var'}, 'Agent Meter'),
+              h('p', {className:'avw-subvar'}, 'segmented LED bars, VU meter grammar')
+            )
+          ),
+          h('div', {className:'avw-bar'},
+            h('div', {className:'am-pill-proto', style:{height:20}},
+              h('div', {className:'am-col-proto'},
+                ['s5','s4','s3','s2','s1'].map(c => h('div', {key:c, className:'sg-p on '+c+' anim'}))
+              ),
+              h('div', {className:'am-col-proto'},
+                ['s5','s4','s3','s2','s1'].map((c,i) => h('div', {key:c, className:'sg-p on '+c+' anim', style:{animationDelay:(0.28+i*0.27)+'s'}}))
+              ),
+              h('div', {className:'am-col-proto'},
+                ['s5','s4','s3','s2'].map(c => h('div', {key:c, className:'sg-p', style:{background:'#E8952A'}})),
+                h('div', {className:'sg-p on s1', style:{background:'#E8952A',opacity:1}})
+              )
+            )
+          ),
+          h('div', {className:'avw-labels'},
+            h('div', {className:'avw-dl'},
+              h('div', {className:'am-col-proto', style:{flexShrink:0}},
+                ['s5','s4','s3','s2','s1'].map(c => h('div', {key:c, className:'sg-p on '+c+' anim'}))
+              ),
+              h('span', {className:'avw-dlabel'}, 'Active: all segments cascade')
+            ),
+            h('div', {className:'avw-dl'},
+              h('div', {className:'am-col-proto', style:{flexShrink:0}},
+                [0,1,2,3].map(i => h('div', {key:i, className:'sg-p', style:{background:'#E8952A'}})),
+                h('div', {className:'sg-p on s1', style:{background:'#E8952A',opacity:1}})
+              ),
+              h('span', {className:'avw-dlabel'}, 'Waiting: base segment amber')
+            )
+          ),
+          h('div', {className:'avw-divider'}),
+          h('div', {className:'avw-pc'},
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Classic LED VU meter, hardware familiar')),
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Task progress readable per session')),
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-con'}, '–'), h('span', {className:'avw-pct'}, 'Taller than standard menu bar items'))
+          )
+        )
+      ),
 
-          {/* Agent Meter */}
-          <div className="avw-card">
-            <div className="avw-card-header">
-              <div className="avw-card-header-text">
-                <p className="avw-var">Agent Meter</p>
-                <p className="avw-subvar">segmented LED bars, VU meter grammar</p>
-              </div>
-            </div>
-            <div className="avw-bar">
-              <div className="am-pill-proto" style={{height:20}}>
-                <div className="am-col-proto">
-                  {['s5','s4','s3','s2','s1'].map(c => <div key={c} className={`sg-p on ${c} anim`}/>)}
-                </div>
-                <div className="am-col-proto">
-                  {['s5','s4','s3','s2','s1'].map((c,i) => <div key={c} className={`sg-p on ${c} anim`} style={{animationDelay:`${0.28+i*0.27}s`}}/>)}
-                </div>
-                <div className="am-col-proto">
-                  {['s5','s4','s3','s2'].map(c => <div key={c} className="sg-p" style={{background:'#E8952A'}}/>)}
-                  <div className="sg-p on s1" style={{background:'#E8952A',opacity:1}}/>
-                </div>
-              </div>
-            </div>
-            <div className="avw-labels">
-              <div className="avw-dl">
-                <div className="am-col-proto" style={{flexShrink:0}}>
-                  {['s5','s4','s3','s2','s1'].map(c => <div key={c} className={`sg-p on ${c} anim`}/>)}
-                </div>
-                <span className="avw-dlabel">Active: all segments cascade</span>
-              </div>
-              <div className="avw-dl">
-                <div className="am-col-proto" style={{flexShrink:0}}>
-                  {[0,1,2,3].map(i => <div key={i} className="sg-p" style={{background:'#E8952A'}}/>)}
-                  <div className="sg-p on s1" style={{background:'#E8952A',opacity:1}}/>
-                </div>
-                <span className="avw-dlabel">Waiting: base segment amber</span>
-              </div>
-            </div>
-            <div className="avw-divider"></div>
-            <div className="avw-pc">
-              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Classic LED VU meter, hardware familiar</span></div>
-              <div className="avw-pci"><span className="avw-pro">+</span><span className="avw-pct">Task progress readable per session</span></div>
-              <div className="avw-pci"><span className="avw-con">&ndash;</span><span className="avw-pct">Taller than standard menu bar items</span></div>
-            </div>
-          </div>
+      h('div', {className:'avw-rec'},
+        h('p', null, h('strong', null, 'Recommendation: Pulse (key 1).'), ' Motion and color operate as independent channels: shimmer signals running, amber signals blocked. No visual ambiguity, no noise, no relearning required. The remaining variations are in the prototype for comparison.')
+      )
+    ),
 
-        </div>
+    /* Implementation section removed — code snippet didn't add portfolio value */
 
-        <div className="avw-rec">
-          <p><strong>Recommendation: Pulse (key&nbsp;1).</strong> Motion and color operate as independent channels: shimmer signals running, amber signals blocked. No visual ambiguity, no noise, no relearning required. The remaining variations are in the prototype for comparison.</p>
-        </div>
-      </section>
-
-      {/* Implementation section removed — code snippet didn't add portfolio value */}
-
-      <footer className="footer">
-        <p>Session Indicator &middot; <a href="https://ladanjohari.com" style={{color:'inherit',textDecoration:'none'}}>Ladan Johari</a> &middot; 2026</p>
-      </footer>
-    </>
+    h('footer', {className:'footer'},
+      h('p', null, 'Session Indicator · ', h('a', {href:'https://ladanjohari.com', style:{color:'inherit',textDecoration:'none'}}, 'Ladan Johari'), ' · 2026')
+    )
   );
 }
 
@@ -2250,33 +2168,26 @@ function App() {
     return () => document.removeEventListener('mousedown', onDown);
   }, []);
 
-  return (
-    <div className="page">
-      <div className="hero">
-        <Desktop
-          state={state}
-          dispatch={dispatch}
-          onAction={handleAction}
-          varLabel={varLabel}
-        />
-        <p className="caption">Session Indicator: a native macOS menu bar component for AI agent supervision</p>
-        <p className="mobile-note">Interactive prototype — best experienced on desktop</p>
-        <div className="kbd-row">
-          <span className="kbd-hint"><kbd>P</kbd>&nbsp;Prototype controls</span>
-          <span className="kbd-hint"><kbd>1 – 3</kbd>&nbsp;Switch variation</span>
-          <span className="kbd-hint"><kbd>S</kbd>&nbsp;Add session</span>
-          <span className="kbd-hint"><kbd>Y / N</kbd>&nbsp;Respond to terminal</span>
-        </div>
-      </div>
-      <OnePageContent />
-    </div>
+  return h('div', {className:'page'},
+    h('div', {className:'hero'},
+      h(Desktop, {state:state, dispatch:dispatch, onAction:handleAction, varLabel:varLabel}),
+      h('p', {className:'caption'}, 'Session Indicator: a native macOS menu bar component for AI agent supervision'),
+      h('p', {className:'mobile-note'}, 'Interactive prototype — best experienced on desktop'),
+      h('div', {className:'kbd-row'},
+        h('span', {className:'kbd-hint'}, h('kbd', null, 'P'), ' Prototype controls'),
+        h('span', {className:'kbd-hint'}, h('kbd', null, '1 – 3'), ' Switch variation'),
+        h('span', {className:'kbd-hint'}, h('kbd', null, 'S'), ' Add session'),
+        h('span', {className:'kbd-hint'}, h('kbd', null, 'Y / N'), ' Respond to terminal')
+      )
+    ),
+    h(OnePageContent)
   );
 }
 
 /* ══════════════════════════════════════════════
    MOUNT
 ══════════════════════════════════════════════ */
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
 </script>
 </body>
 </html>

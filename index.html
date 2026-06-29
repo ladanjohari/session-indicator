@@ -1920,7 +1920,7 @@ function OnePageContent() {
           h('div', {className:'avw-pc'},
             h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Self-describing icons, no legend needed')),
             h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Developer culture native, memorable')),
-            h('div', {className:'avw-pci'}, h('span', {className:'avw-con'}, '–'), h('span', {className:'avw-pct'}, 'Too expressive for all-day peripheral use'))
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-con'}, '–'), h('span', {className:'avw-pct'}, 'Too expressive for all-day use'))
           )
         ),
 
@@ -1933,16 +1933,16 @@ function OnePageContent() {
             )
           ),
           h('div', {className:'avw-bar'},
-            h('div', {className:'am-pill-proto', style:{height:20}},
+            h('div', {className:'avw-pill', style:{gap:6}},
               h('div', {className:'am-col-proto'},
                 ['s5','s4','s3','s2','s1'].map(c => h('div', {key:c, className:'sg-p on '+c+' anim'}))
               ),
               h('div', {className:'am-col-proto'},
-                ['s5','s4','s3','s2','s1'].map((c,i) => h('div', {key:c, className:'sg-p on '+c+' anim', style:{animationDelay:(0.28+i*0.27)+'s'}}))
+                [0,1,2,3].map(i => h('div', {key:i, className:'sg-p', style:{background:'#E8952A'}})),
+                h('div', {className:'sg-p on s1', style:{background:'#E8952A',opacity:1}})
               ),
               h('div', {className:'am-col-proto'},
-                ['s5','s4','s3','s2'].map(c => h('div', {key:c, className:'sg-p', style:{background:'#E8952A'}})),
-                h('div', {className:'sg-p on s1', style:{background:'#E8952A',opacity:1}})
+                [0,1,2,3,4].map(i => h('div', {key:i, className:'sg-p on s1'}))
               )
             )
           ),
@@ -1965,7 +1965,7 @@ function OnePageContent() {
           h('div', {className:'avw-pc'},
             h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Classic LED VU meter, hardware familiar')),
             h('div', {className:'avw-pci'}, h('span', {className:'avw-pro'}, '+'), h('span', {className:'avw-pct'}, 'Task progress readable per session')),
-            h('div', {className:'avw-pci'}, h('span', {className:'avw-con'}, '–'), h('span', {className:'avw-pct'}, 'Taller than standard menu bar items'))
+            h('div', {className:'avw-pci'}, h('span', {className:'avw-con'}, '–'), h('span', {className:'avw-pct'}, 'Color encodes intensity, not state type'))
           )
         )
       ),

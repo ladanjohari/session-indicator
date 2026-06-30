@@ -2313,13 +2313,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(App));
 function startSessionIndicatorTour(){
   if (typeof driver === 'undefined') { console.warn('Driver.js not loaded'); return; }
 
-  /* Open popover now; setTimeout gives React one tick to commit the render */
-  if (!document.querySelector('.popover.visible')) {
-    document.querySelector('.si-wrap').click();
-  }
-
-  setTimeout(function() {
-    var driverObj = driver.js.driver({
+  var driverObj = driver.js.driver({
       showProgress: true,
       allowClose: true,
       stagePadding: 6,
@@ -2353,6 +2347,15 @@ function startSessionIndicatorTour(){
         },
         {
           element: '.popover',
+          onHighlightStarted: function() {
+            /* Open the popover, then refresh the spotlight once React renders */
+            if (!document.querySelector('.popover.visible')) {
+              document.querySelector('.si-wrap').click();
+              setTimeout(function() {
+                if (document.querySelector('.popover.visible')) driverObj.refresh();
+              }, 200);
+            }
+          },
           popover: {
             title: 'All sessions in one place',
             description: 'Every session, its current state, and how long it has been running. No terminal hunting.',
@@ -2386,9 +2389,8 @@ function startSessionIndicatorTour(){
           }
         }
       ]
-    });
-    driverObj.drive();
-  }, 60);
+  });
+  driverObj.drive();
 }
 </script>
 </body>

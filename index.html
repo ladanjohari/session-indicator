@@ -100,7 +100,6 @@ body.lm .screen .mb-right > .mb-item{
   user-select:none;white-space:nowrap;
   transition:background .12s;
 }
-.mb-item:hover{background:rgba(255,255,255,0.1)}
 .mb-bold{font-weight:500}
 
 .si-wrap{
@@ -458,7 +457,6 @@ body.lm .wallpaper{background-image:url('helios-light.jpg');background-size:cove
 body.lm .wallpaper::after{background:transparent}
 body.lm .menubar{background:rgba(228,228,228,0.9);border-bottom:.5px solid rgba(0,0,0,0.1)}
 body.lm .mb-item{color:rgba(0,0,0,0.82)}
-body.lm .mb-item:hover{background:rgba(0,0,0,0.07)}
 body.lm .si-wrap:hover{background:rgba(0,0,0,0.07)}
 body.lm .si-wrap.open{background:rgba(0,0,0,0.1)}
 body.lm .si-pill{background:rgba(0,0,0,0.08);border:.5px solid rgba(0,0,0,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 2px 8px rgba(0,0,0,0.12)}
@@ -628,6 +626,17 @@ body.lm .s-dismiss:hover{color:rgba(0,0,0,0.6)}
   overflow-y:auto;line-height:1.65;
   white-space:pre-wrap;
 }
+/* terminal text tiers — adapt to light/dark since term content is injected HTML */
+.t-1{color:rgba(255,255,255,0.15)}
+.t-2{color:rgba(255,255,255,0.3)}
+.t-3{color:rgba(255,255,255,0.4)}
+.t-4{color:rgba(255,255,255,0.55)}
+.t-5{color:rgba(255,255,255,0.7)}
+body.lm .t-1{color:rgba(0,0,0,0.2)}
+body.lm .t-2{color:rgba(0,0,0,0.38)}
+body.lm .t-3{color:rgba(0,0,0,0.5)}
+body.lm .t-4{color:rgba(0,0,0,0.65)}
+body.lm .t-5{color:rgba(0,0,0,0.8)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .tc{animation:blink 1.1s step-end infinite}
 .term-focus-bar{
@@ -873,42 +882,42 @@ function getInitialTerminalContent(session) {
   const n = session.name;
   if (n === 'refactor-api') {
     return [
-      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Scanning API surface...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Identifying deprecated endpoints...</span><span class="tc">&#9611;</span>`
+      `<span class="t-4">$ claude ${n}</span>`,
+      `<span class="t-2">&#8594; Scanning API surface...</span>`,
+      `<span class="t-2">&#8594; Identifying deprecated endpoints...</span><span class="tc">&#9611;</span>`
     ].join('\n');
   }
   switch (session.state) {
     case 'active': return [
-      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Resolving test suite...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Compiling 47 test files...</span>`,
+      `<span class="t-4">$ claude ${n}</span>`,
+      `<span class="t-2">&#8594; Resolving test suite...</span>`,
+      `<span class="t-2">&#8594; Compiling 47 test files...</span>`,
       '',
       `<span style="color:#34C759">  &#10003; auth.test.ts (12ms)</span>`,
       `<span style="color:#34C759">  &#10003; parser.test.ts (34ms)</span>`,
       `<span style="color:#34C759">  &#10003; schema.test.ts (8ms)</span>`,
       `<span style="color:#34C759">  &#10003; config.test.ts (5ms)</span>`,
       '',
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Running api.integration.ts</span><span class="tc">&#9611;</span>`
+      `<span class="t-2">&#8594; Running api.integration.ts</span><span class="tc">&#9611;</span>`
     ].join('\n');
     case 'waiting': return [
-      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Analyzing project structure...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Extracting type signatures (142 files)...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Generating documentation...</span>`,
+      `<span class="t-4">$ claude ${n}</span>`,
+      `<span class="t-2">&#8594; Analyzing project structure...</span>`,
+      `<span class="t-2">&#8594; Extracting type signatures (142 files)...</span>`,
+      `<span class="t-2">&#8594; Generating documentation...</span>`,
       '',
       `<span style="color:#E8952A">&#9888;  Paused &#8212; waiting for tool approval</span>`,
       '',
-      '  Tool:    <span style="color:rgba(255,255,255,0.55)">bash</span>',
-      '  Command: <span style="color:rgba(255,255,255,0.55)">find /src -name "*.ts" -newer docs/last-updated</span>',
+      '  Tool:    <span class="t-4">bash</span>',
+      '  Command: <span class="t-4">find /src -name "*.ts" -newer docs/last-updated</span>',
       '',
-      `<span style="color:rgba(255,255,255,0.4)">y to approve  /  n to reject</span><span class="tc">&#9611;</span>`
+      `<span class="t-3">y to approve  /  n to reject</span><span class="tc">&#9611;</span>`
     ].join('\n');
     case 'error': return [
-      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Building container image...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Pushing to registry (3.2s)</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Applying Kubernetes manifests...</span>`,
+      `<span class="t-4">$ claude ${n}</span>`,
+      `<span class="t-2">&#8594; Building container image...</span>`,
+      `<span class="t-2">&#8594; Pushing to registry (3.2s)</span>`,
+      `<span class="t-2">&#8594; Applying Kubernetes manifests...</span>`,
       '',
       `<span style="color:#FF3B30">&#10007;  Deployment failed after 47s</span>`,
       `<span style="color:#FF3B30">&#10007;  Health check timed out &#8212; no response after 30s</span>`,
@@ -920,31 +929,31 @@ function getInitialTerminalContent(session) {
       '',
       `<span style="color:#E8952A">&#9679;  Rollback in progress...</span>`,
       '',
-      `<span style="color:rgba(255,255,255,0.3)">Process exited (code 1)</span>`
+      `<span class="t-2">Process exited (code 1)</span>`
     ].join('\n');
     case 'done': return [
-      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Scanning /src (847 files)...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Building dependency graph...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Detecting issues...</span>`,
-      `<span style="color:rgba(255,255,255,0.35)">&#8594; Writing report...</span>`,
+      `<span class="t-4">$ claude ${n}</span>`,
+      `<span class="t-2">&#8594; Scanning /src (847 files)...</span>`,
+      `<span class="t-2">&#8594; Building dependency graph...</span>`,
+      `<span class="t-2">&#8594; Detecting issues...</span>`,
+      `<span class="t-2">&#8594; Writing report...</span>`,
       '',
       `<span style="color:#34C759">&#10003;  Analysis complete &#8212; 8.4s</span>`,
       '',
-      '  Files scanned:   <span style="color:rgba(255,255,255,0.6)">847</span>',
-      '  Modules mapped:  <span style="color:rgba(255,255,255,0.6)">23</span>',
-      '  Issues found:    <span style="color:rgba(255,255,255,0.6)">3</span>',
-      '  Report: <span style="color:rgba(255,255,255,0.6)">.claude/analysis-2026-06-28.md</span>',
+      '  Files scanned:   <span class="t-4">847</span>',
+      '  Modules mapped:  <span class="t-4">23</span>',
+      '  Issues found:    <span class="t-4">3</span>',
+      '  Report: <span class="t-4">.claude/analysis-2026-06-28.md</span>',
       '',
       `<span style="color:#E8952A">&#9679;  Session marked complete</span>`
     ].join('\n');
     default: return [
-      `<span style="color:rgba(255,255,255,0.5)">$ claude ${n}</span>`,
+      `<span class="t-4">$ claude ${n}</span>`,
       '',
-      `<span style="color:rgba(255,255,255,0.32)">No active task. Agent is idle and ready.</span>`,
+      `<span class="t-2">No active task. Agent is idle and ready.</span>`,
       '',
-      `<span style="color:rgba(255,255,255,0.15)">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>`,
-      `<span style="color:rgba(255,255,255,0.4)">$ </span><span class="tc">&#9611;</span>`
+      `<span class="t-1">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>`,
+      `<span class="t-3">$ </span><span class="tc">&#9611;</span>`
     ].join('\n');
   }
 }
@@ -1608,7 +1617,7 @@ function MenuBar({sessions, ui, siWrapRef, varLabel, onTogglePopover}) {
         h(VariationLabel, {text:varLabel.text, phase:varLabel.phase})
       ),
       h('span', {className:'mb-item'},
-        h('svg', {width:'14', height:'11', viewBox:'0 0 14 11', fill:'none'},
+        h('svg', {width:'14', height:'11', viewBox:'-1 -1 16 13', fill:'none'},
           h('path', {d:'M7 10a1.25 1.25 0 1 0 0-2.5A1.25 1.25 0 0 0 7 10z', fill:'currentColor'}),
           h('path', {d:'M4.17 7.17a4 4 0 0 1 5.66 0', stroke:'currentColor', strokeWidth:'1.25', strokeLinecap:'round'}),
           h('path', {d:'M1.76 4.76a7.5 7.5 0 0 1 10.48 0', stroke:'currentColor', strokeWidth:'1.25', strokeLinecap:'round'}),
@@ -1843,7 +1852,7 @@ function OnePageContent() {
                   h('div', {className:'dot waiting', style:{width:5,height:5}}),
                   h('div', {className:'dot done', style:{width:5,height:5}})
                 ),
-                h('svg', {width:'11', height:'9', viewBox:'0 0 14 11', fill:'none', style:{color:'rgba(255,255,255,0.28)'}},
+                h('svg', {width:'11', height:'9', viewBox:'-1 -1 16 13', fill:'none', style:{color:'rgba(255,255,255,0.28)'}},
                   h('path', {d:'M7 10a1.25 1.25 0 1 0 0-2.5A1.25 1.25 0 0 0 7 10z', fill:'currentColor'}),
                   h('path', {d:'M4.17 7.17a4 4 0 0 1 5.66 0', stroke:'currentColor', strokeWidth:'1.25', strokeLinecap:'round'}),
                   h('path', {d:'M1.76 4.76a7.5 7.5 0 0 1 10.48 0', stroke:'currentColor', strokeWidth:'1.25', strokeLinecap:'round'}),
@@ -2041,10 +2050,10 @@ function App() {
         '',
         '<span style="color:#E8952A">&#9888;  Waiting for tool approval</span>',
         '',
-        '  Tool:    <span style="color:rgba(255,255,255,0.55)">bash</span>',
-        '  Command: <span style="color:rgba(255,255,255,0.55)">read -p "Approve?" confirm</span>',
+        '  Tool:    <span class="t-4">bash</span>',
+        '  Command: <span class="t-4">read -p "Approve?" confirm</span>',
         '',
-        '<span style="color:rgba(255,255,255,0.4)">y to approve  /  n to reject</span><span class="tc">&#9611;</span>'
+        '<span class="t-3">y to approve  /  n to reject</span><span class="tc">&#9611;</span>'
       ].join('\n');
     } else {
       newState = 'error';
@@ -2099,20 +2108,20 @@ function App() {
     };
 
     if (action === 'retry') {
-      append('\n<span style="color:rgba(255,255,255,0.35)">&#8594; Retrying connection...</span>\n<span style="color:rgba(255,255,255,0.35)">&#8594; Reconnecting to deployment service...</span><span class="tc">&#9611;</span>');
+      append('\n<span class="t-2">&#8594; Retrying connection...</span>\n<span class="t-2">&#8594; Reconnecting to deployment service...</span><span class="tc">&#9611;</span>');
       dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'active'});
     } else if (action === 'dismiss') {
       if (session.state === 'done' || session.state === 'idle') {
         dispatch({type:'REMOVE_SESSION', id:sessionId});
       } else {
-        append('\n<span style="color:rgba(255,255,255,0.3)">&#10007;  Error dismissed &#8212; session idle</span>');
+        append('\n<span class="t-2">&#10007;  Error dismissed &#8212; session idle</span>');
         dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'idle'});
       }
     } else if (action === 'continue') {
-      append('\n<span style="color:rgba(255,255,255,0.4)">y</span>\n<span style="color:rgba(255,255,255,0.35)">&#8594; Resuming analysis...</span>\n<span style="color:rgba(255,255,255,0.35)">&#8594; Processing remaining files...</span><span class="tc">&#9611;</span>');
+      append('\n<span class="t-3">y</span>\n<span class="t-2">&#8594; Resuming analysis...</span>\n<span class="t-2">&#8594; Processing remaining files...</span><span class="tc">&#9611;</span>');
       dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'active'});
     } else if (action === 'cancel') {
-      append('\n<span style="color:rgba(255,255,255,0.4)">n to reject</span>\n<span style="color:rgba(255,255,255,0.3)">&#10007;  Task cancelled &#8212; session idle</span>');
+      append('\n<span class="t-3">n to reject</span>\n<span class="t-2">&#10007;  Task cancelled &#8212; session idle</span>');
       dispatch({type:'SET_SESSION_STATE', id:sessionId, state:'idle'});
     }
   }, []);
@@ -2157,7 +2166,7 @@ function App() {
         if (!avail.length) return;
         const maxId = s.sessions.reduce((m, x) => Math.max(m, x.id), 0);
         const ns = {id:maxId+1, name:avail[0], state:'active', time:'0s'};
-        const blank = `<span style="color:rgba(255,255,255,0.5)">$ claude ${ns.name}</span>\n<span class="tc">&#9611;</span>`;
+        const blank = `<span class="t-4">$ claude ${ns.name}</span>\n<span class="tc">&#9611;</span>`;
         dispatch({type:'ADD_SESSION', session:ns});
         dispatch({type:'OPEN_TERMINAL', sessionId:ns.id, content:blank});
       }

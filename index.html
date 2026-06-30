@@ -15,6 +15,8 @@
 <meta name="twitter:description" content="A native macOS menu bar component for AI agent supervision.">
 <meta name="twitter:image" content="https://session-indicator.ladanjohari.com/helios-dark.jpg">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%2334C759'/></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.css">
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.js.iife.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 h2{font-size:inherit;font-weight:inherit}
@@ -112,11 +114,11 @@ body.lm .screen .mb-right > .mb-item{
 .si-wrap.open{background:rgba(255,255,255,0.13)}
 
 .si-pill{
-  background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  border:.5px solid rgba(255,255,255,0.22);
-  border-radius:10px;height:16px;
+  background:rgba(70,70,70,0.5);
+  backdrop-filter:blur(14px) saturate(180%);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);
+  border:.5px solid rgba(255,255,255,0.24);
+  border-radius:8px;height:16px;
   display:flex;align-items:center;
   padding:0 6px;gap:5px;min-width:16px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.16),0 2px 8px rgba(0,0,0,0.25);
@@ -137,11 +139,11 @@ body.lm .screen .mb-right > .mb-item{
 .popover{
   position:absolute;z-index:200;
   top:30px;width:276px;
-  background:rgba(22,22,28,0.58);
-  backdrop-filter:blur(50px) saturate(200%);
-  -webkit-backdrop-filter:blur(50px) saturate(200%);
+  background:rgba(56,56,56,0.55);
+  backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
   border:.5px solid rgba(255,255,255,0.18);
-  border-radius:16px;
+  border-radius:10px;
   box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.14);
   display:none;overflow:hidden;
 }
@@ -178,7 +180,7 @@ body.lm .screen .mb-right > .mb-item{
   white-space:nowrap;line-height:1.4;
 }
 .s-btn:hover{background:rgba(255,255,255,0.13)}
-.s-btn.primary{border-color:rgba(0,102,204,0.5);color:#4da3ff}
+.s-btn.primary{background:rgba(10,132,255,0.85);border-color:transparent;color:#fff}
 
 .demo{
   display:none;
@@ -233,7 +235,10 @@ body.lm .screen .mb-right > .mb-item{
 }
 .ctrl-hint{
   font-size:11px;color:rgba(255,255,255,0.6);
-  background:rgba(0,0,0,0.55);
+  background:rgba(0,0,0,0.38);
+  backdrop-filter:blur(14px) saturate(180%);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);
+  border:.5px solid rgba(255,255,255,0.1);
   border-radius:20px;padding:4px 12px;
   white-space:nowrap;
 }
@@ -245,11 +250,28 @@ body.lm .screen .mb-right > .mb-item{
   text-align:center;line-height:1.5;
 }
 body.lm .mobile-note{color:rgba(0,0,0,0.38)}
-.caption{
+.caption-row{
   margin-top:18px;
-  font-size:12px;color:rgba(255,255,255,0.38);
-  text-align:center;letter-spacing:.01em;
+  display:flex;align-items:center;justify-content:center;gap:14px;
 }
+.caption{
+  font-size:12px;color:rgba(255,255,255,0.38);
+  letter-spacing:.01em;
+}
+.tour-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:500;
+  padding:6px 14px;border-radius:20px;
+  background:#0A84FF;border:none;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;
+  cursor:pointer;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(10,132,255,0.35);
+  transition:opacity .15s,box-shadow .15s;
+}
+.tour-btn:hover{opacity:0.88;box-shadow:0 4px 14px rgba(10,132,255,0.45)}
+body.lm .caption{color:rgba(0,0,0,0.38)}
+body.lm .tour-btn{background:#0066CC;box-shadow:0 2px 8px rgba(0,102,204,0.28)}
+body.lm .tour-btn:hover{box-shadow:0 4px 14px rgba(0,102,204,0.38)}
 
 /* ─── SECTION 2: PROBLEM ─── */
 .problem{
@@ -282,12 +304,15 @@ body.lm .mobile-note{color:rgba(0,0,0,0.38)}
   width:116px;
 }
 .legend-pill{
-  background:rgba(30,30,30,0.95);
-  border:.5px solid rgba(255,255,255,0.09);
-  border-radius:10px;height:28px;
+  background:rgba(60,60,60,0.5);
+  backdrop-filter:blur(14px) saturate(180%);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);
+  border:.5px solid rgba(255,255,255,0.18);
+  border-radius:14px;height:28px;
   display:flex;align-items:center;justify-content:center;
   padding:0 13px;gap:8px;
   width:100%;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 2px 8px rgba(0,0,0,0.2);
 }
 .legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .legend-dot.idle{background:rgba(255,255,255,0.16)}
@@ -459,11 +484,11 @@ body.lm .menubar{background:rgba(228,228,228,0.9);border-bottom:.5px solid rgba(
 body.lm .mb-item{color:rgba(0,0,0,0.82)}
 body.lm .si-wrap:hover{background:rgba(0,0,0,0.07)}
 body.lm .si-wrap.open{background:rgba(0,0,0,0.1)}
-body.lm .si-pill{background:rgba(0,0,0,0.08);border:.5px solid rgba(0,0,0,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 2px 8px rgba(0,0,0,0.12)}
+body.lm .si-pill{background:rgba(0,0,0,0.12);border:.5px solid rgba(0,0,0,0.18);backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),0 2px 8px rgba(0,0,0,0.12)}
 body.lm .dot.idle{background:rgba(0,0,0,0.18)}
 body.lm .dot.active{background:#1a1a1a}
 body.lm .dot.waiting{background:#E8952A}
-body.lm .popover{background:rgba(240,240,248,0.65);border:.5px solid rgba(0,0,0,0.12);box-shadow:0 16px 50px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.8)}
+body.lm .popover{background:rgba(235,235,240,0.72);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:.5px solid rgba(0,0,0,0.12);box-shadow:0 16px 50px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.8)}
 body.lm .pop-header{border-bottom:.5px solid rgba(0,0,0,0.07)}
 body.lm .pop-title{color:rgba(0,0,0,0.85)}
 body.lm .pop-badge{color:rgba(0,0,0,0.38);background:rgba(0,0,0,0.07)}
@@ -473,7 +498,7 @@ body.lm .s-status{color:rgba(0,0,0,0.35)}
 body.lm .s-time{color:rgba(0,0,0,0.25)}
 body.lm .s-btn{border-color:rgba(0,0,0,0.15);color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.05)}
 body.lm .s-btn:hover{background:rgba(0,0,0,0.1)}
-body.lm .s-btn.primary{border-color:rgba(0,102,204,0.4);color:#0066CC}
+body.lm .s-btn.primary{background:rgba(0,102,204,0.9);border-color:transparent;color:#fff}
 body.lm .demo{background:rgba(220,220,220,0.92);border:.5px solid rgba(0,0,0,0.09)}
 body.lm .demo-label{color:rgba(0,0,0,0.32)}
 body.lm .demo-name{color:rgba(0,0,0,0.5)}
@@ -487,11 +512,11 @@ body.lm .demo-hint{color:rgba(0,0,0,0.22)}
 body.lm .tbtn{border-color:rgba(0,0,0,0.14);color:rgba(0,0,0,0.38)}
 body.lm .tbtn:hover{background:rgba(0,0,0,0.05);color:rgba(0,0,0,0.65)}
 body.lm .notch{background:#c8c8c8}
-body.lm .ctrl-hint{color:rgba(0,0,0,0.55);background:rgba(255,255,255,0.55)}
+body.lm .ctrl-hint{color:rgba(0,0,0,0.55);background:rgba(255,255,255,0.45);backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:.5px solid rgba(0,0,0,0.08)}
 body.lm .caption{color:rgba(0,0,0,0.42)}
 body.lm .problem p{color:rgba(0,0,0,0.58)}
 body.lm .legend-title{color:rgba(0,0,0,0.5)}
-body.lm .legend-pill{background:rgba(200,200,200,0.95);border:.5px solid rgba(0,0,0,0.1)}
+body.lm .legend-pill{background:rgba(200,200,200,0.55);backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:.5px solid rgba(0,0,0,0.14);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),0 2px 8px rgba(0,0,0,0.08)}
 body.lm .legend-dot.idle{background:rgba(0,0,0,0.18)}
 body.lm .legend-dot.active{background:#1a1a1a}
 body.lm .legend-dot.waiting{background:#E8952A}
@@ -509,7 +534,7 @@ body.lm .problem p{color:rgba(0,0,0,0.58)}
 body.lm .legend-desc{color:rgba(0,0,0,0.42)}
 
 /* terminal window */
-body.lm .term-win{background:rgba(248,248,252,0.82);border:.5px solid rgba(0,0,0,0.1)}
+body.lm .term-win{background:rgba(248,248,252,0.68);backdrop-filter:blur(18px) saturate(180%);-webkit-backdrop-filter:blur(18px) saturate(180%);border:.5px solid rgba(0,0,0,0.12);box-shadow:0 24px 70px rgba(0,0,0,0.22),inset 0 1px 0 rgba(255,255,255,0.9)}
 body.lm .term-chrome{background:rgba(0,0,0,0.03);border-bottom:.5px solid rgba(0,0,0,0.07)}
 body.lm .term-title{color:rgba(0,0,0,0.45)}
 body.lm .term-body{background:transparent;color:#1c1c1e}
@@ -537,14 +562,24 @@ body.lm .ph-gh:hover{color:#004a99}
   display:none;
   position:absolute;
   width:75%;max-width:680px;
-  background:rgba(16,16,20,0.72);
-  backdrop-filter:blur(40px) saturate(180%);
-  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  background:rgba(46,46,46,0.62);
+  backdrop-filter:blur(18px) saturate(180%);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);
   border-radius:12px;
-  border:.5px solid rgba(255,255,255,0.14);
-  box-shadow:0 24px 70px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.1);
+  border:.5px solid rgba(255,255,255,0.2);
+  box-shadow:0 24px 70px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.14);
   overflow:hidden;
   cursor:default;
+  transition:opacity .35s ease,filter .35s ease,transform .35s ease,backdrop-filter .35s ease;
+}
+.term-win.is-dimmed{
+  opacity:0.5;
+  filter:saturate(0.65);
+  transform:scale(0.96);
+}
+@media(prefers-reduced-motion:reduce){
+  .term-win{transition:opacity .01s linear}
+  .term-win.is-dimmed{filter:none;transform:none}
 }
 .term-win.visible{
   display:block;
@@ -625,6 +660,11 @@ body.lm .s-dismiss:hover{color:rgba(0,0,0,0.6)}
   padding:16px;height:300px;
   overflow-y:auto;line-height:1.65;
   white-space:pre-wrap;
+  transition:mask-position .15s ease;
+}
+.term-body.scrolled{
+  mask-image:linear-gradient(to bottom, transparent 0, black 18px);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, black 18px);
 }
 /* terminal text tiers — adapt to light/dark since term content is injected HTML */
 .t-1{color:rgba(255,255,255,0.15)}
@@ -702,9 +742,9 @@ body.lm .avw-note{color:rgba(0,0,0,0.2)}
   padding:0 8px;margin-bottom:12px;
 }
 .avw-pill{
-  background:rgba(48,48,48,0.95);
-  border:.5px solid rgba(155,155,155,0.28);
-  border-radius:8px;height:13px;
+  background:rgba(70,70,70,0.55);
+  border:.5px solid rgba(255,255,255,0.24);
+  border-radius:7px;height:13px;
   display:flex;align-items:center;padding:0 5px;gap:4px;
 }
 .avw-d{width:5px;height:5px;border-radius:50%;flex-shrink:0}
@@ -749,7 +789,7 @@ body.lm .avw-badge{color:#0066CC;background:rgba(0,102,204,0.07);border:.5px sol
 body.lm .avw-var{color:rgba(0,0,0,0.5)}
 body.lm .avw-bar{background:rgba(220,220,220,0.96);border:.5px solid rgba(0,0,0,0.08)}
 body.lm .avw-bar div[style]{background:rgba(200,200,200,0.95) !important;border-color:rgba(0,0,0,0.12) !important}
-body.lm .avw-pill{background:rgba(180,180,180,0.95);border:.5px solid rgba(0,0,0,0.15)}
+body.lm .avw-pill{background:rgba(180,180,180,0.55);border:.5px solid rgba(0,0,0,0.18)}
 body.lm .avw-d.aa{background:#1a1a1a}
 body.lm .avw-d.ba{background:#1a1a1a}
 body.lm .avw-d.ca{background:#1a1a1a}
@@ -1371,10 +1411,10 @@ function Popover({sessions, variation, lm, open, popoverRight, onAction, onRowCl
               s.state === 'error' ? h(F, null,
                 h('button', {className:'s-btn primary', onClick:e => { e.stopPropagation(); onAction('retry', s.id); }}, 'Retry'),
                 h('button', {className:'s-btn', onClick:e => { e.stopPropagation(); onAction('dismiss', s.id); }}, 'Dismiss')
-              ) : h(F, null,
-                h('button', {className:'s-btn primary', onClick:e => { e.stopPropagation(); onAction('continue', s.id); }}, 'Continue'),
-                h('button', {className:'s-btn', onClick:e => { e.stopPropagation(); onAction('cancel', s.id); }}, 'Cancel')
-              )
+              ) : h(ApproveRejectControl, {
+                onApprove:() => onAction('continue', s.id),
+                onReject:() => onAction('cancel', s.id)
+              })
             ) : s.state === 'done' || s.state === 'idle' ? h(F, null,
               s.state === 'done' && h('span', {className:'s-time'}, s.time),
               h('button', {className:'s-dismiss', onClick:e => { e.stopPropagation(); onAction('dismiss', s.id); }}, '✕')
@@ -1393,6 +1433,13 @@ function Popover({sessions, variation, lm, open, popoverRight, onAction, onRowCl
 /* ══════════════════════════════════════════════
    TERMINAL
 ══════════════════════════════════════════════ */
+function ApproveRejectControl({onApprove, onReject}) {
+  return h('div', {className:'arc'},
+    h('button', {className:'s-btn', onClick:e => { e.stopPropagation(); onReject(); }}, 'Reject'),
+    h('button', {className:'s-btn primary', onClick:e => { e.stopPropagation(); onApprove(); }}, 'Approve')
+  );
+}
+
 function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
   const termRef   = useRef(null);
   const chromeRef = useRef(null);
@@ -1417,6 +1464,14 @@ function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [terminal.content]);
+
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const onScroll = () => el.classList.toggle('scrolled', el.scrollTop > 4);
+    el.addEventListener('scroll', onScroll, {passive: true});
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const chrome = chromeRef.current;
@@ -1460,7 +1515,7 @@ function Terminal({session, terminal, isFocused, screenRef, dispatch}) {
 
   return h('div', {
       ref:termRef,
-      className:'term-win js-terminal-win'+(animated ? ' visible' : ''),
+      className:'term-win js-terminal-win'+(animated ? ' visible' : '')+(isFocused ? ' is-focused' : ' is-dimmed'),
       style:{display: terminal.minimized ? 'none' : undefined},
       onMouseDown:() => dispatch({type:'FOCUS_TERMINAL', sessionId:session.id})
     },
@@ -1660,6 +1715,7 @@ function Desktop({state, dispatch, onAction, varLabel}) {
   useEffect(() => {
     const onClick = e => {
       if (!popOpenRef.current) return;
+      if (e.target.closest('.driver-popover') || e.target.closest('#driver-dummy-element')) return;
       const wrap = siWrapRef.current;
       const pop  = screenRef.current?.querySelector('.popover');
       if (wrap && !wrap.contains(e.target) && pop && !pop.contains(e.target)) {
@@ -1702,7 +1758,7 @@ function Desktop({state, dispatch, onAction, varLabel}) {
         terminal:terminal,
         isFocused:ui.focusedTerminalId === terminal.sessionId,
         screenRef:screenRef,
-        dispatch:dispatch
+        dispatch:dispatch,
       });
     }),
     h(ControlsPanel, {
@@ -2189,7 +2245,12 @@ function App() {
   return h('div', {className:'page'},
     h('div', {className:'hero'},
       h(Desktop, {state:state, dispatch:dispatch, onAction:handleAction, varLabel:varLabel}),
-      h('p', {className:'caption'}, 'Session Indicator: a native macOS menu bar component for AI agent supervision'),
+      h('div', {className:'caption-row'},
+        h('p', {className:'caption'}, 'Session Indicator: a native macOS menu bar component for AI agent supervision'),
+        h('button', {className:'tour-btn', onClick:() => window.startSessionIndicatorTour && window.startSessionIndicatorTour()},
+          '▶ Take a tour'
+        )
+      ),
       h('p', {className:'mobile-note'}, 'Interactive prototype — best experienced on desktop'),
       h('div', {className:'kbd-row'},
         h('span', {className:'kbd-hint'}, h('kbd', null, 'P'), ' Prototype controls'),
@@ -2206,6 +2267,129 @@ function App() {
    MOUNT
 ══════════════════════════════════════════════ */
 ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+<style>
+.si-tour-popover.driver-popover{
+  background:rgba(46,46,46,.72);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border:.5px solid rgba(255,255,255,.16);
+  border-radius:13px;
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  padding:16px 18px;max-width:300px;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
+}
+.si-tour-popover .driver-popover-title{
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.92);margin-bottom:8px;padding:0;
+}
+.si-tour-popover .driver-popover-description{
+  font-size:12px;line-height:1.6;color:rgba(255,255,255,.55);padding:0;
+}
+.si-tour-popover .driver-popover-footer{margin-top:14px;padding-top:0;border:none}
+.si-tour-popover .driver-popover-progress-text{
+  font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.04em;text-transform:uppercase;
+}
+.si-tour-popover .driver-popover-navigation-btns{gap:6px}
+.si-tour-popover button.driver-popover-next-btn,
+.si-tour-popover button.driver-popover-prev-btn{
+  font-size:11px;padding:5px 13px;border-radius:20px;
+  border:.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);
+  font-family:inherit;text-shadow:none;
+}
+.si-tour-popover button.driver-popover-next-btn{
+  border-color:transparent;background:#0A84FF;color:#fff;
+}
+.si-tour-popover button.driver-popover-close-btn{color:rgba(255,255,255,.35);font-size:14px}
+.driver-active-element{border-radius:10px!important}
+.driver-overlay{background:rgba(0,0,0,.55)!important}
+.tour-states{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.tour-state{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.55)}
+.tour-state-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.tour-kbd-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.tour-kbd-row{display:flex;align-items:baseline;gap:8px;font-size:12px;color:rgba(255,255,255,.55)}
+.tour-kbd{font-size:10px;color:#4da3ff;background:rgba(0,102,204,0.12);border:.5px solid rgba(0,102,204,0.28);border-radius:4px;padding:1px 6px;font-family:-apple-system,BlinkMacSystemFont,'SF Mono','Menlo',monospace;white-space:nowrap;flex-shrink:0}
+</style>
+<script>
+function startSessionIndicatorTour(){
+  if (typeof driver === 'undefined') { console.warn('Driver.js not loaded'); return; }
+
+  /* Open popover now; setTimeout gives React one tick to commit the render */
+  if (!document.querySelector('.popover.visible')) {
+    document.querySelector('.si-wrap').click();
+  }
+
+  setTimeout(function() {
+    var driverObj = driver.js.driver({
+      showProgress: true,
+      allowClose: true,
+      stagePadding: 6,
+      stageRadius: 10,
+      popoverClass: 'si-tour-popover',
+      nextBtnText: 'Next',
+      prevBtnText: 'Back',
+      doneBtnText: 'Got it',
+      steps: [
+        {
+          element: '.si-wrap',
+          popover: {
+            title: 'Every session, at a glance',
+            description: 'This pill lives in your menu bar and shows the status of every AI agent running in parallel without interrupting your focus.',
+            side: 'bottom', align: 'end'
+          }
+        },
+        {
+          element: '.si-pill',
+          popover: {
+            title: 'Five states',
+            description: '<div class="tour-states">'
+              + '<div class="tour-state"><span class="tour-state-dot" style="background:#fff;animation:shimmer 1.6s ease-in-out infinite"></span>Active</div>'
+              + '<div class="tour-state"><span class="tour-state-dot" style="background:#E8952A"></span>Waiting on you</div>'
+              + '<div class="tour-state"><span class="tour-state-dot" style="background:#FF3B30"></span>Error</div>'
+              + '<div class="tour-state"><span class="tour-state-dot" style="background:#34C759"></span>Done</div>'
+              + '<div class="tour-state"><span class="tour-state-dot" style="background:rgba(255,255,255,0.18)"></span>Idle</div>'
+              + '</div>',
+            side: 'bottom', align: 'center'
+          }
+        },
+        {
+          element: '.popover',
+          popover: {
+            title: 'All sessions in one place',
+            description: 'Every session, its current state, and how long it has been running. No terminal hunting.',
+            side: 'right', align: 'start'
+          }
+        },
+        {
+          element: '.s-btns',
+          popover: {
+            title: 'Approve or reject from the popover',
+            description: 'When an agent is waiting for tool approval, you can respond right here without opening the terminal.',
+            side: 'left', align: 'center'
+          }
+        },
+        {
+          element: '.kbd-row',
+          onHighlightStarted: function() {
+            if (document.querySelector('.popover.visible')) {
+              document.querySelector('.si-wrap').click();
+            }
+          },
+          popover: {
+            title: 'Keyboard shortcuts',
+            description: '<div class="tour-kbd-list">'
+              + '<div class="tour-kbd-row"><span class="tour-kbd">Y / N</span>Approve or reject a waiting agent</div>'
+              + '<div class="tour-kbd-row"><span class="tour-kbd">S</span>Add a new session</div>'
+              + '<div class="tour-kbd-row"><span class="tour-kbd">1 2 3</span>Switch pill variation</div>'
+              + '<div class="tour-kbd-row"><span class="tour-kbd">P</span>Toggle prototype controls</div>'
+              + '</div>',
+            side: 'top', align: 'center'
+          }
+        }
+      ]
+    });
+    driverObj.drive();
+  }, 60);
+}
 </script>
 </body>
 </html>

@@ -2313,6 +2313,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(h(App));
 function startSessionIndicatorTour(){
   if (typeof driver === 'undefined') { console.warn('Driver.js not loaded'); return; }
 
+  /* Popover state helpers */
+  function tourOpenPopover(cb) {
+    if (document.querySelector('.popover.visible')) { if (cb) cb(); return; }
+    document.querySelector('.si-wrap').click();
+    var n = 0;
+    var t = setInterval(function() {
+      n++;
+      if (document.querySelector('.popover.visible') || n > 15) { clearInterval(t); if (cb) cb(); }
+    }, 25);
+  }
+  function tourClosePopover() {
+    if (document.querySelector('.popover.visible')) document.querySelector('.si-wrap').click();
+  }
+
   var driverObj = driver.js.driver({
       showProgress: true,
       allowClose: true,
@@ -2325,6 +2339,7 @@ function startSessionIndicatorTour(){
       steps: [
         {
           element: '.si-wrap',
+          onHighlightStarted: function() { tourClosePopover(); },
           popover: {
             title: 'Every session, at a glance',
             description: 'This pill lives in your menu bar and shows the status of every AI agent running in parallel without interrupting your focus.',
@@ -2333,6 +2348,11 @@ function startSessionIndicatorTour(){
         },
         {
           element: '.si-pill',
+          onHighlightStarted: function() { tourClosePopover(); },
+          onNextClick: function() {
+            /* Pre-open popover before step 3 renders so Driver.js measures it correctly */
+            tourOpenPopover(function() { driverObj.moveNext(); });
+          },
           popover: {
             title: 'Five states',
             description: '<div class="tour-states">'
@@ -2348,13 +2368,9 @@ function startSessionIndicatorTour(){
         {
           element: '.popover',
           onHighlightStarted: function() {
-            /* Open the popover, then refresh the spotlight once React renders */
-            if (!document.querySelector('.popover.visible')) {
-              document.querySelector('.si-wrap').click();
-              setTimeout(function() {
-                if (document.querySelector('.popover.visible')) driverObj.refresh();
-              }, 200);
-            }
+            /* Popover should already be open (via onNextClick on step 2 or back from step 4).
+               Re-open if somehow closed, then always refresh to nail the position. */
+            tourOpenPopover(function() { driverObj.refresh(); });
           },
           popover: {
             title: 'All sessions in one place',
@@ -2364,6 +2380,10 @@ function startSessionIndicatorTour(){
         },
         {
           element: '.s-btns',
+          onHighlightStarted: function() {
+            /* Popover must be open for .s-btns to have dimensions */
+            tourOpenPopover(function() { driverObj.refresh(); });
+          },
           popover: {
             title: 'Approve or reject from the popover',
             description: 'When an agent is waiting for tool approval, you can respond right here without opening the terminal.',
@@ -2372,11 +2392,7 @@ function startSessionIndicatorTour(){
         },
         {
           element: '.kbd-row',
-          onHighlightStarted: function() {
-            if (document.querySelector('.popover.visible')) {
-              document.querySelector('.si-wrap').click();
-            }
-          },
+          onHighlightStarted: function() { tourClosePopover(); },
           popover: {
             title: 'Keyboard shortcuts',
             description: '<div class="tour-kbd-list">'

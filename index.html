@@ -800,6 +800,7 @@ body.lm .avw-con{color:rgba(0,0,0,0.18)}
 body.lm .avw-rec{background:rgba(0,0,0,0.025);border:.5px solid rgba(0,0,0,0.07)}
 body.lm .avw-rec p{color:rgba(0,0,0,0.48)}
 body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
+body.lm #root .avw-rec strong::before{color:rgba(0,0,0,.7)}
 
 /* ─── VARIATION EXTRAS ─── */
 .am-pill-proto{display:inline-flex;align-items:flex-end;gap:2px;padding:0 6px;height:16px}
@@ -873,7 +874,10 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
   #root .hero{display:none!important}
   #root .problem{display:none!important}
   #root .legend{display:none!important}
+  #root .avw-subtitle{display:none!important}
   #root footer.footer{display:none!important}
+  #root .avw-rec strong{font-size:0!important}
+  #root .avw-rec strong::before{content:'Recommendation: Pulse.';font-size:12px;font-weight:500;color:rgba(255,255,255,.65)}
   .m-phone-wrap{padding:28px 0 0}
   /* touch-action on iPhone mockup buttons — removes iOS 300ms delay */
   .m-sheet-btn,.m-di-btn,.m-la-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
@@ -2983,6 +2987,7 @@ function startMobileTour() {
   d.drive();
 }
 </script>
+
 
 <footer class="mobile-only m-footer">
   Session Indicator &middot; <a href="https://ladanjohari.com">Ladan Johari</a> &middot; 2026

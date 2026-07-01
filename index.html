@@ -862,11 +862,16 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 
 /* ─── RESPONSIVE GATE ─── */
 .mobile-only{display:none}
-.desktop-only{display:block}
 @media(max-width:767px){
   .mobile-only{display:block}
-  .desktop-only{display:none}
+  /* hide the macOS prototype screen, show iphone mockup instead */
+  .screen{display:none!important}
+  .mobile-note{display:none!important}
+  .m-phone-wrap{padding:28px 0 20px}
 }
+
+/* mobile phone wrap layout */
+.m-phone-wrap{width:100%}
 
 /* ─────────────────────────────────────
    MOBILE VIEW
@@ -1010,232 +1015,6 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
-     MOBILE VIEW
-══════════════════════════════════════ -->
-<div class="mobile-only m-wrap">
-
-  <!-- mobile nav -->
-  <nav class="m-nav">
-    <a href="https://ladanjohari.com" class="m-logo">Ladan Johari</a>
-    <div class="m-links">
-      <a href="https://github.com/ladanjohari/session-indicator">GitHub</a>
-      <a href="https://ladanjohari.com/#work">Work</a>
-    </div>
-  </nav>
-
-  <!-- hero -->
-  <div class="m-hero" id="m-hero">
-    <div class="m-eyebrow">AI Agent UI &middot; iPhone</div>
-    <h1 class="m-title">Session<br><span>Indicator</span></h1>
-    <p class="m-sub">When your AI agents are running on your Mac and you step away &mdash; this is how you stay in control.</p>
-    <button class="m-cta" onclick="startMobileTour()">Take a tour</button>
-    <div class="m-dots" id="m-hero-dots">
-      <div class="m-dot a"></div>
-      <div class="m-dot w"></div>
-      <div class="m-dot g"></div>
-      <div class="m-dot i"></div>
-      <span class="m-dot-label">Five states, one glance</span>
-    </div>
-  </div>
-
-  <!-- surface 1: DI compact -->
-  <div class="m-section" id="m-s1">
-    <div class="m-section-num">01 &middot; Dynamic Island compact</div>
-    <div class="m-iphone-wrap">
-      <div class="m-iphone">
-        <div class="m-screen" style="background:#0a0a0a">
-          <div class="m-sb"><span>9:41</span><span style="font-size:9px;opacity:.5">&#9646;&#9646;</span></div>
-          <div class="m-di compact">
-            <div style="display:flex;gap:3.5px;align-items:center">
-              <div class="m-di-dot a"></div>
-              <div class="m-di-dot w"></div>
-              <div class="m-di-dot" style="background:#444"></div>
-            </div>
-            <span style="font-size:9.5px;color:rgba(255,255,255,.45);font-weight:500">3</span>
-          </div>
-          <div style="position:absolute;top:60px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;opacity:.07">
-            <div style="width:70px;height:70px;border-radius:16px;background:#fff"></div>
-            <div style="width:90px;height:9px;border-radius:5px;background:#fff"></div>
-            <div style="width:60px;height:9px;border-radius:5px;background:#fff"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <h2 class="m-section-title">Ambient awareness</h2>
-    <p class="m-section-body">The same dot vocabulary from the Mac menu bar, now living in the Dynamic Island. White shimmers active, orange means an agent is waiting on you. <strong>No interruption</strong> until you need it.</p>
-  </div>
-
-  <!-- surface 2: DI expanded -->
-  <div class="m-section" id="m-s2">
-    <div class="m-section-num">02 &middot; Dynamic Island expanded</div>
-    <div class="m-iphone-wrap">
-      <div class="m-iphone">
-        <div class="m-screen" style="background:#0a0a0a">
-          <div class="m-sb"><span>9:41</span></div>
-          <div class="m-di expanded">
-            <div class="m-di-row">
-              <div class="m-di-dot a"></div>
-              <span class="m-di-name">build-assets</span>
-              <span class="m-di-ts">1m 23s</span>
-            </div>
-            <div class="m-di-row">
-              <div class="m-di-dot w"></div>
-              <span class="m-di-name">run-tests</span>
-              <span class="m-di-status">waiting</span>
-            </div>
-            <div class="m-di-divider"></div>
-            <div class="m-di-btns">
-              <button class="m-di-btn">Reject</button>
-              <button class="m-di-btn approve">Approve</button>
-            </div>
-          </div>
-          <div style="position:absolute;top:145px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center">
-            <span style="font-size:10px;color:rgba(255,255,255,.12)">long press to expand</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <h2 class="m-section-title">Approve without opening the app</h2>
-    <p class="m-section-body">Long press the island. The same <strong>Approve / Reject</strong> component from the Mac popover, now in the Dynamic Island. The anatomy is identical &mdash; only the surface changes.</p>
-  </div>
-
-  <!-- surface 3: lock screen -->
-  <div class="m-section" id="m-s3">
-    <div class="m-section-num">03 &middot; Lock Screen</div>
-    <div class="m-iphone-wrap">
-      <div class="m-iphone">
-        <div class="m-screen m-lock-bg">
-          <div class="m-sb"><span>9:41</span><span style="font-size:9px;opacity:.5">&#9646;&#9646;</span></div>
-          <div class="m-di compact">
-            <div style="display:flex;gap:3.5px;align-items:center">
-              <div class="m-di-dot a"></div>
-              <div class="m-di-dot w"></div>
-            </div>
-            <span style="font-size:11px;color:#E8952A;font-weight:600">!</span>
-          </div>
-          <div class="m-lock-time">
-            <div class="hr">9:41</div>
-            <div class="date">Tuesday, June 30</div>
-          </div>
-          <div class="m-la">
-            <div class="m-la-header">
-              <div class="m-la-icon"><div class="m-di-dot a"></div></div>
-              <div class="m-la-info">
-                <div class="name">run-tests is waiting</div>
-                <div class="app">Session Indicator</div>
-              </div>
-            </div>
-            <div class="m-la-btns">
-              <button class="m-la-btn">Reject</button>
-              <button class="m-la-btn approve">Approve</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <h2 class="m-section-title">Act without unlocking</h2>
-    <p class="m-section-body">A Live Activity pushes to your Lock Screen when an agent is blocked. Your Mac doesn&rsquo;t wait for you to get back to your desk. <strong>The agent waits for you &mdash; not the other way around.</strong></p>
-  </div>
-
-  <!-- surface 4: companion app -->
-  <div class="m-section" id="m-s4">
-    <div class="m-section-num">04 &middot; Companion App</div>
-    <div class="m-iphone-wrap">
-      <div class="m-iphone">
-        <div class="m-screen m-app-bg">
-          <div class="m-sb"><span>9:41</span></div>
-          <div class="m-di compact" style="width:80px;height:24px;background:#000"></div>
-          <div class="m-app-nav"><span>Sessions</span></div>
-          <div class="m-session-list">
-            <div class="m-s-row">
-              <div class="m-s-dot" style="background:#fff;animation:shimmer 1.6s ease-in-out infinite"></div>
-              <div class="m-s-name"><div class="n">build-assets</div><div class="t">running &middot; 1m 23s</div></div>
-              <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
-            </div>
-            <div class="m-s-row waiting">
-              <div class="m-s-dot" style="background:#E8952A"></div>
-              <div class="m-s-name"><div class="n">run-tests</div><div class="t">waiting for approval</div></div>
-              <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
-            </div>
-            <div class="m-s-row done">
-              <div class="m-s-dot" style="background:#34C759"></div>
-              <div class="m-s-name"><div class="n">lint-check</div><div class="t">done &middot; 23s</div></div>
-            </div>
-          </div>
-          <div class="m-sheet">
-            <div class="m-sheet-label">run-tests &middot; approve tool call?</div>
-            <div class="m-sheet-btns">
-              <button class="m-sheet-btn">Reject</button>
-              <button class="m-sheet-btn approve">Approve</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <h2 class="m-section-title">The full picture</h2>
-    <p class="m-section-body">Tap the island to open the companion app. All sessions, all states. The same vocabulary as your Mac &mdash; <strong>nothing to relearn.</strong></p>
-  </div>
-
-  <!-- interactive try-it -->
-  <div class="m-tryit" id="m-tryit">
-    <div class="m-tryit-label">Try it</div>
-    <h2 class="m-tryit-title">A session needs you</h2>
-    <p class="m-tryit-body">This is what it feels like. <strong>run-tests</strong> is paused, waiting for you to approve the next command before it continues.</p>
-    <div class="m-live-list" id="m-session-list">
-      <div class="m-live-row">
-        <div class="m-live-dot" style="background:#fff;animation:shimmer 1.6s ease-in-out infinite"></div>
-        <div class="m-live-name">build-assets</div>
-        <span class="m-live-meta">running &middot; 1m</span>
-      </div>
-      <div class="m-live-row waiting-row" id="m-waiting-row">
-        <div class="m-live-dot" style="background:#E8952A" id="m-waiting-dot"></div>
-        <div class="m-live-name">run-tests</div>
-        <span class="m-live-meta" id="m-waiting-meta">waiting</span>
-      </div>
-    </div>
-    <div class="m-approve-sheet" id="m-approve-sheet">
-      <p class="m-approve-q">run-tests wants to run <strong style="color:rgba(255,255,255,.75)">npm test --coverage</strong>. Approve?</p>
-      <div class="m-approve-btns">
-        <button class="m-approve-btn" onclick="mResolve('reject')">Reject</button>
-        <button class="m-approve-btn approve" onclick="mResolve('approve')">Approve</button>
-      </div>
-    </div>
-    <div class="m-resolved" id="m-resolved">
-      <p id="m-resolved-msg"></p>
-      <span id="m-resolved-sub"></span>
-    </div>
-  </div>
-
-  <!-- speculative section -->
-  <div class="m-speculative" id="m-spec">
-    <div class="m-spec-label">What&rsquo;s next</div>
-    <h2 class="m-spec-title">The gatekeeper role isn&rsquo;t just for developers</h2>
-    <p class="m-spec-body">Session Indicator started as a tool for managing terminal sessions. But the pattern &mdash; an AI agent pauses, a human approves, the agent continues &mdash; describes a relationship that extends far beyond code.</p>
-    <div class="m-spec-cards">
-      <div class="m-spec-card">
-        <div class="m-spec-card-who">Healthcare</div>
-        <p class="m-spec-card-action"><span class="m-spec-card-dot" style="background:#E8952A"></span>Your prescription refill agent found a lower-cost alternative. Approve the switch?</p>
-      </div>
-      <div class="m-spec-card">
-        <div class="m-spec-card-who">Daily routine</div>
-        <p class="m-spec-card-action"><span class="m-spec-card-dot" style="background:#E8952A"></span>Your morning planning agent rescheduled your 9am call. Approve the new time?</p>
-      </div>
-      <div class="m-spec-card">
-        <div class="m-spec-card-who">Finance</div>
-        <p class="m-spec-card-action"><span class="m-spec-card-dot" style="background:#E8952A"></span>Your budget agent flagged an unusual subscription. Cancel it?</p>
-      </div>
-    </div>
-    <p style="font-size:13px;color:rgba(255,255,255,.25);margin-top:24px;line-height:1.6">The Dynamic Island becomes the universal surface for human-in-the-loop AI. Same dot vocabulary. Same Approve / Reject anatomy. A new kind of ambient intelligence layer.</p>
-  </div>
-
-</div><!-- end mobile-only -->
-
-
-<!-- ══════════════════════════════════════
-     DESKTOP VIEW
-══════════════════════════════════════ -->
-<div class="desktop-only">
 <div id="portfolio-header">
 <nav class="ph-nav">
 <a href="https://ladanjohari.com" class="ph-logo">Ladan Johari</a>
@@ -1257,6 +1036,50 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 </div>
 </div>
 </div>
+
+<!-- mobile iPhone mockup — shown instead of macOS screen on narrow viewports -->
+<div class="mobile-only m-phone-wrap" id="m-phone-wrap">
+  <div class="m-iphone-wrap">
+    <div class="m-iphone">
+      <div class="m-screen m-app-bg">
+        <div class="m-sb"><span>9:41</span></div>
+        <div class="m-di compact" style="width:80px;height:24px;background:#000;display:flex;align-items:center;justify-content:space-between;padding:0 9px">
+          <div style="display:flex;gap:3.5px;align-items:center">
+            <div class="m-di-dot a"></div>
+            <div class="m-di-dot w"></div>
+            <div class="m-di-dot" style="background:#444"></div>
+          </div>
+          <span style="font-size:9px;color:rgba(255,255,255,.4)">3</span>
+        </div>
+        <div class="m-app-nav"><span>Sessions</span></div>
+        <div class="m-session-list">
+          <div class="m-s-row">
+            <div class="m-s-dot" style="background:#fff;animation:shimmer 1.6s ease-in-out infinite;width:7px;height:7px;border-radius:50%;flex-shrink:0"></div>
+            <div class="m-s-name"><div class="n">build-assets</div><div class="t">running &middot; 1m 23s</div></div>
+            <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
+          </div>
+          <div class="m-s-row waiting">
+            <div class="m-s-dot" style="background:#E8952A;width:7px;height:7px;border-radius:50%;flex-shrink:0"></div>
+            <div class="m-s-name"><div class="n">run-tests</div><div class="t">waiting for approval</div></div>
+            <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
+          </div>
+          <div class="m-s-row done">
+            <div class="m-s-dot" style="background:#34C759;width:7px;height:7px;border-radius:50%;flex-shrink:0"></div>
+            <div class="m-s-name"><div class="n">lint-check</div><div class="t">done &middot; 23s</div></div>
+          </div>
+        </div>
+        <div class="m-sheet" id="m-sheet">
+          <div class="m-sheet-label" id="m-sheet-label">run-tests &middot; approve tool call?</div>
+          <div class="m-sheet-btns" id="m-sheet-btns">
+            <button class="m-sheet-btn" onclick="mPhoneResolve('reject')">Reject</button>
+            <button class="m-sheet-btn approve" onclick="mPhoneResolve('approve')">Approve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <main id="root"></main>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -2784,67 +2607,26 @@ function startSessionIndicatorTour(){
 }
 </script>
 
-</div><!-- end desktop-only -->
-
 <script>
-/* ── MOBILE INTERACTIVE TRY-IT ── */
-var mResolved = false;
-function mResolve(action) {
-  if (mResolved) return;
-  mResolved = true;
-  document.getElementById('m-approve-sheet').style.display = 'none';
-  var dot = document.getElementById('m-waiting-dot');
-  var meta = document.getElementById('m-waiting-meta');
-  var row = document.getElementById('m-waiting-row');
-  var card = document.getElementById('m-resolved');
-  var msg = document.getElementById('m-resolved-msg');
-  var sub = document.getElementById('m-resolved-sub');
+/* ── MOBILE IPHONE MOCKUP: APPROVE/REJECT ── */
+var mPhoneResolved = false;
+function mPhoneResolve(action) {
+  if (mPhoneResolved) return;
+  mPhoneResolved = true;
+  var waitingRow = document.querySelector('.m-s-row.waiting');
+  var dot = waitingRow ? waitingRow.querySelector('.m-s-dot') : null;
+  var label = document.getElementById('m-sheet-label');
+  var btns = document.getElementById('m-sheet-btns');
   if (action === 'approve') {
-    dot.style.background = '#fff';
-    dot.style.animation = 'shimmer 1.6s ease-in-out infinite';
-    meta.textContent = 'running';
-    meta.style.color = 'rgba(255,255,255,.28)';
-    row.style.background = 'transparent';
-    msg.textContent = 'Approved';
-    msg.style.color = '#34C759';
-    sub.textContent = 'run-tests is continuing';
+    if (dot) { dot.style.background = '#fff'; dot.style.animation = 'shimmer 1.6s ease-in-out infinite'; }
+    if (waitingRow) { waitingRow.querySelector('.t').textContent = 'running'; waitingRow.querySelector('.t').style.color = 'rgba(255,255,255,.3)'; waitingRow.style.background = 'transparent'; }
+    if (label) { label.textContent = 'run-tests resumed'; label.style.color = '#34C759'; }
   } else {
-    dot.style.background = '#FF3B30';
-    dot.style.animation = 'none';
-    meta.textContent = 'stopped';
-    meta.style.color = '#FF3B30';
-    row.style.background = 'transparent';
-    msg.textContent = 'Rejected';
-    msg.style.color = '#FF3B30';
-    sub.textContent = 'run-tests was stopped';
+    if (dot) { dot.style.background = '#FF3B30'; dot.style.animation = 'none'; }
+    if (waitingRow) { waitingRow.querySelector('.t').textContent = 'stopped'; waitingRow.querySelector('.t').style.color = '#FF3B30'; waitingRow.style.background = 'transparent'; }
+    if (label) { label.textContent = 'run-tests rejected'; label.style.color = '#FF3B30'; }
   }
-  card.classList.add('show');
-}
-
-/* ── MOBILE DRIVER.JS TOUR ── */
-function startMobileTour() {
-  if (typeof driver === 'undefined' || window.innerWidth >= 768) return;
-  var d = driver.js.driver({
-    showProgress: true,
-    allowClose: true,
-    overlayColor: 'rgba(0,0,0,0.65)',
-    stagePadding: 8,
-    stageRadius: 12,
-    popoverClass: 'si-mpop',
-    nextBtnText: 'Next',
-    prevBtnText: 'Back',
-    doneBtnText: 'Got it',
-    steps: [
-      { element: '#m-hero-dots', popover: { title: 'Five states, one glance', description: 'White shimmers = active. Orange = waiting on you. Green = done. Red = error. Gray = idle. The same vocabulary on your Mac and your iPhone.', side: 'top', align: 'start' } },
-      { element: '#m-s1', popover: { title: 'Dynamic Island compact', description: 'Ambient awareness in the smallest possible surface &mdash; dots only, always visible without interrupting you.', side: 'top', align: 'start' } },
-      { element: '#m-s2', popover: { title: 'Long press to expand', description: 'The island grows to show your sessions and the Approve / Reject control &mdash; the same component you\'d see on the Mac.', side: 'top', align: 'start' } },
-      { element: '#m-s3', popover: { title: 'Lock Screen', description: 'A Live Activity pushes to your lock screen when an agent is blocked. Act without unlocking.', side: 'top', align: 'start' } },
-      { element: '#m-s4', popover: { title: 'Companion App', description: 'Tap the island for the full picture. All sessions, all states. Nothing to relearn.', side: 'top', align: 'start' } },
-      { element: '#m-tryit', popover: { title: 'Try it now', description: 'An agent is waiting below. Approve or reject it.', side: 'top', align: 'start' } },
-      { element: '#m-spec', popover: { title: 'The bigger idea', description: 'The gatekeeper role isn\'t just for developers. Any AI agent that pauses for human approval fits this pattern.', side: 'top', align: 'start' } }
-    ]
-  });
-  d.drive();
+  if (btns) btns.style.display = 'none';
 }
 </script>
 </body>

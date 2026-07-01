@@ -866,11 +866,12 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 @media(max-width:767px){
   .mobile-only{display:block}
   .m-tour-wrap{display:flex}
-  /* hide macOS prototype screen and desktop React app, show iPhone mockup instead */
+  /* hide macOS prototype and desktop-only elements; keep principles/variations */
   .screen{display:none!important}
   .mobile-note{display:none!important}
   .tour-btn{display:none!important}
-  #root{display:none!important}
+  #root .hero{display:none!important}
+  #root footer.footer{display:none!important}
   .m-phone-wrap{padding:28px 0 0}
   /* touch-action on iPhone mockup buttons — removes iOS 300ms delay */
   .m-sheet-btn,.m-di-btn,.m-la-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
@@ -1188,21 +1189,6 @@ body.lm .m-legend-name{color:rgba(0,0,0,.5)}
 body.lm .m-legend-desc{color:rgba(0,0,0,.42)}
 
 /* ── Mobile footer ── */
-/* ── Mobile principles ── */
-.m-principles{padding:0 24px 48px}
-.m-principles-title{font-size:17px;font-weight:600;letter-spacing:-.01em;margin-bottom:20px;color:rgba(255,255,255,.82)}
-.m-principle{background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 16px;margin-bottom:12px}
-.m-principle:last-child{margin-bottom:0}
-.m-principle-num{font-size:10px;font-weight:500;color:rgba(255,255,255,.22);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
-.m-principle-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.82);margin-bottom:6px;letter-spacing:-.01em}
-.m-principle-body{font-size:13px;color:rgba(255,255,255,.38);line-height:1.6}
-
-body.lm .m-principles-title{color:rgba(0,0,0,.72)}
-body.lm .m-principle{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09)}
-body.lm .m-principle-num{color:rgba(0,0,0,.25)}
-body.lm .m-principle-title{color:rgba(0,0,0,.72)}
-body.lm .m-principle-body{color:rgba(0,0,0,.42)}
-
 .m-footer{padding:28px 24px 40px;border-top:.5px solid rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.22);text-align:center;letter-spacing:.01em}
 .m-footer a{color:inherit;text-decoration:none}
 .m-footer a:hover{color:rgba(255,255,255,.5)}
@@ -1354,31 +1340,6 @@ body.lm .m-tour-cta:hover{background:rgba(0,0,0,.11)}
     </div>
   </div>
 </div>
-
-<!-- mobile principles -->
-<div class="mobile-only m-principles">
-  <h2 class="m-principles-title">Three decisions that define it</h2>
-  <div class="m-principle">
-    <div class="m-principle-num">01</div>
-    <div class="m-principle-title">Borrowed, not invented</div>
-    <p class="m-principle-body">Same visual grammar as Ethernet LEDs and the macOS camera indicator. Developers already read this fluently. No legend required.</p>
-  </div>
-  <div class="m-principle">
-    <div class="m-principle-num">02</div>
-    <div class="m-principle-title">Motion = state. Color = exception.</div>
-    <p class="m-principle-body">White shimmer handles 90% of cases. Color only fires for states that demand attention: amber, red, green.</p>
-  </div>
-  <div class="m-principle">
-    <div class="m-principle-num">03</div>
-    <div class="m-principle-title">Native menu bar, not a floating overlay</div>
-    <p class="m-principle-body">Built in SwiftUI, placed where hardware status lives. The placement is load-bearing, not cosmetic.</p>
-  </div>
-</div>
-
-<!-- mobile footer -->
-<footer class="mobile-only m-footer">
-  Session Indicator &middot; <a href="https://ladanjohari.com">Ladan Johari</a> &middot; 2026
-</footer>
 
 <main id="root"></main>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -3089,5 +3050,9 @@ function startMobileTour() {
   d.drive();
 }
 </script>
+
+<footer class="mobile-only m-footer">
+  Session Indicator &middot; <a href="https://ladanjohari.com">Ladan Johari</a> &middot; 2026
+</footer>
 </body>
 </html>

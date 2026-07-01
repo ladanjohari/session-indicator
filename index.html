@@ -1188,6 +1188,21 @@ body.lm .m-legend-name{color:rgba(0,0,0,.5)}
 body.lm .m-legend-desc{color:rgba(0,0,0,.42)}
 
 /* ── Mobile footer ── */
+/* ── Mobile principles ── */
+.m-principles{padding:0 24px 48px}
+.m-principles-title{font-size:17px;font-weight:600;letter-spacing:-.01em;margin-bottom:20px;color:rgba(255,255,255,.82)}
+.m-principle{background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 16px;margin-bottom:12px}
+.m-principle:last-child{margin-bottom:0}
+.m-principle-num{font-size:10px;font-weight:500;color:rgba(255,255,255,.22);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.m-principle-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.82);margin-bottom:6px;letter-spacing:-.01em}
+.m-principle-body{font-size:13px;color:rgba(255,255,255,.38);line-height:1.6}
+
+body.lm .m-principles-title{color:rgba(0,0,0,.72)}
+body.lm .m-principle{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09)}
+body.lm .m-principle-num{color:rgba(0,0,0,.25)}
+body.lm .m-principle-title{color:rgba(0,0,0,.72)}
+body.lm .m-principle-body{color:rgba(0,0,0,.42)}
+
 .m-footer{padding:28px 24px 40px;border-top:.5px solid rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.22);text-align:center;letter-spacing:.01em}
 .m-footer a{color:inherit;text-decoration:none}
 .m-footer a:hover{color:rgba(255,255,255,.5)}
@@ -1205,10 +1220,6 @@ body.lm .m-tour-cta:hover{background:rgba(0,0,0,.11)}
 <div id="portfolio-header">
 <nav class="ph-nav">
 <a href="https://ladanjohari.com" class="ph-logo">Ladan Johari</a>
-<div class="ph-links">
-<a href="https://ladanjohari.com/#work" class="ph-link">Work</a>
-<a href="https://ladanjohari.com/resume.pdf" class="ph-link">R&eacute;sum&eacute;</a>
-</div>
 </nav>
 <div class="ph-body">
 <p class="ph-tag">AI Agent UI &middot; Interaction System &middot; Design Engineering</p>
@@ -1341,6 +1352,26 @@ body.lm .m-tour-cta:hover{background:rgba(0,0,0,.11)}
       <div class="m-legend-pill"><div class="m-legend-dot done"></div><span class="m-legend-name">Done</span></div>
       <span class="m-legend-desc">Green. Stays visible until you close it.</span>
     </div>
+  </div>
+</div>
+
+<!-- mobile principles -->
+<div class="mobile-only m-principles">
+  <h2 class="m-principles-title">Three decisions that define it</h2>
+  <div class="m-principle">
+    <div class="m-principle-num">01</div>
+    <div class="m-principle-title">Borrowed, not invented</div>
+    <p class="m-principle-body">Same visual grammar as Ethernet LEDs and the macOS camera indicator. Developers already read this fluently. No legend required.</p>
+  </div>
+  <div class="m-principle">
+    <div class="m-principle-num">02</div>
+    <div class="m-principle-title">Motion = state. Color = exception.</div>
+    <p class="m-principle-body">White shimmer handles 90% of cases. Color only fires for states that demand attention: amber, red, green.</p>
+  </div>
+  <div class="m-principle">
+    <div class="m-principle-num">03</div>
+    <div class="m-principle-title">Native menu bar, not a floating overlay</div>
+    <p class="m-principle-body">Built in SwiftUI, placed where hardware status lives. The placement is load-bearing, not cosmetic.</p>
   </div>
 </div>
 
@@ -2968,8 +2999,14 @@ function startMobileTour() {
   var driverFn = (window.driver && window.driver.js) ? window.driver.js.driver : null;
   if (!driverFn) { console.warn('Driver.js not loaded'); return; }
 
-  /* ensure phone is scrolled into view and DI is in compact state before tour */
+  /* reset DI to compact and scroll to top before starting */
   if (mDIExpanded) toggleMDI();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+
+  /* inline dot helper for state descriptions */
+  function dot(color, anim) {
+    return '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:' + color + ';vertical-align:middle;margin:0 2px 1px 5px' + (anim ? ';animation:shimmer 1.6s ease-in-out infinite' : '') + '"></span>';
+  }
 
   var d = driverFn({
     showProgress: true,
@@ -2983,14 +3020,33 @@ function startMobileTour() {
     doneBtnText: 'Got it',
     onDestroyStarted: function() { d.destroy(); },
     steps: [
+      /* step 1 — problem / intro */
       {
-        element: '#m-dynamic-island',
+        element: '#m-phone-wrap',
         popover: {
-          title: 'Dynamic Island',
-          description: 'While your Mac agents run, the Dynamic Island shows their states at a glance — white shimmer is active, orange means one is waiting on you. Tap it to expand.',
+          title: 'Your Mac keeps running',
+          description: 'When you step away from your desk, your Claude Code agents don\'t stop. Session Indicator brings their status to your iPhone so you never have to run back just to check.',
           side: 'bottom', align: 'center'
         }
       },
+      /* step 2 — DI compact, all 5 states */
+      {
+        element: '#m-dynamic-island',
+        popover: {
+          title: 'Five states at a glance',
+          description: 'The Dynamic Island shows every agent\'s state without opening anything:'
+            + '<div style="margin-top:9px;display:flex;flex-direction:column;gap:5px;font-size:11px;color:rgba(255,255,255,.55)">'
+            + '<div>' + dot('#fff', true) + ' Active &mdash; executing right now</div>'
+            + '<div>' + dot('#E8952A') + ' Waiting &mdash; needs your approval</div>'
+            + '<div>' + dot('#FF3B30') + ' Error &mdash; something went wrong</div>'
+            + '<div>' + dot('#34C759') + ' Done &mdash; finished successfully</div>'
+            + '<div>' + dot('rgba(255,255,255,.22)') + ' Idle &mdash; no active task</div>'
+            + '</div>',
+          side: 'bottom', align: 'center'
+        },
+        onHighlightStarted: function() { if (mDIExpanded) toggleMDI(); }
+      },
+      /* step 3 — DI expanded */
       {
         element: '#m-dynamic-island',
         popover: {
@@ -3000,6 +3056,7 @@ function startMobileTour() {
         },
         onHighlightStarted: function() { if (!mDIExpanded) toggleMDI(); }
       },
+      /* step 4 — session list */
       {
         element: '.m-session-list2',
         popover: {
@@ -3009,14 +3066,16 @@ function startMobileTour() {
         },
         onHighlightStarted: function() { if (mDIExpanded) toggleMDI(); }
       },
+      /* step 5 — waiting row */
       {
         element: '#m-waiting-row',
         popover: {
           title: 'Waiting for you',
-          description: 'Orange means the agent hit a tool call and stopped — it needs your go-ahead before it can continue. The Mac is paused until you respond.',
+          description: 'Orange means the agent hit a tool call and stopped. It needs your go-ahead before it can continue — the Mac is paused until you respond.',
           side: 'top', align: 'start'
         }
       },
+      /* step 6 — approval sheet */
       {
         element: '#m-sheet',
         popover: {

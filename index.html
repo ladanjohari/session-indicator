@@ -859,9 +859,383 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
   .menubar{padding:0 6px}
   .mb-item{font-size:10px;padding:0 3px}
 }
+
+/* ─── RESPONSIVE GATE ─── */
+.mobile-only{display:none}
+.desktop-only{display:block}
+@media(max-width:767px){
+  .mobile-only{display:block}
+  .desktop-only{display:none}
+}
+
+/* ─────────────────────────────────────
+   MOBILE VIEW
+───────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.m-wrap{padding-top:52px}
+
+/* shared mobile nav */
+.m-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(10,10,10,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:.5px solid rgba(255,255,255,.06)}
+.m-nav .m-logo{font-size:13px;font-weight:500;color:rgba(255,255,255,.75);text-decoration:none}
+.m-nav .m-links{display:flex;gap:14px}
+.m-nav a{font-size:12px;color:rgba(255,255,255,.4);text-decoration:none}
+.m-nav a:hover{color:#fff}
+
+/* hero */
+.m-hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:60px 24px 48px;position:relative}
+.m-eyebrow{font-size:11px;font-weight:500;color:rgba(255,255,255,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.m-title{font-size:36px;font-weight:600;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px}
+.m-title span{color:rgba(255,255,255,.3)}
+.m-sub{font-size:16px;line-height:1.65;color:rgba(255,255,255,.45);max-width:340px;margin-bottom:36px}
+.m-cta{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:11px 18px;border-radius:24px;border:.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;cursor:pointer;font-family:inherit;text-decoration:none}
+.m-cta:hover{background:rgba(255,255,255,.12)}
+.m-dots{display:flex;gap:8px;align-items:center;margin-top:48px}
+.m-dot{width:8px;height:8px;border-radius:50%}
+.m-dot.a{background:#fff;animation:shimmer 1.6s ease-in-out infinite}
+.m-dot.w{background:#E8952A}
+.m-dot.g{background:#34C759}
+.m-dot.e{background:#FF3B30}
+.m-dot.i{background:rgba(255,255,255,.18)}
+.m-dot-label{font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.06em;text-transform:uppercase;margin-left:4px}
+
+/* scroll sections */
+.m-section{padding:72px 24px 60px;border-top:.5px solid rgba(255,255,255,.05)}
+.m-section-num{font-size:10px;font-weight:500;color:rgba(255,255,255,.25);letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px}
+.m-section-title{font-size:22px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px;line-height:1.25}
+.m-section-body{font-size:15px;line-height:1.7;color:rgba(255,255,255,.5);margin-bottom:32px}
+.m-section-body strong{color:rgba(255,255,255,.8);font-weight:500}
+
+/* iphone mockup */
+.m-iphone-wrap{display:flex;justify-content:center;margin-bottom:32px}
+.m-iphone{width:200px;height:432px;background:#111;border-radius:38px;border:1.5px solid #2e2e2e;position:relative;overflow:hidden}
+.m-screen{position:absolute;inset:0;border-radius:37px;overflow:hidden}
+.m-sb{position:absolute;top:0;left:0;right:0;height:40px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 18px 7px;font-size:11px;font-weight:600;color:#fff;z-index:5}
+.m-di{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#000;border-radius:18px;z-index:10;transition:all .55s cubic-bezier(.34,1.4,.64,1);overflow:hidden}
+.m-di.compact{width:90px;height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 9px}
+.m-di.expanded{width:192px;height:116px;display:flex;flex-direction:column;padding:11px 14px;gap:7px}
+.m-di-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.m-di-dot.a{background:#fff;animation:shimmer 1.6s ease-in-out infinite}
+.m-di-dot.w{background:#E8952A}
+.m-di-dot.g{background:#34C759}
+.m-di-row{display:flex;align-items:center;gap:7px}
+.m-di-name{flex:1;font-size:10.5px;color:rgba(255,255,255,.78)}
+.m-di-ts{font-size:9.5px;color:rgba(255,255,255,.3)}
+.m-di-status{font-size:9.5px;color:#E8952A}
+.m-di-divider{height:.5px;background:rgba(255,255,255,.08)}
+.m-di-btns{display:flex;gap:5px}
+.m-di-btn{flex:1;font-size:9.5px;padding:4px 0;border-radius:20px;border:.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:inherit;cursor:pointer}
+.m-di-btn.approve{border-color:transparent;background:#0A84FF;color:#fff;font-weight:500}
+
+/* lock screen */
+.m-lock-bg{background:#0d1117}
+.m-lock-time{position:absolute;top:68px;left:0;right:0;text-align:center}
+.m-lock-time .hr{font-size:52px;font-weight:200;line-height:1;letter-spacing:-2px}
+.m-lock-time .date{font-size:11px;color:rgba(255,255,255,.4);margin-top:5px}
+.m-la{position:absolute;bottom:26px;left:10px;right:10px;background:rgba(34,34,34,.92);border:.5px solid rgba(255,255,255,.12);border-radius:18px;padding:12px 14px}
+.m-la-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.m-la-icon{width:24px;height:24px;background:#0A84FF;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-la-info .name{font-size:11.5px;font-weight:500;color:#fff}
+.m-la-info .app{font-size:9.5px;color:rgba(255,255,255,.38)}
+.m-la-btns{display:flex;gap:6px}
+.m-la-btn{flex:1;font-size:11px;padding:7px 0;border-radius:20px;border:.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-family:inherit;cursor:pointer}
+.m-la-btn.approve{border-color:transparent;background:#0A84FF;color:#fff;font-weight:500}
+
+/* companion app */
+.m-app-bg{background:#0a0a0a}
+.m-app-nav{position:absolute;top:42px;left:0;right:0;height:44px;display:flex;align-items:center;padding:0 18px;border-bottom:.5px solid rgba(255,255,255,.06)}
+.m-app-nav span{font-size:17px;font-weight:600;color:#fff}
+.m-session-list{position:absolute;top:86px;left:0;right:0;bottom:80px}
+.m-s-row{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:.5px solid rgba(255,255,255,.05)}
+.m-s-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.m-s-name{flex:1}
+.m-s-name .n{font-size:13px;color:rgba(255,255,255,.82);font-weight:500}
+.m-s-name .t{font-size:11px;color:rgba(255,255,255,.3)}
+.m-s-row.waiting{background:rgba(232,149,42,.05)}
+.m-s-row.waiting .t{color:#E8952A}
+.m-s-row.done .n{color:rgba(255,255,255,.4)}
+.m-sheet{position:absolute;bottom:0;left:0;right:0;background:#1c1c1e;border-top:.5px solid rgba(255,255,255,.1);border-radius:18px 18px 0 0;padding:14px 18px 24px}
+.m-sheet-label{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:10px}
+.m-sheet-btns{display:flex;gap:8px}
+.m-sheet-btn{flex:1;font-size:13px;padding:11px 0;border-radius:22px;border:.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);font-family:inherit;cursor:pointer}
+.m-sheet-btn.approve{flex:2;border-color:transparent;background:#0A84FF;color:#fff;font-weight:500}
+
+/* interactive try-it */
+.m-tryit{padding:64px 24px 60px;border-top:.5px solid rgba(255,255,255,.05)}
+.m-tryit-label{font-size:10px;font-weight:500;color:rgba(255,255,255,.25);letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.m-tryit-title{font-size:22px;font-weight:600;margin-bottom:12px;letter-spacing:-.01em}
+.m-tryit-body{font-size:15px;line-height:1.7;color:rgba(255,255,255,.45);margin-bottom:28px}
+.m-live-list{border:.5px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:24px}
+.m-live-row{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:.5px solid rgba(255,255,255,.06)}
+.m-live-row:last-child{border-bottom:none}
+.m-live-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.m-live-name{flex:1;font-size:14px;color:rgba(255,255,255,.82);font-weight:500}
+.m-live-meta{font-size:12px;color:rgba(255,255,255,.28)}
+.m-live-row.waiting-row{background:rgba(232,149,42,.04)}
+.m-live-row.waiting-row .m-live-meta{color:#E8952A}
+.m-approve-sheet{border:.5px solid rgba(255,255,255,.1);border-radius:14px;background:#1c1c1e;padding:16px 18px}
+.m-approve-q{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:12px;line-height:1.5}
+.m-approve-btns{display:flex;gap:8px}
+.m-approve-btn{flex:1;font-size:13px;padding:12px 0;border-radius:22px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);font-family:inherit;cursor:pointer;transition:all .2s}
+.m-approve-btn.approve{flex:2;border-color:transparent;background:#0A84FF;color:#fff;font-weight:500}
+.m-approve-btn:active{transform:scale(.97)}
+.m-resolved{display:none;background:rgba(52,199,89,.06);border:.5px solid rgba(52,199,89,.2);border-radius:14px;padding:16px 18px;text-align:center}
+.m-resolved.show{display:block}
+.m-resolved p{font-size:14px;font-weight:500;margin-bottom:4px}
+.m-resolved span{font-size:12px;color:rgba(255,255,255,.35)}
+
+/* speculative section */
+.m-speculative{padding:64px 24px 80px;border-top:.5px solid rgba(255,255,255,.05)}
+.m-spec-label{font-size:10px;font-weight:500;color:#E8952A;letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px}
+.m-spec-title{font-size:24px;font-weight:600;line-height:1.2;letter-spacing:-.01em;margin-bottom:16px}
+.m-spec-body{font-size:15px;line-height:1.7;color:rgba(255,255,255,.45);margin-bottom:32px}
+.m-spec-cards{display:flex;flex-direction:column;gap:12px}
+.m-spec-card{border:.5px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px}
+.m-spec-card-who{font-size:10px;font-weight:500;color:rgba(255,255,255,.28);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.m-spec-card-action{font-size:14px;color:rgba(255,255,255,.82);line-height:1.5;margin-bottom:6px}
+.m-spec-card-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:middle}
+
+/* mobile tour */
+.si-mpop.driver-popover{background:rgba(28,28,30,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:.5px solid rgba(255,255,255,.14);border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,.6);padding:16px 18px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;max-width:300px}
+.si-mpop .driver-popover-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:6px;padding:0}
+.si-mpop .driver-popover-description{font-size:12px;line-height:1.6;color:rgba(255,255,255,.5);padding:0}
+.si-mpop .driver-popover-footer{margin-top:14px;padding:0;border:none}
+.si-mpop .driver-popover-progress-text{font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.04em}
+.si-mpop .driver-popover-navigation-btns{gap:6px}
+.si-mpop button.driver-popover-next-btn,.si-mpop button.driver-popover-prev-btn{font-size:11px;padding:5px 14px;border-radius:20px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);font-family:inherit;text-shadow:none}
+.si-mpop button.driver-popover-next-btn{border-color:transparent;background:#0A84FF;color:#fff}
+.si-mpop button.driver-popover-close-btn{color:rgba(255,255,255,.3);font-size:14px}
+.driver-active-element{border-radius:12px!important}
 </style>
 </head>
 <body>
+
+<!-- ══════════════════════════════════════
+     MOBILE VIEW
+══════════════════════════════════════ -->
+<div class="mobile-only m-wrap">
+
+  <!-- mobile nav -->
+  <nav class="m-nav">
+    <a href="https://ladanjohari.com" class="m-logo">Ladan Johari</a>
+    <div class="m-links">
+      <a href="https://github.com/ladanjohari/session-indicator">GitHub</a>
+      <a href="https://ladanjohari.com/#work">Work</a>
+    </div>
+  </nav>
+
+  <!-- hero -->
+  <div class="m-hero" id="m-hero">
+    <div class="m-eyebrow">AI Agent UI &middot; iPhone</div>
+    <h1 class="m-title">Session<br><span>Indicator</span></h1>
+    <p class="m-sub">When your AI agents are running on your Mac and you step away &mdash; this is how you stay in control.</p>
+    <button class="m-cta" onclick="startMobileTour()">Take a tour</button>
+    <div class="m-dots" id="m-hero-dots">
+      <div class="m-dot a"></div>
+      <div class="m-dot w"></div>
+      <div class="m-dot g"></div>
+      <div class="m-dot i"></div>
+      <span class="m-dot-label">Five states, one glance</span>
+    </div>
+  </div>
+
+  <!-- surface 1: DI compact -->
+  <div class="m-section" id="m-s1">
+    <div class="m-section-num">01 &middot; Dynamic Island compact</div>
+    <div class="m-iphone-wrap">
+      <div class="m-iphone">
+        <div class="m-screen" style="background:#0a0a0a">
+          <div class="m-sb"><span>9:41</span><span style="font-size:9px;opacity:.5">&#9646;&#9646;</span></div>
+          <div class="m-di compact">
+            <div style="display:flex;gap:3.5px;align-items:center">
+              <div class="m-di-dot a"></div>
+              <div class="m-di-dot w"></div>
+              <div class="m-di-dot" style="background:#444"></div>
+            </div>
+            <span style="font-size:9.5px;color:rgba(255,255,255,.45);font-weight:500">3</span>
+          </div>
+          <div style="position:absolute;top:60px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;opacity:.07">
+            <div style="width:70px;height:70px;border-radius:16px;background:#fff"></div>
+            <div style="width:90px;height:9px;border-radius:5px;background:#fff"></div>
+            <div style="width:60px;height:9px;border-radius:5px;background:#fff"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h2 class="m-section-title">Ambient awareness</h2>
+    <p class="m-section-body">The same dot vocabulary from the Mac menu bar, now living in the Dynamic Island. White shimmers active, orange means an agent is waiting on you. <strong>No interruption</strong> until you need it.</p>
+  </div>
+
+  <!-- surface 2: DI expanded -->
+  <div class="m-section" id="m-s2">
+    <div class="m-section-num">02 &middot; Dynamic Island expanded</div>
+    <div class="m-iphone-wrap">
+      <div class="m-iphone">
+        <div class="m-screen" style="background:#0a0a0a">
+          <div class="m-sb"><span>9:41</span></div>
+          <div class="m-di expanded">
+            <div class="m-di-row">
+              <div class="m-di-dot a"></div>
+              <span class="m-di-name">build-assets</span>
+              <span class="m-di-ts">1m 23s</span>
+            </div>
+            <div class="m-di-row">
+              <div class="m-di-dot w"></div>
+              <span class="m-di-name">run-tests</span>
+              <span class="m-di-status">waiting</span>
+            </div>
+            <div class="m-di-divider"></div>
+            <div class="m-di-btns">
+              <button class="m-di-btn">Reject</button>
+              <button class="m-di-btn approve">Approve</button>
+            </div>
+          </div>
+          <div style="position:absolute;top:145px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center">
+            <span style="font-size:10px;color:rgba(255,255,255,.12)">long press to expand</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h2 class="m-section-title">Approve without opening the app</h2>
+    <p class="m-section-body">Long press the island. The same <strong>Approve / Reject</strong> component from the Mac popover, now in the Dynamic Island. The anatomy is identical &mdash; only the surface changes.</p>
+  </div>
+
+  <!-- surface 3: lock screen -->
+  <div class="m-section" id="m-s3">
+    <div class="m-section-num">03 &middot; Lock Screen</div>
+    <div class="m-iphone-wrap">
+      <div class="m-iphone">
+        <div class="m-screen m-lock-bg">
+          <div class="m-sb"><span>9:41</span><span style="font-size:9px;opacity:.5">&#9646;&#9646;</span></div>
+          <div class="m-di compact">
+            <div style="display:flex;gap:3.5px;align-items:center">
+              <div class="m-di-dot a"></div>
+              <div class="m-di-dot w"></div>
+            </div>
+            <span style="font-size:11px;color:#E8952A;font-weight:600">!</span>
+          </div>
+          <div class="m-lock-time">
+            <div class="hr">9:41</div>
+            <div class="date">Tuesday, June 30</div>
+          </div>
+          <div class="m-la">
+            <div class="m-la-header">
+              <div class="m-la-icon"><div class="m-di-dot a"></div></div>
+              <div class="m-la-info">
+                <div class="name">run-tests is waiting</div>
+                <div class="app">Session Indicator</div>
+              </div>
+            </div>
+            <div class="m-la-btns">
+              <button class="m-la-btn">Reject</button>
+              <button class="m-la-btn approve">Approve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h2 class="m-section-title">Act without unlocking</h2>
+    <p class="m-section-body">A Live Activity pushes to your Lock Screen when an agent is blocked. Your Mac doesn&rsquo;t wait for you to get back to your desk. <strong>The agent waits for you &mdash; not the other way around.</strong></p>
+  </div>
+
+  <!-- surface 4: companion app -->
+  <div class="m-section" id="m-s4">
+    <div class="m-section-num">04 &middot; Companion App</div>
+    <div class="m-iphone-wrap">
+      <div class="m-iphone">
+        <div class="m-screen m-app-bg">
+          <div class="m-sb"><span>9:41</span></div>
+          <div class="m-di compact" style="width:80px;height:24px;background:#000"></div>
+          <div class="m-app-nav"><span>Sessions</span></div>
+          <div class="m-session-list">
+            <div class="m-s-row">
+              <div class="m-s-dot" style="background:#fff;animation:shimmer 1.6s ease-in-out infinite"></div>
+              <div class="m-s-name"><div class="n">build-assets</div><div class="t">running &middot; 1m 23s</div></div>
+              <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
+            </div>
+            <div class="m-s-row waiting">
+              <div class="m-s-dot" style="background:#E8952A"></div>
+              <div class="m-s-name"><div class="n">run-tests</div><div class="t">waiting for approval</div></div>
+              <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
+            </div>
+            <div class="m-s-row done">
+              <div class="m-s-dot" style="background:#34C759"></div>
+              <div class="m-s-name"><div class="n">lint-check</div><div class="t">done &middot; 23s</div></div>
+            </div>
+          </div>
+          <div class="m-sheet">
+            <div class="m-sheet-label">run-tests &middot; approve tool call?</div>
+            <div class="m-sheet-btns">
+              <button class="m-sheet-btn">Reject</button>
+              <button class="m-sheet-btn approve">Approve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h2 class="m-section-title">The full picture</h2>
+    <p class="m-section-body">Tap the island to open the companion app. All sessions, all states. The same vocabulary as your Mac &mdash; <strong>nothing to relearn.</strong></p>
+  </div>
+
+  <!-- interactive try-it -->
+  <div class="m-tryit" id="m-tryit">
+    <div class="m-tryit-label">Try it</div>
+    <h2 class="m-tryit-title">A session needs you</h2>
+    <p class="m-tryit-body">This is what it feels like. <strong>run-tests</strong> is paused, waiting for you to approve the next command before it continues.</p>
+    <div class="m-live-list" id="m-session-list">
+      <div class="m-live-row">
+        <div class="m-live-dot" style="background:#fff;animation:shimmer 1.6s ease-in-out infinite"></div>
+        <div class="m-live-name">build-assets</div>
+        <span class="m-live-meta">running &middot; 1m</span>
+      </div>
+      <div class="m-live-row waiting-row" id="m-waiting-row">
+        <div class="m-live-dot" style="background:#E8952A" id="m-waiting-dot"></div>
+        <div class="m-live-name">run-tests</div>
+        <span class="m-live-meta" id="m-waiting-meta">waiting</span>
+      </div>
+    </div>
+    <div class="m-approve-sheet" id="m-approve-sheet">
+      <p class="m-approve-q">run-tests wants to run <strong style="color:rgba(255,255,255,.75)">npm test --coverage</strong>. Approve?</p>
+      <div class="m-approve-btns">
+        <button class="m-approve-btn" onclick="mResolve('reject')">Reject</button>
+        <button class="m-approve-btn approve" onclick="mResolve('approve')">Approve</button>
+      </div>
+    </div>
+    <div class="m-resolved" id="m-resolved">
+      <p id="m-resolved-msg"></p>
+      <span id="m-resolved-sub"></span>
+    </div>
+  </div>
+
+  <!-- speculative section -->
+  <div class="m-speculative" id="m-spec">
+    <div class="m-spec-label">What&rsquo;s next</div>
+    <h2 class="m-spec-title">The gatekeeper role isn&rsquo;t just for developers</h2>
+    <p class="m-spec-body">Session Indicator started as a tool for managing terminal sessions. But the pattern &mdash; an AI agent pauses, a human approves, the agent continues &mdash; describes a relationship that extends far beyond code.</p>
+    <div class="m-spec-cards">
+      <div class="m-spec-card">
+        <div class="m-spec-card-who">Healthcare</div>
+        <p class="m-spec-card-action"><span class="m-spec-card-dot" style="background:#E8952A"></span>Your prescription refill agent found a lower-cost alternative. Approve the switch?</p>
+      </div>
+      <div class="m-spec-card">
+        <div class="m-spec-card-who">Daily routine</div>
+        <p class="m-spec-card-action"><span class="m-spec-card-dot" style="background:#E8952A"></span>Your morning planning agent rescheduled your 9am call. Approve the new time?</p>
+      </div>
+      <div class="m-spec-card">
+        <div class="m-spec-card-who">Finance</div>
+        <p class="m-spec-card-action"><span class="m-spec-card-dot" style="background:#E8952A"></span>Your budget agent flagged an unusual subscription. Cancel it?</p>
+      </div>
+    </div>
+    <p style="font-size:13px;color:rgba(255,255,255,.25);margin-top:24px;line-height:1.6">The Dynamic Island becomes the universal surface for human-in-the-loop AI. Same dot vocabulary. Same Approve / Reject anatomy. A new kind of ambient intelligence layer.</p>
+  </div>
+
+</div><!-- end mobile-only -->
+
+
+<!-- ══════════════════════════════════════
+     DESKTOP VIEW
+══════════════════════════════════════ -->
+<div class="desktop-only">
 <div id="portfolio-header">
 <nav class="ph-nav">
 <a href="https://ladanjohari.com" class="ph-logo">Ladan Johari</a>
@@ -2407,6 +2781,70 @@ function startSessionIndicatorTour(){
       ]
   });
   driverObj.drive();
+}
+</script>
+
+</div><!-- end desktop-only -->
+
+<script>
+/* ── MOBILE INTERACTIVE TRY-IT ── */
+var mResolved = false;
+function mResolve(action) {
+  if (mResolved) return;
+  mResolved = true;
+  document.getElementById('m-approve-sheet').style.display = 'none';
+  var dot = document.getElementById('m-waiting-dot');
+  var meta = document.getElementById('m-waiting-meta');
+  var row = document.getElementById('m-waiting-row');
+  var card = document.getElementById('m-resolved');
+  var msg = document.getElementById('m-resolved-msg');
+  var sub = document.getElementById('m-resolved-sub');
+  if (action === 'approve') {
+    dot.style.background = '#fff';
+    dot.style.animation = 'shimmer 1.6s ease-in-out infinite';
+    meta.textContent = 'running';
+    meta.style.color = 'rgba(255,255,255,.28)';
+    row.style.background = 'transparent';
+    msg.textContent = 'Approved';
+    msg.style.color = '#34C759';
+    sub.textContent = 'run-tests is continuing';
+  } else {
+    dot.style.background = '#FF3B30';
+    dot.style.animation = 'none';
+    meta.textContent = 'stopped';
+    meta.style.color = '#FF3B30';
+    row.style.background = 'transparent';
+    msg.textContent = 'Rejected';
+    msg.style.color = '#FF3B30';
+    sub.textContent = 'run-tests was stopped';
+  }
+  card.classList.add('show');
+}
+
+/* ── MOBILE DRIVER.JS TOUR ── */
+function startMobileTour() {
+  if (typeof driver === 'undefined' || window.innerWidth >= 768) return;
+  var d = driver.js.driver({
+    showProgress: true,
+    allowClose: true,
+    overlayColor: 'rgba(0,0,0,0.65)',
+    stagePadding: 8,
+    stageRadius: 12,
+    popoverClass: 'si-mpop',
+    nextBtnText: 'Next',
+    prevBtnText: 'Back',
+    doneBtnText: 'Got it',
+    steps: [
+      { element: '#m-hero-dots', popover: { title: 'Five states, one glance', description: 'White shimmers = active. Orange = waiting on you. Green = done. Red = error. Gray = idle. The same vocabulary on your Mac and your iPhone.', side: 'top', align: 'start' } },
+      { element: '#m-s1', popover: { title: 'Dynamic Island compact', description: 'Ambient awareness in the smallest possible surface &mdash; dots only, always visible without interrupting you.', side: 'top', align: 'start' } },
+      { element: '#m-s2', popover: { title: 'Long press to expand', description: 'The island grows to show your sessions and the Approve / Reject control &mdash; the same component you\'d see on the Mac.', side: 'top', align: 'start' } },
+      { element: '#m-s3', popover: { title: 'Lock Screen', description: 'A Live Activity pushes to your lock screen when an agent is blocked. Act without unlocking.', side: 'top', align: 'start' } },
+      { element: '#m-s4', popover: { title: 'Companion App', description: 'Tap the island for the full picture. All sessions, all states. Nothing to relearn.', side: 'top', align: 'start' } },
+      { element: '#m-tryit', popover: { title: 'Try it now', description: 'An agent is waiting below. Approve or reject it.', side: 'top', align: 'start' } },
+      { element: '#m-spec', popover: { title: 'The bigger idea', description: 'The gatekeeper role isn\'t just for developers. Any AI agent that pauses for human approval fits this pattern.', side: 'top', align: 'start' } }
+    ]
+  });
+  d.drive();
 }
 </script>
 </body>

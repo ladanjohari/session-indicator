@@ -950,7 +950,7 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 /* side buttons */
 .m-iphone::before{content:'';position:absolute;left:-2px;top:100px;width:2.5px;height:32px;background:rgba(255,255,255,.1);border-radius:2px 0 0 2px;box-shadow:0 44px 0 rgba(255,255,255,.1),0 76px 0 rgba(255,255,255,.1)}
 .m-iphone::after{content:'';position:absolute;right:-2px;top:130px;width:2.5px;height:58px;background:rgba(255,255,255,.1);border-radius:0 2px 2px 0}
-.m-screen{position:absolute;inset:0;border-radius:47px;overflow:hidden;display:flex;flex-direction:column;background:#0a0a0a}
+.m-screen{position:absolute;inset:0;border-radius:47px;overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(180deg,#1b0b3b 0%,#0e1a4a 30%,#0a2240 60%,#071828 100%)}
 
 /* status bar */
 .m-status-bar{height:52px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 10px;flex-shrink:0}
@@ -1002,6 +1002,7 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
   border-bottom:.5px solid rgba(255,255,255,.06);
   font-size:17px;font-weight:600;color:#fff;letter-spacing:-.02em;
   flex-shrink:0;margin-top:12px;
+  background:rgba(15,12,30,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
 
 /* Session list v2 */
@@ -1011,6 +1012,7 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
   display:flex;align-items:center;gap:12px;padding:14px 22px;
   border-bottom:.5px solid rgba(255,255,255,.05);
   cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  background:rgba(10,8,24,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
 .m-s2-row.waiting{background:rgba(232,149,42,.06)}
 .m-s2-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -1052,15 +1054,17 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 
 /* Take a tour CTA */
 .m-tour-cta{
-  font-size:12px;padding:9px 22px;border-radius:24px;
-  border:.5px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.06);
-  color:rgba(255,255,255,.5);
+  font-size:13px;padding:11px 28px;border-radius:24px;
+  border:1.5px solid rgba(0,0,0,.18);
+  background:#fff;
+  color:rgba(0,0,0,.7);
   font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:500;
   cursor:pointer;touch-action:manipulation;letter-spacing:.01em;
   transition:background .1s;
+  box-shadow:0 2px 12px rgba(0,0,0,.1);
 }
-.m-tour-cta:hover{background:rgba(255,255,255,.1)}
+.m-tour-cta:hover{background:#f5f5f5}
 
 /* lock screen */
 .m-lock-bg{background:#0d1117}
@@ -1193,7 +1197,7 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
         </div>
 
         <!-- Dynamic Island -->
-        <div id="m-dynamic-island" class="m-di2 compact" onclick="toggleMDI()">
+        <div id="m-dynamic-island" class="m-di2 compact" onclick="toggleMDI()" ontouchstart="">
           <div class="m-di2-dots" id="m-di2-dots">
             <div class="m-di2-dot active"></div>
             <div class="m-di2-dot waiting"></div>

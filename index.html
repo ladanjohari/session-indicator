@@ -934,26 +934,133 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 .m-section-body{font-size:15px;line-height:1.7;color:rgba(255,255,255,.5);margin-bottom:32px}
 .m-section-body strong{color:rgba(255,255,255,.8);font-weight:500}
 
-/* iphone mockup */
-.m-iphone-wrap{display:flex;justify-content:center;margin-bottom:32px}
-.m-iphone{width:200px;height:432px;background:#111;border-radius:38px;border:1.5px solid #2e2e2e;position:relative;overflow:hidden}
-.m-screen{position:absolute;inset:0;border-radius:37px;overflow:hidden}
-.m-sb{position:absolute;top:0;left:0;right:0;height:40px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 18px 7px;font-size:11px;font-weight:600;color:#fff;z-index:5}
-.m-di{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#000;border-radius:18px;z-index:10;transition:all .55s cubic-bezier(.34,1.4,.64,1);overflow:hidden}
-.m-di.compact{width:90px;height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 9px}
-.m-di.expanded{width:192px;height:116px;display:flex;flex-direction:column;padding:11px 14px;gap:7px}
-.m-di-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.m-di-dot.a{background:#fff;animation:shimmer 1.6s ease-in-out infinite}
-.m-di-dot.w{background:#E8952A}
-.m-di-dot.g{background:#34C759}
-.m-di-row{display:flex;align-items:center;gap:7px}
-.m-di-name{flex:1;font-size:10.5px;color:rgba(255,255,255,.78)}
-.m-di-ts{font-size:9.5px;color:rgba(255,255,255,.3)}
-.m-di-status{font-size:9.5px;color:#E8952A}
-.m-di-divider{height:.5px;background:rgba(255,255,255,.08)}
-.m-di-btns{display:flex;gap:5px}
-.m-di-btn{flex:1;font-size:9.5px;padding:4px 0;border-radius:20px;border:.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:inherit;cursor:pointer}
-.m-di-btn.approve{border-color:transparent;background:#0A84FF;color:#fff;font-weight:500}
+/* ── iPhone mockup v2 ── */
+.m-iphone-wrap{display:flex;justify-content:center;margin-bottom:8px}
+.m-iphone{
+  width:300px;
+  background:#0a0a0a;
+  border-radius:48px;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 0 0 .5px rgba(255,255,255,.05),inset 0 0 0 1px rgba(255,255,255,.03),0 40px 80px rgba(0,0,0,.55),0 8px 32px rgba(0,0,0,.4);
+  position:relative;
+  overflow:hidden;
+  height:650px;
+  flex-shrink:0;
+}
+/* side buttons */
+.m-iphone::before{content:'';position:absolute;left:-2px;top:100px;width:2.5px;height:32px;background:rgba(255,255,255,.1);border-radius:2px 0 0 2px;box-shadow:0 44px 0 rgba(255,255,255,.1),0 76px 0 rgba(255,255,255,.1)}
+.m-iphone::after{content:'';position:absolute;right:-2px;top:130px;width:2.5px;height:58px;background:rgba(255,255,255,.1);border-radius:0 2px 2px 0}
+.m-screen{position:absolute;inset:0;border-radius:47px;overflow:hidden;display:flex;flex-direction:column;background:#0a0a0a}
+
+/* status bar */
+.m-status-bar{height:52px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 10px;flex-shrink:0}
+.m-sb-time{font-size:15px;font-weight:600;color:#fff;letter-spacing:-.02em}
+.m-sb-icons{display:flex;align-items:center;gap:6px}
+.m-sb-signal{display:flex;align-items:flex-end;gap:1.5px}
+.m-sb-bar{background:#fff;width:3px;border-radius:1px}
+.m-sb-bar:nth-child(1){height:4px;opacity:.3}
+.m-sb-bar:nth-child(2){height:6px;opacity:.5}
+.m-sb-bar:nth-child(3){height:9px;opacity:.7}
+.m-sb-bar:nth-child(4){height:12px}
+.m-sb-battery{width:25px;height:12px;border:.5px solid rgba(255,255,255,.55);border-radius:2.5px;position:relative;padding:1.5px;display:flex;align-items:center}
+.m-sb-battery::after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:2px;height:5px;background:rgba(255,255,255,.4);border-radius:0 1px 1px 0}
+.m-sb-battery-fill{background:#34C759;height:100%;width:67%;border-radius:1px}
+
+/* Dynamic Island v2 */
+.m-di2{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:#000;border-radius:20px;z-index:10;
+  cursor:pointer;transition:all .5s cubic-bezier(.34,1.4,.64,1);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.m-di2.compact{width:120px;height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+.m-di2.expanded{width:268px;height:auto;padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px}
+.m-di2-dots{display:flex;gap:5px;align-items:center}
+.m-di2-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.m-di2-dot.active{background:#fff;animation:shimmer 1.6s ease-in-out infinite}
+.m-di2-dot.waiting{background:#E8952A}
+.m-di2-dot.done{background:#34C759}
+.m-di2-dot.error{background:#FF3B30}
+.m-di2-dot.idle{background:rgba(255,255,255,.22)}
+.m-di2-count{font-size:10px;color:rgba(255,255,255,.4);font-weight:500}
+
+/* DI expanded */
+.m-di2-exp-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.9)}
+.m-di2-exp-subtitle{font-size:10px;color:rgba(255,255,255,.4)}
+.m-di2-exp-header{display:flex;align-items:center;justify-content:space-between}
+.m-di2-exp-rows{display:flex;flex-direction:column}
+.m-di2-exp-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid rgba(255,255,255,.06)}
+.m-di2-exp-row:last-child{border-bottom:none;padding-bottom:0}
+.m-di2-exp-name{flex:1;font-size:12px;color:rgba(255,255,255,.8)}
+.m-di2-exp-state{font-size:10px;color:rgba(255,255,255,.3)}
+.m-di2-exp-state.waiting{color:#E8952A}
+.m-di2-exp-state.done{color:#34C759}
+
+/* App nav */
+.m-app-nav2{
+  height:44px;display:flex;align-items:center;padding:0 22px;
+  border-bottom:.5px solid rgba(255,255,255,.06);
+  font-size:17px;font-weight:600;color:#fff;letter-spacing:-.02em;
+  flex-shrink:0;margin-top:12px;
+}
+
+/* Session list v2 */
+.m-session-list2{flex:1;overflow-y:auto;padding-bottom:160px}
+.m-session-list2::-webkit-scrollbar{display:none}
+.m-s2-row{
+  display:flex;align-items:center;gap:12px;padding:14px 22px;
+  border-bottom:.5px solid rgba(255,255,255,.05);
+  cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.m-s2-row.waiting{background:rgba(232,149,42,.06)}
+.m-s2-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.m-s2-dot.active{background:#fff;animation:shimmer 1.6s ease-in-out infinite}
+.m-s2-dot.waiting{background:#E8952A}
+.m-s2-dot.done{background:#34C759}
+.m-s2-dot.error{background:#FF3B30}
+.m-s2-info{flex:1;min-width:0}
+.m-s2-name{font-size:14px;font-weight:500;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-s2-sub{font-size:11px;color:rgba(255,255,255,.3);margin-top:1px}
+.m-s2-sub.waiting{color:#E8952A}
+.m-s2-chevron{color:rgba(255,255,255,.18);font-size:16px;flex-shrink:0}
+
+/* Approval sheet */
+.m-approval-sheet{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(22,22,24,.96);
+  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border-top:.5px solid rgba(255,255,255,.1);
+  border-radius:18px 18px 0 0;
+  padding:16px 22px 36px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.m-sheet2-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);margin:0 auto 4px}
+.m-sheet2-context{font-size:11px;color:rgba(255,255,255,.32);letter-spacing:.01em}
+.m-sheet2-label{font-size:13px;color:rgba(255,255,255,.8)}
+.m-sheet2-label.approve-resolved{color:#34C759}
+.m-sheet2-label.reject-resolved{color:#FF3B30}
+.m-sheet2-btns{display:flex;gap:10px}
+.m-sheet2-btn{
+  flex:1;font-size:15px;font-weight:500;padding:13px 0;
+  border-radius:14px;font-family:inherit;cursor:pointer;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  transition:opacity .1s;
+}
+.m-sheet2-btn:active{opacity:.75}
+.m-sheet2-btn.reject{border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:rgba(255,255,255,.7)}
+.m-sheet2-btn.approve{border:none;background:#0A84FF;color:#fff}
+
+/* Take a tour CTA */
+.m-tour-cta{
+  font-size:12px;padding:9px 22px;border-radius:24px;
+  border:.5px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.5);
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  cursor:pointer;touch-action:manipulation;letter-spacing:.01em;
+  transition:background .1s;
+}
+.m-tour-cta:hover{background:rgba(255,255,255,.1)}
 
 /* lock screen */
 .m-lock-bg{background:#0d1117}
@@ -1064,46 +1171,84 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 <div class="mobile-only m-phone-wrap" id="m-phone-wrap">
   <div class="m-iphone-wrap">
     <div class="m-iphone">
-      <div class="m-screen m-app-bg">
-        <div class="m-sb"><span>9:41</span></div>
-        <div id="m-dynamic-island" class="m-di compact" style="width:80px;height:24px;background:#000;display:flex;align-items:center;justify-content:space-between;padding:0 9px">
-          <div class="m-di-dots" style="display:flex;gap:3.5px;align-items:center">
-            <div class="m-di-dot a"></div>
-            <div class="m-di-dot w"></div>
-            <div class="m-di-dot" style="background:#444"></div>
-          </div>
-          <span class="m-di-count" style="font-size:9px;color:rgba(255,255,255,.4)">3</span>
-        </div>
-        <div class="m-app-nav"><span>Sessions</span></div>
-        <div class="m-session-list">
-          <div class="m-s-row">
-            <div class="m-s-dot" style="background:#fff;animation:shimmer 1.6s ease-in-out infinite;width:7px;height:7px;border-radius:50%;flex-shrink:0"></div>
-            <div class="m-s-name"><div class="n">build-assets</div><div class="t">running &middot; 1m 23s</div></div>
-            <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
-          </div>
-          <div class="m-s-row waiting">
-            <div class="m-s-dot" style="background:#E8952A;width:7px;height:7px;border-radius:50%;flex-shrink:0"></div>
-            <div class="m-s-name"><div class="n">run-tests</div><div class="t">waiting for approval</div></div>
-            <span style="color:rgba(255,255,255,.2);font-size:15px">&rsaquo;</span>
-          </div>
-          <div class="m-s-row done">
-            <div class="m-s-dot" style="background:#34C759;width:7px;height:7px;border-radius:50%;flex-shrink:0"></div>
-            <div class="m-s-name"><div class="n">lint-check</div><div class="t">done &middot; 23s</div></div>
+
+      <!-- side buttons (decorative, via CSS ::before/::after) -->
+      <div class="m-screen">
+
+        <!-- status bar -->
+        <div class="m-status-bar">
+          <span class="m-sb-time">9:41</span>
+          <div class="m-sb-icons">
+            <div class="m-sb-signal">
+              <div class="m-sb-bar"></div><div class="m-sb-bar"></div>
+              <div class="m-sb-bar"></div><div class="m-sb-bar"></div>
+            </div>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+              <path d="M8 9.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" fill="#fff"/>
+              <path d="M3.5 6a6.5 6.5 0 0 1 9 0" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M1 3.5a10 10 0 0 1 14 0" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+            </svg>
+            <div class="m-sb-battery"><div class="m-sb-battery-fill"></div></div>
           </div>
         </div>
-        <div class="m-sheet" id="m-sheet">
-          <div class="m-sheet-label" id="m-sheet-label">run-tests &middot; approve tool call?</div>
-          <div class="m-sheet-btns" id="m-sheet-btns">
-            <button class="m-sheet-btn" onclick="mPhoneResolve('reject')">Reject</button>
-            <button class="m-sheet-btn approve" onclick="mPhoneResolve('approve')">Approve</button>
+
+        <!-- Dynamic Island -->
+        <div id="m-dynamic-island" class="m-di2 compact" onclick="toggleMDI()">
+          <div class="m-di2-dots" id="m-di2-dots">
+            <div class="m-di2-dot active"></div>
+            <div class="m-di2-dot waiting"></div>
+            <div class="m-di2-dot done"></div>
+          </div>
+          <span class="m-di2-count" id="m-di2-count">3</span>
+        </div>
+
+        <!-- App nav -->
+        <div class="m-app-nav2">Sessions</div>
+
+        <!-- Session list -->
+        <div class="m-session-list2">
+          <div class="m-s2-row">
+            <div class="m-s2-dot active"></div>
+            <div class="m-s2-info">
+              <div class="m-s2-name">build-assets</div>
+              <div class="m-s2-sub">running &middot; 1m 23s</div>
+            </div>
+            <span class="m-s2-chevron">&rsaquo;</span>
+          </div>
+          <div class="m-s2-row waiting" id="m-waiting-row">
+            <div class="m-s2-dot waiting" id="m-waiting-dot"></div>
+            <div class="m-s2-info">
+              <div class="m-s2-name">run-tests</div>
+              <div class="m-s2-sub waiting" id="m-waiting-sub">waiting for approval</div>
+            </div>
+            <span class="m-s2-chevron">&rsaquo;</span>
+          </div>
+          <div class="m-s2-row">
+            <div class="m-s2-dot done"></div>
+            <div class="m-s2-info">
+              <div class="m-s2-name">lint-check</div>
+              <div class="m-s2-sub">done &middot; 23s</div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+
+        <!-- Approval sheet -->
+        <div class="m-approval-sheet" id="m-sheet">
+          <div class="m-sheet2-handle"></div>
+          <div class="m-sheet2-context">run-tests &middot; approve tool call?</div>
+          <div class="m-sheet2-label" id="m-sheet-label">Read file at <span style="color:rgba(255,255,255,.5)">src/utils/auth.ts</span></div>
+          <div class="m-sheet2-btns" id="m-sheet-btns">
+            <button class="m-sheet2-btn reject" onclick="mPhoneResolve('reject')">Reject</button>
+            <button class="m-sheet2-btn approve" onclick="mPhoneResolve('approve')">Approve</button>
+          </div>
+        </div>
+
+      </div><!-- /m-screen -->
+    </div><!-- /m-iphone -->
   </div>
 </div>
-<div class="mobile-only" style="display:flex;justify-content:center;padding:0 0 32px">
-  <button onclick="startMobileTour()" style="font-size:12px;padding:8px 22px;border-radius:24px;border:.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);font-family:-apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;touch-action:manipulation;letter-spacing:.01em">&#9654; Take a tour</button>
+<div class="mobile-only" style="display:flex;justify-content:center;padding:4px 0 32px">
+  <button onclick="startMobileTour()" class="m-tour-cta">&#9654;&nbsp; Take a tour</button>
 </div>
 
 <main id="root"></main>
@@ -2634,86 +2779,77 @@ function startSessionIndicatorTour(){
 </script>
 
 <script>
-/* ── MOBILE: sync Dynamic Island dots from React state ── */
-(function() {
-  if (window.innerWidth >= 768) return;
-
-  function syncDI() {
-    /* Read dot states from the hidden React pill */
-    var dots = document.querySelectorAll('.si-pill .dot');
-    var di = document.getElementById('m-dynamic-island');
-    if (!di || !dots.length) return;
-
-    var states = [];
-    dots.forEach(function(d) {
-      if (d.classList.contains('active'))  states.push('a');
-      else if (d.classList.contains('waiting')) states.push('w');
-      else if (d.classList.contains('error'))   states.push('e');
-      else if (d.classList.contains('done'))    states.push('g');
-      else                                      states.push('i');
-    });
-
-    /* Re-render the Dynamic Island dots */
-    var dotsHtml = states.map(function(s) {
-      var bg = s==='a'?'#fff':s==='w'?'#E8952A':s==='e'?'#FF3B30':s==='g'?'#34C759':'rgba(255,255,255,.18)';
-      var anim = s==='a'?' style="background:'+bg+';animation:shimmer 1.6s ease-in-out infinite"':' style="background:'+bg+'"';
-      return '<div class="m-di-dot"'+anim+'></div>';
-    }).join('');
-
-    var countEl = di.querySelector('.m-di-count');
-    var dotsWrap = di.querySelector('.m-di-dots');
-    if (dotsWrap) dotsWrap.innerHTML = dotsHtml;
-    if (countEl) countEl.textContent = states.length;
+/* ── MOBILE: Dynamic Island toggle ── */
+var mDIExpanded = false;
+function toggleMDI() {
+  mDIExpanded = !mDIExpanded;
+  var di = document.getElementById('m-dynamic-island');
+  if (!di) return;
+  if (mDIExpanded) {
+    di.className = 'm-di2 expanded';
+    di.innerHTML =
+      '<div class="m-di2-exp-header"><span class="m-di2-exp-title">Sessions</span><span class="m-di2-exp-subtitle">3 running</span></div>'
+      + '<div style="height:.5px;background:rgba(255,255,255,.08)"></div>'
+      + '<div class="m-di2-exp-rows">'
+      + '<div class="m-di2-exp-row"><div class="m-di2-dot active"></div><span class="m-di2-exp-name">build-assets</span><span class="m-di2-exp-state">1m 23s</span></div>'
+      + '<div class="m-di2-exp-row"><div class="m-di2-dot waiting"></div><span class="m-di2-exp-name">run-tests</span><span class="m-di2-exp-state waiting">waiting</span></div>'
+      + '<div class="m-di2-exp-row"><div class="m-di2-dot done"></div><span class="m-di2-exp-name">lint-check</span><span class="m-di2-exp-state done">done</span></div>'
+      + '</div>';
+  } else {
+    di.className = 'm-di2 compact';
+    di.innerHTML =
+      '<div class="m-di2-dots" id="m-di2-dots">'
+      + '<div class="m-di2-dot active"></div>'
+      + '<div class="m-di2-dot waiting"></div>'
+      + '<div class="m-di2-dot done"></div>'
+      + '</div>'
+      + '<span class="m-di2-count" id="m-di2-count">3</span>';
   }
+}
 
-  /* Sync every second */
-  setInterval(syncDI, 1000);
-  setTimeout(syncDI, 500);
-})();
-
-/* ── MOBILE APPROVE/REJECT: update mockup + trigger real React action ── */
+/* ── MOBILE APPROVE/REJECT ── */
 var mPhoneResolved = false;
 function mPhoneResolve(action) {
   if (mPhoneResolved) return;
   mPhoneResolved = true;
 
-  var waitingRow = document.querySelector('.m-s-row.waiting');
-  var dot = waitingRow ? waitingRow.querySelector('.m-s-dot') : null;
-  var label = document.getElementById('m-sheet-label');
-  var btns = document.getElementById('m-sheet-btns');
+  var dot    = document.getElementById('m-waiting-dot');
+  var sub    = document.getElementById('m-waiting-sub');
+  var row    = document.getElementById('m-waiting-row');
+  var label  = document.getElementById('m-sheet-label');
+  var btns   = document.getElementById('m-sheet-btns');
 
   if (action === 'approve') {
-    if (dot) { dot.style.background='#fff'; dot.style.animation='shimmer 1.6s ease-in-out infinite'; }
-    if (waitingRow) { waitingRow.querySelector('.t').textContent='running'; waitingRow.querySelector('.t').style.color='rgba(255,255,255,.3)'; waitingRow.style.background='transparent'; }
-    if (label) { label.textContent='run-tests resumed'; label.style.color='#34C759'; }
-    /* Also trigger real React approve on hidden prototype */
+    if (dot)   { dot.className = 'm-s2-dot active'; }
+    if (sub)   { sub.textContent = 'running'; sub.className = 'm-s2-sub'; }
+    if (row)   { row.className = 'm-s2-row'; }
+    if (label) { label.textContent = 'run-tests resumed — agent continuing'; label.className = 'm-sheet2-label approve-resolved'; }
+    /* trigger real React state */
     var realBtn = document.querySelector('.s-row.has-actions .s-btn.primary');
     if (realBtn) realBtn.click();
   } else {
-    if (dot) { dot.style.background='#FF3B30'; dot.style.animation='none'; }
-    if (waitingRow) { waitingRow.querySelector('.t').textContent='stopped'; waitingRow.querySelector('.t').style.color='#FF3B30'; waitingRow.style.background='transparent'; }
-    if (label) { label.textContent='run-tests rejected'; label.style.color='#FF3B30'; }
-    /* Also trigger real React reject on hidden prototype */
+    if (dot)   { dot.className = 'm-s2-dot error'; }
+    if (sub)   { sub.textContent = 'stopped'; sub.className = 'm-s2-sub'; sub.style.color = '#FF3B30'; }
+    if (row)   { row.className = 'm-s2-row'; }
+    if (label) { label.textContent = 'run-tests rejected'; label.className = 'm-sheet2-label reject-resolved'; }
     var realReject = document.querySelector('.s-row.has-actions .s-btn:not(.primary)');
     if (realReject) realReject.click();
   }
-  if (btns) btns.style.display='none';
+  if (btns) btns.style.display = 'none';
 }
 
-/* ── MOBILE TOUR: targets the iPhone mockup elements ── */
+/* ── MOBILE TOUR ── */
 function startMobileTour() {
-  if (typeof window.driver === 'undefined') return;
-  if (window.innerWidth >= 768) return;
-
-  var driverFn = window.driver.js ? window.driver.js.driver : (typeof driver !== 'undefined' ? driver : null);
-  if (!driverFn) return;
+  /* Driver.js IIFE exposes window.driver — desktop uses driver.js.driver() */
+  var driverFn = (window.driver && window.driver.js) ? window.driver.js.driver : null;
+  if (!driverFn) { console.warn('Driver.js not loaded'); return; }
 
   var d = driverFn({
     showProgress: true,
     allowClose: true,
-    overlayColor: 'rgba(0,0,0,0.7)',
-    stagePadding: 6,
-    stageRadius: 10,
+    overlayColor: 'rgba(0,0,0,0.72)',
+    stagePadding: 8,
+    stageRadius: 12,
     popoverClass: 'si-tour-mobile',
     nextBtnText: 'Next',
     prevBtnText: 'Back',
@@ -2722,24 +2858,24 @@ function startMobileTour() {
       {
         element: '#m-dynamic-island',
         popover: {
-          title: 'Session status at a glance',
-          description: 'Dots show all running agent sessions — white shimmer means active, orange means waiting for your approval.',
+          title: 'Session status',
+          description: 'The Dynamic Island shows all agent sessions at a glance. White shimmer = active, orange = needs your approval.',
           side: 'bottom', align: 'center'
         }
       },
       {
-        element: '.m-session-list',
+        element: '.m-session-list2',
         popover: {
-          title: 'All sessions',
-          description: 'Each row is one agent session with its current state. Scroll to see all running sessions.',
+          title: 'All your sessions',
+          description: 'Each row is one agent session. build-assets is running, run-tests is paused waiting for you.',
           side: 'top', align: 'start'
         }
       },
       {
-        element: '.m-s-row.waiting',
+        element: '#m-waiting-row',
         popover: {
-          title: 'Waiting for you',
-          description: 'Orange means the agent is paused — it found a tool call that needs your decision before it can continue.',
+          title: 'Waiting for approval',
+          description: 'Orange means the agent hit a tool call and stopped — it needs your go-ahead before continuing.',
           side: 'top', align: 'start'
         }
       },
@@ -2747,7 +2883,7 @@ function startMobileTour() {
         element: '#m-sheet',
         popover: {
           title: 'Approve or Reject',
-          description: 'Tap Approve to let the agent proceed, or Reject to stop it. No terminal or keyboard needed.',
+          description: 'Tap Approve to let the agent continue. Tap Reject to stop it. No terminal or keyboard required.',
           side: 'top', align: 'center'
         }
       }

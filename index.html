@@ -862,13 +862,16 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 
 /* ─── RESPONSIVE GATE ─── */
 .mobile-only{display:none}
+.m-tour-wrap{display:none;justify-content:center;padding:16px 0 40px}
 @media(max-width:767px){
   .mobile-only{display:block}
-  /* hide macOS prototype screen, show iPhone mockup instead */
+  .m-tour-wrap{display:flex}
+  /* hide macOS prototype screen and desktop React app, show iPhone mockup instead */
   .screen{display:none!important}
   .mobile-note{display:none!important}
   .tour-btn{display:none!important}
-  .m-phone-wrap{padding:28px 0 8px}
+  #root{display:none!important}
+  .m-phone-wrap{padding:28px 0 0}
   /* touch-action on iPhone mockup buttons — removes iOS 300ms delay */
   .m-sheet-btn,.m-di-btn,.m-la-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
 }
@@ -995,6 +998,9 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 .m-di2-exp-state{font-size:10px;color:rgba(255,255,255,.3)}
 .m-di2-exp-state.waiting{color:#E8952A}
 .m-di2-exp-state.done{color:#34C759}
+.m-di2-exp-arc{display:flex;gap:6px;padding-top:2px}
+.m-di2-arc-btn{flex:1;font-size:10px;padding:5px 0;border-radius:20px;border:.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:inherit;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.m-di2-arc-btn.approve{border-color:transparent;background:#0A84FF;color:#fff;font-weight:500}
 
 /* App nav */
 .m-app-nav2{
@@ -1251,7 +1257,7 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
     </div><!-- /m-iphone -->
   </div>
 </div>
-<div class="mobile-only" style="display:flex;justify-content:center;padding:4px 0 32px">
+<div class="m-tour-wrap">
   <button onclick="startMobileTour()" class="m-tour-cta">&#9654;&nbsp; Take a tour</button>
 </div>
 
@@ -2798,6 +2804,11 @@ function toggleMDI() {
       + '<div class="m-di2-exp-row"><div class="m-di2-dot active"></div><span class="m-di2-exp-name">build-assets</span><span class="m-di2-exp-state">1m 23s</span></div>'
       + '<div class="m-di2-exp-row"><div class="m-di2-dot waiting"></div><span class="m-di2-exp-name">run-tests</span><span class="m-di2-exp-state waiting">waiting</span></div>'
       + '<div class="m-di2-exp-row"><div class="m-di2-dot done"></div><span class="m-di2-exp-name">lint-check</span><span class="m-di2-exp-state done">done</span></div>'
+      + '</div>'
+      + '<div style="height:.5px;background:rgba(255,255,255,.08)"></div>'
+      + '<div class="m-di2-exp-arc">'
+      + '<button class="m-di2-arc-btn" onclick="mPhoneResolve(\'reject\');toggleMDI()">Reject</button>'
+      + '<button class="m-di2-arc-btn approve" onclick="mPhoneResolve(\'approve\');toggleMDI()">Approve</button>'
       + '</div>';
   } else {
     di.className = 'm-di2 compact';
@@ -2825,61 +2836,96 @@ function mPhoneResolve(action) {
 
   if (action === 'approve') {
     if (dot)   { dot.className = 'm-s2-dot active'; }
-    if (sub)   { sub.textContent = 'running'; sub.className = 'm-s2-sub'; }
+    if (sub)   { sub.textContent = 'running · 0s'; sub.className = 'm-s2-sub'; }
     if (row)   { row.className = 'm-s2-row'; }
-    if (label) { label.textContent = 'run-tests resumed — agent continuing'; label.className = 'm-sheet2-label approve-resolved'; }
-    /* trigger real React state */
-    var realBtn = document.querySelector('.s-row.has-actions .s-btn.primary');
-    if (realBtn) realBtn.click();
+    if (label) { label.innerHTML = 'run-tests resumed &mdash; agent continuing'; label.className = 'm-sheet2-label approve-resolved'; }
   } else {
     if (dot)   { dot.className = 'm-s2-dot error'; }
     if (sub)   { sub.textContent = 'stopped'; sub.className = 'm-s2-sub'; sub.style.color = '#FF3B30'; }
     if (row)   { row.className = 'm-s2-row'; }
     if (label) { label.textContent = 'run-tests rejected'; label.className = 'm-sheet2-label reject-resolved'; }
-    var realReject = document.querySelector('.s-row.has-actions .s-btn:not(.primary)');
-    if (realReject) realReject.click();
   }
-  if (btns) btns.style.display = 'none';
+
+  /* hide buttons, show reset */
+  if (btns) {
+    btns.innerHTML = '<button class="m-sheet2-btn" style="flex:none;padding:10px 20px;font-size:12px;opacity:.55" onclick="mPhoneReset()">Try again</button>';
+  }
+}
+
+function mPhoneReset() {
+  mPhoneResolved = false;
+  var dot   = document.getElementById('m-waiting-dot');
+  var sub   = document.getElementById('m-waiting-sub');
+  var row   = document.getElementById('m-waiting-row');
+  var label = document.getElementById('m-sheet-label');
+  var btns  = document.getElementById('m-sheet-btns');
+
+  if (dot)   { dot.className = 'm-s2-dot waiting'; }
+  if (sub)   { sub.textContent = 'waiting for approval'; sub.className = 'm-s2-sub waiting'; sub.style.color = ''; }
+  if (row)   { row.className = 'm-s2-row waiting'; }
+  if (label) { label.innerHTML = 'Read file at <span style="color:rgba(255,255,255,.5)">src/utils/auth.ts</span>'; label.className = 'm-sheet2-label'; }
+  if (btns)  { btns.innerHTML = '<button class="m-sheet2-btn reject" onclick="mPhoneResolve(\'reject\')">Reject</button><button class="m-sheet2-btn approve" onclick="mPhoneResolve(\'approve\')">Approve</button>'; }
+
+  /* restore DI to compact with waiting dot */
+  mDIExpanded = false;
+  var di = document.getElementById('m-dynamic-island');
+  if (di) {
+    di.className = 'm-di2 compact';
+    di.innerHTML = '<div class="m-di2-dots" id="m-di2-dots"><div class="m-di2-dot active"></div><div class="m-di2-dot waiting"></div><div class="m-di2-dot done"></div></div><span class="m-di2-count" id="m-di2-count">3</span>';
+  }
 }
 
 /* ── MOBILE TOUR ── */
 function startMobileTour() {
-  /* Driver.js IIFE exposes window.driver — desktop uses driver.js.driver() */
   var driverFn = (window.driver && window.driver.js) ? window.driver.js.driver : null;
   if (!driverFn) { console.warn('Driver.js not loaded'); return; }
+
+  /* ensure phone is scrolled into view and DI is in compact state before tour */
+  if (mDIExpanded) toggleMDI();
 
   var d = driverFn({
     showProgress: true,
     allowClose: true,
-    overlayColor: 'rgba(0,0,0,0.72)',
-    stagePadding: 8,
-    stageRadius: 12,
-    popoverClass: 'si-tour-mobile',
+    overlayColor: 'rgba(0,0,0,0.75)',
+    stagePadding: 10,
+    stageRadius: 14,
+    popoverClass: 'si-mpop',
     nextBtnText: 'Next',
     prevBtnText: 'Back',
     doneBtnText: 'Got it',
+    onDestroyStarted: function() { d.destroy(); },
     steps: [
       {
         element: '#m-dynamic-island',
         popover: {
-          title: 'Session status',
-          description: 'The Dynamic Island shows all agent sessions at a glance. White shimmer = active, orange = needs your approval.',
+          title: 'Dynamic Island',
+          description: 'While your Mac agents run, the Dynamic Island shows their states at a glance — white shimmer is active, orange means one is waiting on you. Tap it to expand.',
           side: 'bottom', align: 'center'
         }
       },
       {
+        element: '#m-dynamic-island',
+        popover: {
+          title: 'Tap to expand',
+          description: 'Long press or tap the island to see all sessions and approve or reject directly from here — without unlocking your phone or opening an app.',
+          side: 'bottom', align: 'center'
+        },
+        onHighlightStarted: function() { if (!mDIExpanded) toggleMDI(); }
+      },
+      {
         element: '.m-session-list2',
         popover: {
-          title: 'All your sessions',
-          description: 'Each row is one agent session. build-assets is running, run-tests is paused waiting for you.',
+          title: 'All sessions',
+          description: 'Each row is one Claude Code agent. build-assets is running, run-tests is paused waiting for your approval, lint-check is done.',
           side: 'top', align: 'start'
-        }
+        },
+        onHighlightStarted: function() { if (mDIExpanded) toggleMDI(); }
       },
       {
         element: '#m-waiting-row',
         popover: {
-          title: 'Waiting for approval',
-          description: 'Orange means the agent hit a tool call and stopped — it needs your go-ahead before continuing.',
+          title: 'Waiting for you',
+          description: 'Orange means the agent hit a tool call and stopped — it needs your go-ahead before it can continue. The Mac is paused until you respond.',
           side: 'top', align: 'start'
         }
       },
@@ -2887,7 +2933,7 @@ function startMobileTour() {
         element: '#m-sheet',
         popover: {
           title: 'Approve or Reject',
-          description: 'Tap Approve to let the agent continue. Tap Reject to stop it. No terminal or keyboard required.',
+          description: 'Tap Approve and the agent resumes. Tap Reject and it stops. Same decision as pressing Y or N in the terminal — from your phone.',
           side: 'top', align: 'center'
         }
       }

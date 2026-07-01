@@ -1151,6 +1151,53 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 .si-mpop button.driver-popover-next-btn{border-color:transparent;background:#0A84FF;color:#fff}
 .si-mpop button.driver-popover-close-btn{color:rgba(255,255,255,.3);font-size:14px}
 .driver-active-element{border-radius:12px!important}
+
+/* ── Mobile problem statement ── */
+.m-problem{padding:36px 24px 44px;border-top:.5px solid rgba(255,255,255,.07)}
+.m-problem-text{font-size:15px;line-height:1.75;color:rgba(255,255,255,.5);margin-bottom:20px}
+.m-problem-quote{border:.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);border-radius:12px;padding:16px 18px}
+.m-problem-quote-text{font-size:13px;color:rgba(255,255,255,.42);line-height:1.65;font-style:italic}
+.m-problem-quote-attr{font-size:10px;color:rgba(255,255,255,.26);margin-top:7px;letter-spacing:.04em}
+
+body.lm .m-problem{border-top-color:rgba(0,0,0,.07)}
+body.lm .m-problem-text{color:rgba(0,0,0,.55)}
+body.lm .m-problem-quote{border-color:rgba(0,0,0,.08);background:rgba(0,0,0,.03)}
+body.lm .m-problem-quote-text{color:rgba(0,0,0,.52)}
+body.lm .m-problem-quote-attr{color:rgba(0,0,0,.35)}
+
+/* ── Mobile five-states legend ── */
+.m-legend{padding:0 24px 48px}
+.m-legend-title{font-size:17px;font-weight:600;letter-spacing:-.01em;margin-bottom:20px;color:rgba(255,255,255,.82)}
+.m-legend-list{display:flex;flex-direction:column;gap:10px}
+.m-legend-item{display:flex;align-items:center;gap:14px}
+.m-legend-pill{display:flex;align-items:center;gap:7px;background:rgba(70,70,70,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:.5px solid rgba(255,255,255,.22);border-radius:8px;padding:5px 10px;flex-shrink:0;min-width:96px}
+.m-legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.m-legend-dot.idle{background:rgba(255,255,255,.16)}
+.m-legend-dot.active{background:#fff;animation:shimmer 1.6s ease-in-out infinite}
+.m-legend-dot.waiting{background:#E8952A}
+.m-legend-dot.error{background:#FF3B30}
+.m-legend-dot.done{background:#34C759}
+.m-legend-name{font-size:11px;font-weight:500;color:rgba(255,255,255,.58)}
+.m-legend-desc{font-size:13px;color:rgba(255,255,255,.38);line-height:1.5}
+
+body.lm .m-legend-title{color:rgba(0,0,0,.72)}
+body.lm .m-legend-pill{background:rgba(200,200,200,.55);backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:.5px solid rgba(0,0,0,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 8px rgba(0,0,0,.06)}
+body.lm .m-legend-dot.idle{background:rgba(0,0,0,.18)}
+body.lm .m-legend-dot.active{background:#1a1a1a}
+body.lm .m-legend-name{color:rgba(0,0,0,.5)}
+body.lm .m-legend-desc{color:rgba(0,0,0,.42)}
+
+/* ── Mobile footer ── */
+.m-footer{padding:28px 24px 40px;border-top:.5px solid rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.22);text-align:center;letter-spacing:.01em}
+.m-footer a{color:inherit;text-decoration:none}
+.m-footer a:hover{color:rgba(255,255,255,.5)}
+
+body.lm .m-footer{border-top-color:rgba(0,0,0,.07);color:rgba(0,0,0,.3)}
+body.lm .m-footer a:hover{color:rgba(0,0,0,.55)}
+
+/* ── Mobile tour button light mode ── */
+body.lm .m-tour-cta{background:rgba(0,0,0,.07);border-color:rgba(0,0,0,.14);color:rgba(0,0,0,.65)}
+body.lm .m-tour-cta:hover{background:rgba(0,0,0,.11)}
 </style>
 </head>
 <body>
@@ -1260,6 +1307,47 @@ body.lm .avw-rec strong{color:rgba(0,0,0,0.7)}
 <div class="m-tour-wrap">
   <button onclick="startMobileTour()" class="m-tour-cta">&#9654;&nbsp; Take a tour</button>
 </div>
+
+<!-- mobile problem statement -->
+<div class="mobile-only m-problem">
+  <p class="m-problem-text">Developers running parallel Claude Code sessions lose track of which agent is blocked, which one errored, and which finished minutes ago. The only way to check is to click into each terminal one by one.</p>
+  <div class="m-problem-quote">
+    <p class="m-problem-quote-text">&ldquo;I had four sessions open and no idea which one stopped to wait for me. I had to click into each terminal to find it.&rdquo;</p>
+    <p class="m-problem-quote-attr">&mdash; Developer using Claude CLI</p>
+  </div>
+</div>
+
+<!-- mobile five states -->
+<div class="mobile-only m-legend">
+  <h2 class="m-legend-title">Five states. No learning curve.</h2>
+  <div class="m-legend-list">
+    <div class="m-legend-item">
+      <div class="m-legend-pill"><div class="m-legend-dot idle"></div><span class="m-legend-name">Idle</span></div>
+      <span class="m-legend-desc">No active agent. Dot stays dim and quiet.</span>
+    </div>
+    <div class="m-legend-item">
+      <div class="m-legend-pill"><div class="m-legend-dot active"></div><span class="m-legend-name">Active</span></div>
+      <span class="m-legend-desc">Shimmer. Actively executing right now.</span>
+    </div>
+    <div class="m-legend-item">
+      <div class="m-legend-pill"><div class="m-legend-dot waiting"></div><span class="m-legend-name">Waiting</span></div>
+      <span class="m-legend-desc">Amber. Alive but not progressing &mdash; needs you.</span>
+    </div>
+    <div class="m-legend-item">
+      <div class="m-legend-pill"><div class="m-legend-dot error"></div><span class="m-legend-name">Error</span></div>
+      <span class="m-legend-desc">Needs attention. Red, static, no animation.</span>
+    </div>
+    <div class="m-legend-item">
+      <div class="m-legend-pill"><div class="m-legend-dot done"></div><span class="m-legend-name">Done</span></div>
+      <span class="m-legend-desc">Green. Stays visible until you close it.</span>
+    </div>
+  </div>
+</div>
+
+<!-- mobile footer -->
+<footer class="mobile-only m-footer">
+  Session Indicator &middot; <a href="https://ladanjohari.com">Ladan Johari</a> &middot; 2026
+</footer>
 
 <main id="root"></main>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>

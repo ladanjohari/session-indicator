@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Session Indicator &middot; Phase 1 Prototype (Dynamic Island)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.css">
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.js.iife.js"></script>
 <style>
   :root{
     /* iPhone 15/16 Pro geometry, points-as-px */
@@ -239,6 +241,39 @@
   html.embed .controls{margin-top:16px;gap:8px;background:rgba(28,28,30,.92);border:.5px solid rgba(255,255,255,.12);border-radius:24px;padding:8px 10px;display:inline-flex;flex-wrap:wrap;justify-content:center}
   html.embed .ctl-btn{border-color:rgba(255,255,255,.18)}
   html.embed .step-hint{color:#0A84FF;font-weight:500}
+
+  /* ── PRODUCT TOUR (Driver.js) — styled to match the desktop tour ── */
+  .si-tour-popover.driver-popover{
+    background:rgba(46,46,46,.72);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+    border:.5px solid rgba(255,255,255,.16);border-radius:13px;
+    box-shadow:0 20px 60px rgba(0,0,0,.55);padding:16px 18px;max-width:270px;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;
+  }
+  .si-tour-popover .driver-popover-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.92);margin-bottom:8px;padding:0}
+  .si-tour-popover .driver-popover-description{font-size:12px;line-height:1.6;color:rgba(255,255,255,.55);padding:0}
+  .si-tour-popover .driver-popover-footer{margin-top:14px;padding-top:0;border:none}
+  .si-tour-popover .driver-popover-progress-text{font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.04em;text-transform:uppercase}
+  .si-tour-popover .driver-popover-navigation-btns{gap:6px}
+  .si-tour-popover button.driver-popover-next-btn,.si-tour-popover button.driver-popover-prev-btn{font-size:11px;padding:5px 13px;border-radius:20px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);font-family:inherit;text-shadow:none}
+  .si-tour-popover button.driver-popover-next-btn{border-color:transparent;background:#0A84FF;color:#fff}
+  .si-tour-popover button.driver-popover-close-btn{color:rgba(255,255,255,.35);font-size:14px}
+  .driver-overlay{opacity:1}
+  /* inline five-states legend (identical to the desktop tour) */
+  .tour-states{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+  .tour-state{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.55)}
+  .tour-state-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  /* during the tour: instant state changes so Driver measures elements correctly */
+  #screen.tour-run .di{transition:none!important}
+  #screen.tour-run .dim{opacity:0!important}
+  #screen.tour-run .la-explain{transition:none!important}
+
+  /* ── tour CTA button — primary blue, matches desktop "Take a tour" ── */
+  .ctl-btn.tour-cta{border-color:transparent;background:#0A84FF;color:#fff;font-weight:500}
+  .ctl-btn.tour-cta:hover{background:#1a90ff}
+  /* one-time attention cue: a few pulses on load, then still (no storage) */
+  @keyframes tourPulse{0%{box-shadow:0 0 0 0 rgba(10,132,255,.5)}70%{box-shadow:0 0 0 10px rgba(10,132,255,0)}100%{box-shadow:0 0 0 0 rgba(10,132,255,0)}}
+  .ctl-btn.tour-cta{animation:tourPulse 1.8s ease-out 3}
+  @media (prefers-reduced-motion: reduce){ .ctl-btn.tour-cta{animation:none} }
 </style>
 </head>
 <body>
@@ -327,6 +362,7 @@
   </div><!-- /stage -->
 
   <div class="controls">
+    <button class="ctl-btn tour-cta" id="tourBtn" onclick="startPhoneTour()">&#9654;&nbsp; Take a tour</button>
     <button class="ctl-btn" onclick="resetFlow()">&#8635; Replay from Lock Screen</button>
     <button class="ctl-btn" onclick="goHome()">Skip to Home</button>
     <button class="ctl-btn" id="secondBtn" onclick="toggleSecond()">Show 2nd activity (Minimal)</button>
@@ -545,6 +581,78 @@ function resetFlow(){
 }
 
 function setHint(html){ document.getElementById('hint').innerHTML = html; }
+
+/* ── PRODUCT TOUR — mirrors the desktop tour's arc, adapted for the phone ── */
+function startPhoneTour(){
+  var driverFn = (window.driver && window.driver.js) ? window.driver.js.driver : null;
+  if(!driverFn){ console.warn('Driver.js not loaded'); return; }
+
+  /* clean lock-screen start; instant state changes during the tour */
+  resetFlow();
+  var screen = document.getElementById('screen');
+  screen.classList.add('tour-run');
+
+  function dot(bg, anim){
+    return '<span class="tour-state-dot" style="background:'+bg+(anim?';animation:shimmer 1.6s ease-in-out infinite':'')+'"></span>';
+  }
+
+  /* no-op: Driver fires onHighlightStarted BEFORE it measures the element,
+     so mutating state (expand/collapse) there is enough — a manual refresh
+     would re-fire onHighlightStarted and loop, eating navigation clicks */
+  function refreshSoon(){}
+  function ensureExpanded(){ if(!diExpanded) onDITap(); }
+  function ensureCompact(){ if(diExpanded) collapseDI(); }
+
+  var tour = driverFn({
+    showProgress:true, allowClose:true, stagePadding:6, stageRadius:12,
+    popoverClass:'si-tour-popover', nextBtnText:'Next', prevBtnText:'Back', doneBtnText:'Got it',
+    onDestroyed:function(){ screen.classList.remove('tour-run'); resetFlow(); },
+    steps:[
+      /* 1 — the away-from-desk moment (desktop step 1 analog) */
+      { element:'#lacard',
+        onHighlightStarted:function(){ ensureCompact(); },
+        popover:{ title:'An agent needs you',
+          description:'You&rsquo;re away from your Mac, phone locked. When an agent pauses for approval it reaches you right here on the Lock Screen &mdash; approve or reject without unlocking.',
+          side:'top', align:'center' } },
+
+      /* 2 — compact Dynamic Island + five states (desktop steps 1&ndash;2) */
+      { element:'#di',
+        onHighlightStarted:function(){ ensureCompact(); refreshSoon(); },
+        popover:{ title:'Every session, at a glance',
+          description:'The Dynamic Island mirrors your Mac: one dot per session, most-urgent first, with the total count.'
+            + '<div class="tour-states">'
+            + '<div class="tour-state">'+dot('#fff',true)+'Active</div>'
+            + '<div class="tour-state">'+dot('#E8952A')+'Waiting on you</div>'
+            + '<div class="tour-state">'+dot('#FF3B30')+'Error</div>'
+            + '<div class="tour-state">'+dot('#34C759')+'Done</div>'
+            + '<div class="tour-state">'+dot('rgba(255,255,255,.22)')+'Idle</div>'
+            + '</div>',
+          side:'bottom', align:'center' } },
+
+      /* 3 — expanded list (desktop step 3) */
+      { element:'#di',
+        onHighlightStarted:function(){ ensureExpanded(); refreshSoon(); },
+        popover:{ title:'All sessions in one place',
+          description:'Tap the island and it expands into the full list &mdash; the same sessions running on your Mac, the ones that need you first.',
+          side:'bottom', align:'center' } },
+
+      /* 4 — respond inline (desktop step 4) */
+      { element:'.di-rows',
+        onHighlightStarted:function(){ ensureExpanded(); refreshSoon(); },
+        popover:{ title:'Respond right here',
+          description:'No terminal on a phone, so you act on the decision itself: Approve or Reject a waiting agent, or Retry / Dismiss one that errored.',
+          side:'bottom', align:'center' } },
+
+      /* 5 — Explain this (replaces desktop's keyboard-shortcuts step) */
+      { element:'.di-item',
+        onHighlightStarted:function(){ ensureExpanded(); var f=actionable()[0]; if(f && explainRow!==f.id){ toggleRowExplain(null, f.id); } refreshSoon(); },
+        popover:{ title:'Understand before you approve',
+          description:'No scrollback to read? Tap the info dot for a plain-language explanation &mdash; what the action does and whether it&rsquo;s reversible &mdash; right in place.',
+          side:'bottom', align:'center' } }
+    ]
+  });
+  tour.drive();
+}
 function renderAll(){ renderDI(); renderLock(); }
 
 /* init */

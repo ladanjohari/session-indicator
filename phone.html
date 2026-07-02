@@ -228,6 +228,17 @@
   .ctl-btn{font-family:inherit;font-size:12px;padding:8px 15px;border-radius:20px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);cursor:pointer}
   .ctl-btn:hover{background:rgba(255,255,255,.12);color:#fff}
   .foot{margin-top:34px;font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.04em}
+
+  /* ── EMBED MODE — active only when loaded inside the case-study iframe ── */
+  html.embed{background:transparent}
+  html.embed body{background:transparent;padding:6px 0 12px;min-height:0}
+  html.embed .page-head{display:none}
+  html.embed .foot{display:none}
+  html.embed .stage{transform:scale(.84);transform-origin:top center;margin-bottom:-150px}
+  /* self-contained control bar so the demo controls read on any parent background (light or dark) */
+  html.embed .controls{margin-top:16px;gap:8px;background:rgba(28,28,30,.92);border:.5px solid rgba(255,255,255,.12);border-radius:24px;padding:8px 10px;display:inline-flex;flex-wrap:wrap;justify-content:center}
+  html.embed .ctl-btn{border-color:rgba(255,255,255,.18)}
+  html.embed .step-hint{color:#0A84FF;font-weight:500}
 </style>
 </head>
 <body>
@@ -325,6 +336,9 @@
 
 <script>
 'use strict';
+
+/* embed detection: hide page chrome when rendered inside the case-study iframe */
+if (window.self !== window.top) { document.documentElement.classList.add('embed'); }
 
 /* ── CANONICAL SESSION MODEL (mirrors the desktop popover) ── */
 var sessions = [

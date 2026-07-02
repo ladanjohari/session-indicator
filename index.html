@@ -1172,6 +1172,11 @@ body.lm .m-footer a:hover{color:rgba(0,0,0,.55)}
 /* ── Mobile tour button light mode ── */
 body.lm .m-tour-cta{background:#0066CC;box-shadow:0 2px 8px rgba(0,102,204,.28)}
 body.lm .m-tour-cta:hover{box-shadow:0 4px 14px rgba(0,102,204,.38)}
+
+/* ── mobile live-session embed (phone.html in an isolated iframe) ── */
+.sip-embed{width:100%;justify-content:center;padding:20px 0 8px}
+@media(max-width:767px){.sip-embed{display:flex}}
+.sip-embed iframe{width:100%;max-width:440px;height:910px;border:0;background:transparent;overflow:hidden;color-scheme:normal}
 </style>
 </head>
 <body>
@@ -1194,88 +1199,9 @@ body.lm .m-tour-cta:hover{box-shadow:0 4px 14px rgba(0,102,204,.38)}
 </div>
 </div>
 
-<!-- mobile iPhone mockup — shown instead of macOS screen on narrow viewports -->
-<div class="mobile-only m-phone-wrap" id="m-phone-wrap">
-  <div class="m-iphone-wrap">
-    <div class="m-iphone">
-
-      <!-- side buttons (decorative, via CSS ::before/::after) -->
-      <div class="m-screen">
-
-        <!-- status bar -->
-        <div class="m-status-bar">
-          <span class="m-sb-time">9:41</span>
-          <div class="m-sb-icons">
-            <div class="m-sb-signal">
-              <div class="m-sb-bar"></div><div class="m-sb-bar"></div>
-              <div class="m-sb-bar"></div><div class="m-sb-bar"></div>
-            </div>
-            <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
-              <path d="M8 9.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" fill="#fff"/>
-              <path d="M3.5 6a6.5 6.5 0 0 1 9 0" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
-              <path d="M1 3.5a10 10 0 0 1 14 0" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
-            </svg>
-            <div class="m-sb-battery"><div class="m-sb-battery-fill"></div></div>
-          </div>
-        </div>
-
-        <!-- Dynamic Island -->
-        <div id="m-dynamic-island" class="m-di2 compact" onclick="toggleMDI()" ontouchstart="">
-          <div class="m-di2-dots" id="m-di2-dots">
-            <div class="m-di2-dot active"></div>
-            <div class="m-di2-dot waiting"></div>
-            <div class="m-di2-dot done"></div>
-          </div>
-          <span class="m-di2-count" id="m-di2-count">3</span>
-        </div>
-
-        <!-- App nav -->
-        <div class="m-app-nav2">Sessions</div>
-
-        <!-- Session list -->
-        <div class="m-session-list2">
-          <div class="m-s2-row">
-            <div class="m-s2-dot active"></div>
-            <div class="m-s2-info">
-              <div class="m-s2-name">build-assets</div>
-              <div class="m-s2-sub">running &middot; 1m 23s</div>
-            </div>
-            <span class="m-s2-chevron">&rsaquo;</span>
-          </div>
-          <div class="m-s2-row waiting" id="m-waiting-row">
-            <div class="m-s2-dot waiting" id="m-waiting-dot"></div>
-            <div class="m-s2-info">
-              <div class="m-s2-name">run-tests</div>
-              <div class="m-s2-sub waiting" id="m-waiting-sub">waiting for approval</div>
-            </div>
-            <span class="m-s2-chevron">&rsaquo;</span>
-          </div>
-          <div class="m-s2-row">
-            <div class="m-s2-dot done"></div>
-            <div class="m-s2-info">
-              <div class="m-s2-name">lint-check</div>
-              <div class="m-s2-sub">done &middot; 23s</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Approval sheet -->
-        <div class="m-approval-sheet" id="m-sheet">
-          <div class="m-sheet2-handle"></div>
-          <div class="m-sheet2-context">run-tests &middot; approve tool call?</div>
-          <div class="m-sheet2-label" id="m-sheet-label">Read file at <span style="color:rgba(255,255,255,.5)">src/utils/auth.ts</span></div>
-          <div class="m-sheet2-btns" id="m-sheet-btns">
-            <button class="m-sheet2-btn reject" onclick="mPhoneResolve('reject')">Reject</button>
-            <button class="m-sheet2-btn approve" onclick="mPhoneResolve('approve')">Approve</button>
-          </div>
-        </div>
-
-      </div><!-- /m-screen -->
-    </div><!-- /m-iphone -->
-  </div>
-</div>
-<div class="m-tour-wrap">
-  <button onclick="startMobileTour()" class="m-tour-cta">&#9654;&nbsp; Take a tour</button>
+<!-- mobile: live-session prototype, embedded from phone.html (isolated iframe, single source of truth) -->
+<div class="mobile-only sip-embed" id="sip-embed">
+  <iframe src="phone.html?embed=1" title="Session Indicator — live session on iPhone" scrolling="no" loading="lazy"></iframe>
 </div>
 
 <main id="root"></main>

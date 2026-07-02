@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session Indicator &middot; Phase 1 Prototype (Dynamic Island)</title>
+<style>
+  :root{
+    /* iPhone 15/16 Pro geometry, points-as-px */
+    --screen-w:393px; --screen-h:852px;
+    --bezel:14px; --frame-r:55px; --screen-r:44px;
+    --di-w:126px; --di-h:37px; --di-top:11px; --di-r:18.5px;
+    --sb-h:59px; --ear:133px;
+    /* state colours */
+    --active:#ffffff; --waiting:#E8952A; --done:#34C759; --error:#FF3B30; --blue:#0A84FF;
+    --idle:rgba(255,255,255,.22);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;min-height:100vh;
+    background:radial-gradient(120% 120% at 50% 0%,#161616 0%,#0a0a0a 60%);
+    color:#fff;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter',sans-serif;
+    display:flex;flex-direction:column;align-items:center;
+    padding:28px 16px 60px;
+  }
+
+  /* page chrome */
+  .page-head{max-width:520px;text-align:center;margin-bottom:22px}
+  .page-eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:8px}
+  .page-title{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px}
+  .page-sub{font-size:13px;color:rgba(255,255,255,.45);line-height:1.55;margin:0}
+  .step-hint{margin-top:14px;font-size:12px;color:var(--blue);min-height:16px;transition:opacity .3s}
+
+  /* device */
+  .stage{transform:scale(.92);transform-origin:top center}
+  .device{
+    width:calc(var(--screen-w) + var(--bezel)*2);
+    height:calc(var(--screen-h) + var(--bezel)*2);
+    background:linear-gradient(150deg,#3a3a3c,#1c1c1e 40%,#2c2c2e);
+    border-radius:var(--frame-r);
+    padding:var(--bezel);
+    position:relative;
+    box-shadow:0 0 0 1.5px rgba(255,255,255,.06),0 50px 90px rgba(0,0,0,.6),0 12px 30px rgba(0,0,0,.5);
+  }
+  /* titanium side buttons */
+  .device::before{content:'';position:absolute;left:-2px;top:150px;width:3px;height:34px;background:linear-gradient(#48484a,#2c2c2e);border-radius:2px 0 0 2px;box-shadow:0 52px 0 #3a3a3c,0 96px 0 #3a3a3c}
+  .device::after{content:'';position:absolute;right:-2px;top:190px;width:3px;height:64px;background:linear-gradient(#48484a,#2c2c2e);border-radius:0 2px 2px 0}
+  .screen{
+    position:relative;width:var(--screen-w);height:var(--screen-h);
+    border-radius:var(--screen-r);overflow:hidden;background:#000;
+  }
+
+  /* wallpaper layers */
+  .wall{position:absolute;inset:0;transition:filter .5s ease, transform .5s ease}
+  /* latest-iOS-style liquid wallpaper (CSS approximation) — same on lock + home */
+  .wall.lock, .wall.home{
+    background:
+      radial-gradient(58% 48% at 22% 14%, rgba(140,96,255,.60), transparent 62%),
+      radial-gradient(52% 44% at 84% 18%, rgba(255,128,86,.48), transparent 62%),
+      radial-gradient(66% 58% at 66% 82%, rgba(60,150,255,.58), transparent 66%),
+      radial-gradient(48% 40% at 14% 82%, rgba(255,86,170,.40), transparent 62%),
+      radial-gradient(40% 34% at 90% 70%, rgba(90,220,255,.30), transparent 62%),
+      linear-gradient(165deg,#1b1136 0%,#120e28 55%,#080714 100%);
+  }
+  .wall.home{filter:saturate(1.05) brightness(.9)}
+
+  /* ── STATUS BAR + DYNAMIC ISLAND ── */
+  .statusbar{position:absolute;top:0;left:0;right:0;height:var(--sb-h);z-index:40;pointer-events:none}
+  .sb-time{position:absolute;top:0;left:0;width:var(--ear);height:var(--sb-h);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;letter-spacing:.2px;padding-bottom:2px}
+  .sb-icons{position:absolute;top:0;right:0;width:var(--ear);height:var(--sb-h);display:flex;align-items:center;justify-content:center;gap:5px;padding-bottom:2px}
+  .sb-signal{display:flex;align-items:flex-end;gap:1.6px;height:11px}
+  .sb-bar{width:3px;background:#fff;border-radius:1px}
+  .sb-bar:nth-child(1){height:4px}.sb-bar:nth-child(2){height:6px}
+  .sb-bar:nth-child(3){height:8.5px}.sb-bar:nth-child(4){height:11px}
+
+  .di{
+    position:absolute;top:var(--di-top);left:50%;transform:translateX(-50%);
+    background:#000;z-index:50;overflow:hidden;
+    transition:width .42s cubic-bezier(.32,.72,0,1), height .42s cubic-bezier(.32,.72,0,1),
+               border-radius .42s cubic-bezier(.32,.72,0,1),
+               left .42s cubic-bezier(.32,.72,0,1), transform .42s cubic-bezier(.32,.72,0,1);
+    box-shadow:0 2px 8px rgba(0,0,0,.5);
+  }
+  .di.compact{
+    width:var(--di-w);height:var(--di-h);border-radius:var(--di-r);
+    display:flex;align-items:center;justify-content:space-between;padding:0 13px;cursor:pointer;
+  }
+  /* minimal presentation: SI compresses to a single circular blob beside the camera */
+  .di.minimal{
+    width:var(--di-h);height:var(--di-h);border-radius:50%;
+    left:calc(50% + 25px);transform:none;padding:0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .di.minimal .di-dot{width:10px;height:10px}
+  /* the other Live Activity (generic timer), shown only in minimal */
+  .di-second{
+    position:absolute;top:var(--di-top);right:calc(50% + 25px);height:var(--di-h);
+    border-radius:var(--di-r);background:#000;z-index:50;display:none;
+    align-items:center;gap:7px;padding:0 12px;box-shadow:0 2px 8px rgba(0,0,0,.5);
+  }
+  .di-second .tdot{width:7px;height:7px;border-radius:50%;background:#30d158}
+  .di-second .tmr{font-size:12px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums}
+  /* the true-black camera housing revealed in the gap during minimal */
+  .di-camera{
+    position:absolute;top:calc(var(--di-top) + 10px);left:50%;transform:translateX(-50%);
+    width:17px;height:17px;border-radius:50%;background:#000;z-index:48;display:none;
+    box-shadow:inset 0 0 4px rgba(40,44,66,.9);
+  }
+  /* content cross-fade so the morph reads as one shape, not a content pop */
+  @keyframes diContentIn{from{opacity:0}to{opacity:1}}
+  .di.expanded > *{animation:diContentIn .32s ease both;animation-delay:.08s}
+  .di.compact > *{animation:diContentIn .26s ease both}
+
+  /* ── EXPLAIN THIS (in-place context) ── */
+  .la-explain-btn{background:none;border:none;color:var(--blue);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;padding:0}
+  .la-explain{max-height:0;overflow:hidden;opacity:0;transition:max-height .32s cubic-bezier(.32,.72,0,1), opacity .28s ease, margin .32s ease}
+  .la-explain.open{max-height:160px;opacity:1;margin-bottom:14px}
+  .la-explain-inner{font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.68);background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.09);border-radius:12px;padding:11px 13px}
+  /* expanded-DI per-row info toggle + revealed context */
+  .di-item{display:flex;flex-direction:column}
+  .di-info{width:19px;height:19px;border-radius:50%;border:.5px solid rgba(255,255,255,.28);background:none;color:rgba(255,255,255,.6);font-size:11px;font-style:italic;font-family:Georgia,serif;line-height:1;cursor:pointer;flex-shrink:0;padding:0}
+  .di-info.on{background:rgba(255,255,255,.16);color:#fff;border-color:transparent}
+  .di-rowctx{font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.62);padding:0 4px 9px 27px}
+
+  /* ── REDUCED MOTION ── instant resize + cross-fade, no spring, no shimmer scale */
+  @media (prefers-reduced-motion: reduce){
+    .di{transition:opacity .2s ease}
+    .di-dot.active{animation:none;opacity:.92}
+    .wall{transition:none}
+    .lockface,.la-card,.homeface,.dim{transition:opacity .2s ease}
+    .la-explain{transition:opacity .2s ease}
+  }
+  .di-dots{display:flex;gap:5px;align-items:center}
+  .di-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .di-dot.active{background:var(--active);animation:shimmer 1.6s ease-in-out infinite}
+  .di-dot.waiting{background:var(--waiting)}
+  .di-dot.done{background:var(--done)}
+  .di-dot.error{background:var(--error)}
+  .di-dot.idle{background:var(--idle)}
+  .di-count{font-size:12px;font-weight:600;color:rgba(255,255,255,.55)}
+
+  .di.expanded{
+    width:373px;height:auto;border-radius:32px;padding:15px 16px 16px;cursor:default;
+    display:flex;flex-direction:column;gap:11px;
+  }
+  .di-exp-head{display:flex;align-items:center;justify-content:space-between}
+  .di-exp-title{font-size:15px;font-weight:600;color:#fff}
+  .di-exp-total{font-size:11.5px;color:rgba(255,255,255,.4)}
+  .di-hr{height:.5px;background:rgba(255,255,255,.1)}
+  .di-rows{display:flex;flex-direction:column;gap:2px}
+  .di-row{display:flex;align-items:center;gap:10px;padding:7px 0}
+  .di-row .nm{font-size:13.5px;color:rgba(255,255,255,.92);font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .di-row .ar{margin-left:auto;flex-shrink:0}
+  .di-sum{font-size:11.5px;color:rgba(255,255,255,.4);line-height:1.5;padding-top:2px}
+  .di-allclear{font-size:12.5px;color:var(--done);text-align:center;padding:4px 0}
+
+  @keyframes shimmer{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.35);opacity:.15}}
+
+  /* dim overlay behind expanded island */
+  .dim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .35s;z-index:45}
+  .dim.on{opacity:1;pointer-events:auto}
+
+  /* ── SHARED APPROVE/REJECT COMPONENT ── */
+  .ar{display:inline-flex;gap:7px;align-items:center}
+  .ar-btn{
+    font-family:inherit;border:none;cursor:pointer;font-weight:500;
+    border-radius:999px;transition:filter .15s, transform .1s;white-space:nowrap;
+  }
+  .ar-btn:active{transform:scale(.96)}
+  .ar-btn.reject{background:rgba(255,255,255,.12);color:rgba(255,255,255,.82);border:.5px solid rgba(255,255,255,.16)}
+  .ar-btn.approve{background:var(--blue);color:#fff}
+  .ar-btn.reject:hover{background:rgba(255,255,255,.18)}
+  .ar-btn.approve:hover{filter:brightness(1.08)}
+  /* sizes */
+  .ar.sm .ar-btn{font-size:11px;padding:5px 11px}
+  .ar.lg .ar-btn{font-size:16px;padding:12px 22px;min-height:44px;flex:1}
+
+  /* ── LOCK SCREEN ── */
+  .lockface{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;transition:opacity .45s, transform .45s;pointer-events:none}
+  .lockface > *{pointer-events:auto}
+  .lock-date{margin-top:78px;font-size:16px;font-weight:500;color:rgba(255,255,255,.75)}
+  .lock-clock{font-size:82px;font-weight:600;letter-spacing:-2px;line-height:1;margin-top:2px;color:#fff}
+  .lock-lockicon{margin-top:20px;opacity:.5}
+
+  .la-card{
+    position:absolute;left:16px;right:16px;bottom:132px;z-index:32;
+    background:rgba(28,28,30,.72);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+    border:.5px solid rgba(255,255,255,.14);border-radius:26px;padding:16px 16px 18px;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+    transition:opacity .4s, transform .4s;
+  }
+  .la-top{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  /* neutral, monochrome placeholder mark (the SI pill motif) — NOT a branded app icon, NOT a state dot */
+  .la-icon{width:34px;height:34px;border-radius:9px;background:#1c1c1e;border:.5px solid rgba(255,255,255,.16);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .la-pill{width:22px;height:10px;border-radius:5px;border:1px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;gap:2.5px}
+  .la-pill i{width:2.6px;height:2.6px;border-radius:50%;background:rgba(255,255,255,.7)}
+  .la-app{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.02em}
+  .la-name{font-size:15px;font-weight:600;color:#fff;margin-top:1px}
+  .la-ctx{font-size:13px;color:rgba(255,255,255,.62);line-height:1.5;margin-bottom:14px}
+  .la-ctx code{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;color:#fff;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px}
+  .la-resolved{font-size:13.5px;font-weight:500;padding:6px 0 2px}
+  .la-resolved.approve{color:var(--done)}
+  .la-resolved.reject{color:var(--error)}
+
+  .home-indicator{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);width:140px;height:5px;border-radius:3px;background:rgba(255,255,255,.55);z-index:60}
+  .unlock-hint{position:absolute;bottom:26px;left:0;right:0;text-align:center;font-size:12.5px;color:rgba(255,255,255,.55);z-index:31;transition:opacity .3s}
+
+  /* ── HOME SCREEN ── */
+  .homeface{position:absolute;inset:0;z-index:20;opacity:0;pointer-events:none;transition:opacity .45s;padding-top:calc(var(--sb-h) + 22px)}
+  .app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px 18px;padding:14px 26px}
+  .app-ico{width:100%;aspect-ratio:1;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+  .app-lbl{font-size:10px;color:rgba(255,255,255,.85);text-align:center;margin-top:5px;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .app{display:flex;flex-direction:column;align-items:center}
+  .dock{position:absolute;left:12px;right:12px;bottom:24px;height:88px;border-radius:32px;background:rgba(255,255,255,.14);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-around;padding:0 18px}
+  .dock .app-ico{width:60px;height:60px}
+
+  /* state machine visibility */
+  .screen[data-mode="lock"] .homeface{opacity:0}
+  .screen[data-mode="lock"] .wall.home{opacity:0}
+  .screen[data-mode="home"] .lockface{opacity:0;transform:scale(1.04);pointer-events:none}
+  .screen[data-mode="home"] .la-card{opacity:0;transform:translateY(20px);pointer-events:none}
+  .screen[data-mode="home"] .unlock-hint{opacity:0}
+  .screen[data-mode="home"] .wall.lock{opacity:0}
+  .screen[data-mode="home"] .homeface{opacity:1;pointer-events:auto}
+
+  /* controls */
+  .controls{margin-top:26px;display:flex;gap:10px;align-items:center}
+  .ctl-btn{font-family:inherit;font-size:12px;padding:8px 15px;border-radius:20px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);cursor:pointer}
+  .ctl-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+  .foot{margin-top:34px;font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+  <div class="page-head">
+    <div class="page-eyebrow">Session Indicator &middot; Phase 1 prototype</div>
+    <h1 class="page-title">Dynamic Island as gatekeeper</h1>
+    <p class="page-sub">One canonical session model, mirrored from the desktop. The flow starts locked &mdash; approve or reject from the Lock Screen, unlock, then tap the Dynamic Island to manage every session.</p>
+    <div class="step-hint" id="hint">&#9654; You&rsquo;re on the Lock Screen. Approve/Reject the waiting agent below &mdash; or tap the Dynamic Island to see all sessions.</div>
+  </div>
+
+  <div class="stage">
+  <div class="device">
+    <div class="screen" id="screen" data-mode="lock">
+
+      <div class="wall lock"></div>
+      <div class="wall home"></div>
+
+      <!-- dim behind expanded island -->
+      <div class="dim" id="dim" onclick="collapseDI()"></div>
+
+      <!-- HOME SCREEN -->
+      <div class="homeface" id="homeface">
+        <div class="app-grid">
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#5ac8fa,#007aff)"></div><div class="app-lbl">Weather</div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#ff9500,#ff5e3a)"></div><div class="app-lbl">Notes</div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#34c759,#248a3d)"></div><div class="app-lbl">Health</div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#c644fc,#8944ab)"></div><div class="app-lbl">Photos</div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#ff2d55,#d70015)"></div><div class="app-lbl">Music</div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#8e8e93,#48484a)"></div><div class="app-lbl">Settings</div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#30d158,#34c759)"></div><div class="app-lbl">Messages</div></div>
+          <div class="app"><div class="app-ico" style="background:linear-gradient(160deg,#0a84ff,#0040dd)"></div><div class="app-lbl">Maps</div></div>
+        </div>
+        <div class="dock">
+          <div class="app-ico" style="background:linear-gradient(160deg,#30d158,#248a3d)"></div>
+          <div class="app-ico" style="background:linear-gradient(160deg,#5ac8fa,#007aff)"></div>
+          <div class="app-ico" style="background:linear-gradient(160deg,#ff9f0a,#ff6a00)"></div>
+          <div class="app-ico" style="background:linear-gradient(160deg,#ff375f,#d70015)"></div>
+        </div>
+      </div>
+
+      <!-- LOCK FACE -->
+      <div class="lockface" id="lockface" onclick="tryUnlock(event)">
+        <div class="lock-date">Tuesday, June 30</div>
+        <div class="lock-clock">9:41</div>
+        <div class="lock-lockicon">
+          <svg width="16" height="20" viewBox="0 0 16 20" fill="none"><rect x="1" y="8" width="14" height="11" rx="3" fill="#fff"/><path d="M4 8V5.5a4 4 0 0 1 8 0V8" stroke="#fff" stroke-width="1.6"/></svg>
+        </div>
+      </div>
+
+      <!-- LOCK SCREEN LIVE ACTIVITY CARD -->
+      <div class="la-card" id="lacard">
+        <div class="la-top">
+          <div class="la-icon"><span class="la-pill"><i></i><i></i><i></i></span></div>
+          <div>
+            <div class="la-app">SESSION INDICATOR</div>
+            <div class="la-name" id="la-name">analyze-code is waiting</div>
+          </div>
+        </div>
+        <div class="la-ctx" id="la-ctx">Approve running <code>git commit -am &ldquo;refactor auth&rdquo;</code>&#63;</div>
+        <div class="la-explain" id="la-explain"></div>
+        <div id="la-action"></div>
+      </div>
+
+      <div class="unlock-hint" id="unlockhint">Swipe up to open</div>
+
+      <!-- STATUS BAR -->
+      <div class="statusbar">
+        <div class="sb-time">9:41</div>
+        <div class="sb-icons">
+          <div class="sb-signal"><div class="sb-bar"></div><div class="sb-bar"></div><div class="sb-bar"></div><div class="sb-bar"></div></div>
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 10a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8z" fill="#fff"/><path d="M4 6.5a6.4 6.4 0 0 1 9 0" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/><path d="M1.3 3.6a10.2 10.2 0 0 1 14.4 0" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <div style="display:flex;align-items:center"><div style="width:24px;height:12px;border:1px solid rgba(255,255,255,.5);border-radius:3px;padding:1.5px"><div style="height:100%;width:72%;background:#fff;border-radius:1.5px"></div></div><div style="width:1.6px;height:4px;background:rgba(255,255,255,.5);border-radius:0 1px 1px 0;margin-left:1px"></div></div>
+        </div>
+      </div>
+
+      <!-- DYNAMIC ISLAND (lives above everything) -->
+      <div class="di-second" id="di-second"><span class="tdot"></span><span class="tmr">12:04</span></div>
+      <div class="di-camera" id="di-camera"></div>
+      <div class="di compact" id="di" onclick="onDITap(event)"></div>
+
+      <div class="home-indicator"></div>
+
+    </div><!-- /screen -->
+  </div><!-- /device -->
+  </div><!-- /stage -->
+
+  <div class="controls">
+    <button class="ctl-btn" onclick="resetFlow()">&#8635; Replay from Lock Screen</button>
+    <button class="ctl-btn" onclick="goHome()">Skip to Home</button>
+    <button class="ctl-btn" id="secondBtn" onclick="toggleSecond()">Show 2nd activity (Minimal)</button>
+  </div>
+
+  <div class="foot">Working Document &middot; Not for distribution</div>
+
+<script>
+'use strict';
+
+/* ── CANONICAL SESSION MODEL (mirrors the desktop popover) ── */
+var sessions = [
+  { id:'run-tests',       state:'error',   ctx:'Command failed with exit code 1' },
+  { id:'analyze-code',    state:'waiting', ctx:'git commit -am "refactor auth"' },
+  { id:'write-docs',      state:'active',  meta:'1m' },
+  { id:'deploy-pipeline', state:'done',    meta:'8m' },
+  { id:'refactor-api',    state:'active',  meta:'2m' },
+  { id:'build-assets',    state:'waiting', ctx:'npm run build' },
+];
+var URGENCY = { error:0, waiting:1, active:2, done:3 };
+
+/* plain-language context for the "Explain this" affordance — the phone's substitute for terminal scrollback */
+var EXPLAIN = {
+  'run-tests':    'The test runner exited with an error before finishing. Retry re-runs the full suite; Dismiss clears it without re-running.',
+  'analyze-code': 'Saves the agent’s changes to 3 files — auth.ts, login.tsx, session.ts — as one local commit. Nothing is pushed to remote. Fully reversible.',
+  'build-assets': 'Compiles the project into dist/. Read-only on your source files; overwrites the previous build output. Reversible.'
+};
+function explainOf(id){ return EXPLAIN[id] || 'No extra detail available for this action.'; }
+
+function get(id){ return sessions.find(function(s){return s.id===id;}); }
+function actionable(){ return sessions.filter(function(s){return s.state==='waiting'||s.state==='error';}); }
+function heroWaiting(){ return sessions.find(function(s){return s.state==='waiting';}); }
+
+/* ── SHARED APPROVE / REJECT COMPONENT ── */
+/* size: 'sm' | 'lg'. Renders the correct pair for the session's state. */
+function approveReject(id, size){
+  var s = get(id); if(!s) return '';
+  if(s.state==='error'){
+    return '<div class="ar '+size+'">'
+      + '<button class="ar-btn reject" onclick="act(event,\''+id+'\',\'dismiss\')">Dismiss</button>'
+      + '<button class="ar-btn approve" onclick="act(event,\''+id+'\',\'retry\')">Retry</button></div>';
+  }
+  /* waiting */
+  return '<div class="ar '+size+'">'
+    + '<button class="ar-btn reject" onclick="act(event,\''+id+'\',\'reject\')">Reject</button>'
+    + '<button class="ar-btn approve" onclick="act(event,\''+id+'\',\'approve\')">Approve</button></div>';
+}
+
+/* ── ACTIONS mutate the one model, then everything re-renders ── */
+function act(e, id, action){
+  if(e){ e.stopPropagation(); }
+  var s = get(id); if(!s) return;
+  if(action==='approve'){ s.state='active'; s.meta='0s'; delete s.ctx; }
+  else if(action==='reject'){ s.state='error'; s.ctx='Rejected by user'; }
+  else if(action==='retry'){ s.state='active'; s.meta='0s'; delete s.ctx; }
+  else if(action==='dismiss'){ sessions = sessions.filter(function(x){return x.id!==id;}); }
+  explainRow = null;
+  renderAll();
+  flashResolved(id, action);
+}
+
+/* ── DYNAMIC ISLAND ── */
+var diExpanded = false;
+var secondActivity = false;  /* is another Live Activity sharing the island? → Minimal presentation */
+var explainOpen = false;     /* lock-card "Explain this" panel open? */
+var explainRow = null;       /* which expanded-DI row has its context revealed */
+
+function byUrgency(a,b){ return URGENCY[a.state]-URGENCY[b.state]; }
+
+function renderDI(){
+  var di = document.getElementById('di');
+  var second = document.getElementById('di-second');
+  var cam = document.getElementById('di-camera');
+  var count = sessions.length;
+
+  if(!diExpanded && secondActivity){
+    /* MINIMAL: SI compresses to one most-urgent dot beside the camera; a 2nd activity sits opposite */
+    var topm = sessions.slice().sort(byUrgency)[0];
+    di.className = 'di minimal';
+    di.innerHTML = '<div class="di-dot '+(topm?topm.state:'idle')+'"></div>';
+    second.style.display = 'flex';
+    cam.style.display = 'block';
+    return;
+  }
+
+  second.style.display = 'none';
+  cam.style.display = 'none';
+
+  if(!diExpanded){
+    di.className = 'di compact';
+    /* leading: up to 3 dots by urgency; trailing: total count */
+    var top = sessions.slice().sort(byUrgency).slice(0,3);
+    var dots = top.map(function(s){return '<div class="di-dot '+s.state+'"></div>';}).join('');
+    di.innerHTML = '<div class="di-dots">'+dots+'</div><div class="di-count">'+count+'</div>';
+    return;
+  }
+  /* expanded */
+  di.className = 'di expanded';
+  var act = actionable();
+  var rows = act.map(function(s){
+    var open = explainRow===s.id;
+    return '<div class="di-item">'
+      + '<div class="di-row"><div class="di-dot '+s.state+'"></div>'
+      + '<span class="nm">'+s.id+'</span>'
+      + '<button class="di-info'+(open?' on':'')+'" onclick="toggleRowExplain(event,\''+s.id+'\')">i</button>'
+      + '<span class="ar">'+approveReject(s.id,'sm')+'</span></div>'
+      + (open?'<div class="di-rowctx">'+explainOf(s.id)+'</div>':'')
+      + '</div>';
+  }).join('');
+  var rest = sessions.filter(function(s){return s.state==='active'||s.state==='done';});
+  var sum = '';
+  if(rest.length){
+    var actives = rest.filter(function(s){return s.state==='active';}).map(function(s){return s.id;});
+    var dones = rest.filter(function(s){return s.state==='done';}).map(function(s){return s.id;});
+    var parts = [];
+    if(actives.length) parts.push(actives.join(', ')+' active');
+    if(dones.length) parts.push(dones.join(', ')+' done');
+    sum = '<div class="di-sum">+ '+rest.length+' more &middot; '+parts.join(' &middot; ')+'</div>';
+  }
+  var body = act.length
+    ? '<div class="di-rows">'+rows+'</div>'
+    : '<div class="di-allclear">&#10003; All sessions clear</div>';
+  di.innerHTML =
+      '<div class="di-exp-head"><span class="di-exp-title">Agent Sessions</span><span class="di-exp-total">'+count+' total</span></div>'
+    + '<div class="di-hr"></div>'
+    + body
+    + sum;
+}
+
+function onDITap(e){
+  if(e) e.stopPropagation();
+  /* interactive on BOTH lock screen and home — the DI expands wherever it lives */
+  diExpanded = !diExpanded;
+  explainRow = null;
+  document.getElementById('dim').classList.toggle('on', diExpanded);
+  renderDI();
+  setHint(diExpanded
+    ? 'Expanded island: the same 6 sessions, actionable ones first. Tap outside to collapse.'
+    : 'Tap the Dynamic Island to expand and manage every session &mdash; works on the Lock Screen too.');
+}
+function collapseDI(){ if(diExpanded){ diExpanded=false; explainRow=null; document.getElementById('dim').classList.remove('on'); renderDI(); } }
+
+function toggleSecond(){
+  secondActivity = !secondActivity;
+  if(diExpanded){ collapseDI(); } else { renderDI(); }
+  var b = document.getElementById('secondBtn');
+  if(b) b.textContent = secondActivity ? 'Hide 2nd activity' : 'Show 2nd activity (Minimal)';
+  setHint(secondActivity
+    ? 'Two Live Activities share the island &mdash; Session Indicator compresses to a single most-urgent dot (Minimal). Tap it to expand.'
+    : 'Back to Compact. Tap the Dynamic Island to expand.');
+}
+
+/* ── LOCK SCREEN CARD ── */
+function renderLock(){
+  var hero = heroWaiting();
+  var nameEl=document.getElementById('la-name'), ctxEl=document.getElementById('la-ctx'), actEl=document.getElementById('la-action');
+  if(!hero){
+    nameEl.textContent = 'No sessions waiting';
+    ctxEl.innerHTML = 'Everything is running or resolved.';
+    var e0 = document.getElementById('la-explain'); e0.className='la-explain'; e0.innerHTML='';
+    actEl.innerHTML = '';
+    return;
+  }
+  nameEl.textContent = hero.id + ' is waiting';
+  ctxEl.innerHTML = 'Approve running <code>'+hero.ctx+'</code>&#63; '
+    + '<button class="la-explain-btn" onclick="toggleExplain(event)">'+(explainOpen?'Hide':'Explain')+'</button>';
+  var expEl = document.getElementById('la-explain');
+  expEl.innerHTML = '<div class="la-explain-inner">'+explainOf(hero.id)+'</div>';
+  expEl.className = 'la-explain'+(explainOpen?' open':'');
+  actEl.innerHTML = approveReject(hero.id,'lg');
+}
+function toggleExplain(e){ if(e) e.stopPropagation(); explainOpen=!explainOpen; renderLock(); }
+function toggleRowExplain(e,id){ if(e) e.stopPropagation(); explainRow=(explainRow===id?null:id); renderDI(); }
+
+function flashResolved(id, action){
+  /* if resolving from lock screen, show inline confirmation on the card */
+  if(document.getElementById('screen').dataset.mode!=='lock') return;
+  explainOpen=false;
+  var expEl=document.getElementById('la-explain'); if(expEl){ expEl.className='la-explain'; expEl.innerHTML=''; }
+  var actEl=document.getElementById('la-action'), ctxEl=document.getElementById('la-ctx'), nameEl=document.getElementById('la-name');
+  var approved = (action==='approve'||action==='retry');
+  nameEl.textContent = id;
+  ctxEl.innerHTML = approved
+    ? 'Agent resumed &mdash; continuing work.'
+    : 'Agent stopped.';
+  actEl.innerHTML = '<div class="la-resolved '+(approved?'approve':'reject')+'">'
+      + (approved?'&#10003; Approved':'&#10005; Rejected')
+      + '</div>';
+  setHint('Resolved from the locked screen &mdash; no unlock needed. Swipe up to open and see the rest.');
+}
+
+/* ── MODE / NAV ── */
+function setMode(m){ document.getElementById('screen').dataset.mode = m; }
+function goHome(){ collapseDI(); setMode('home'); renderDI(); setHint('You&rsquo;re on the Home Screen. Tap the Dynamic Island to expand and manage every session.'); }
+function tryUnlock(e){
+  /* tapping the lock face (not the card) unlocks */
+  goHome();
+}
+function resetFlow(){
+  sessions = [
+    { id:'run-tests',       state:'error',   ctx:'Command failed with exit code 1' },
+    { id:'analyze-code',    state:'waiting', ctx:'git commit -am "refactor auth"' },
+    { id:'write-docs',      state:'active',  meta:'1m' },
+    { id:'deploy-pipeline', state:'done',    meta:'8m' },
+    { id:'refactor-api',    state:'active',  meta:'2m' },
+    { id:'build-assets',    state:'waiting', ctx:'npm run build' },
+  ];
+  diExpanded=false; secondActivity=false; explainOpen=false; explainRow=null;
+  document.getElementById('dim').classList.remove('on');
+  var sb=document.getElementById('secondBtn'); if(sb) sb.textContent='Show 2nd activity (Minimal)';
+  setMode('lock'); renderAll();
+  setHint('&#9654; You&rsquo;re on the Lock Screen. Approve/Reject the waiting agent below &mdash; or tap the Dynamic Island to see all sessions.');
+}
+
+function setHint(html){ document.getElementById('hint').innerHTML = html; }
+function renderAll(){ renderDI(); renderLock(); }
+
+/* init */
+renderAll();
+</script>
+</body>
+</html>

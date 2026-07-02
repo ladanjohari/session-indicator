@@ -272,6 +272,14 @@ body.lm .mobile-note{color:rgba(0,0,0,0.38)}
 body.lm .caption{color:rgba(0,0,0,0.38)}
 body.lm .tour-btn{background:#0066CC;box-shadow:0 2px 8px rgba(0,102,204,0.28)}
 body.lm .tour-btn:hover{box-shadow:0 4px 14px rgba(0,102,204,0.38)}
+/* one-time attention cue: a few pulses on load, then still (no storage; keeps the resting shadow) */
+@keyframes tourBtnPulse{
+  0%{box-shadow:0 2px 8px rgba(10,132,255,0.35),0 0 0 0 rgba(10,132,255,0.5)}
+  70%{box-shadow:0 2px 8px rgba(10,132,255,0.35),0 0 0 10px rgba(10,132,255,0)}
+  100%{box-shadow:0 2px 8px rgba(10,132,255,0.35),0 0 0 0 rgba(10,132,255,0)}
+}
+.tour-btn{animation:tourBtnPulse 1.8s ease-out 3}
+@media (prefers-reduced-motion:reduce){.tour-btn{animation:none}}
 
 /* ─── SECTION 2: PROBLEM ─── */
 .problem{
@@ -1201,7 +1209,7 @@ body.lm .m-tour-cta:hover{box-shadow:0 4px 14px rgba(0,102,204,.38)}
 
 <!-- mobile: live-session prototype, embedded from phone.html (isolated iframe, single source of truth) -->
 <div class="mobile-only sip-embed" id="sip-embed">
-  <iframe src="phone.html?embed=1" title="Session Indicator — live session on iPhone" scrolling="no" loading="lazy"></iframe>
+  <iframe src="phone.html?embed=1&v=3" title="Session Indicator live session on iPhone" scrolling="no" loading="lazy"></iframe>
 </div>
 
 <main id="root"></main>
@@ -1338,7 +1346,7 @@ const INITIAL_STATE = {
     controlsVisible: false,
     controlsZIndex: 100,
     activeVariation: 'Pulse',
-    lm: window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches,
+    lm: false, /* always open in dark mode on every platform; the toggle still flips it */
     focusedTerminalId: null,
     popoverOpen: false,
     zCounter: 100,

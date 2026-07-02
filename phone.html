@@ -229,6 +229,9 @@
   .controls{margin-top:26px;display:flex;gap:10px;align-items:center}
   .ctl-btn{font-family:inherit;font-size:12px;padding:8px 15px;border-radius:20px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);cursor:pointer}
   .ctl-btn:hover{background:rgba(255,255,255,.12);color:#fff}
+  /* primary tour entry, placed above the phone so it is visible on load (incl. embed) */
+  .tour-launch{display:flex;justify-content:center;padding:2px 0 16px}
+  html.embed .tour-launch{padding:4px 0 14px}
   .foot{margin-top:34px;font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.04em}
 
   /* ── EMBED MODE — active only when loaded inside the case-study iframe ── */
@@ -281,8 +284,12 @@
   <div class="page-head">
     <div class="page-eyebrow">Session Indicator &middot; Phase 1 prototype</div>
     <h1 class="page-title">Dynamic Island as gatekeeper</h1>
-    <p class="page-sub">One canonical session model, mirrored from the desktop. The flow starts locked &mdash; approve or reject from the Lock Screen, unlock, then tap the Dynamic Island to manage every session.</p>
-    <div class="step-hint" id="hint">&#9654; You&rsquo;re on the Lock Screen. Approve/Reject the waiting agent below &mdash; or tap the Dynamic Island to see all sessions.</div>
+    <p class="page-sub">One canonical session model, mirrored from the desktop. The flow starts locked, so you approve or reject from the Lock Screen, unlock, then tap the Dynamic Island to manage every session.</p>
+    <div class="step-hint" id="hint">&#9654; You&rsquo;re on the Lock Screen. Approve or reject the waiting agent below, or tap the Dynamic Island to see all sessions.</div>
+  </div>
+
+  <div class="tour-launch">
+    <button class="ctl-btn tour-cta" id="tourBtn" onclick="startPhoneTour()">&#9654;&nbsp; Take a tour</button>
   </div>
 
   <div class="stage">
@@ -362,7 +369,6 @@
   </div><!-- /stage -->
 
   <div class="controls">
-    <button class="ctl-btn tour-cta" id="tourBtn" onclick="startPhoneTour()">&#9654;&nbsp; Take a tour</button>
     <button class="ctl-btn" onclick="resetFlow()">&#8635; Replay from Lock Screen</button>
     <button class="ctl-btn" onclick="goHome()">Skip to Home</button>
     <button class="ctl-btn" id="secondBtn" onclick="toggleSecond()">Show 2nd activity (Minimal)</button>
@@ -390,7 +396,7 @@ var URGENCY = { error:0, waiting:1, active:2, done:3 };
 /* plain-language context for the "Explain this" affordance — the phone's substitute for terminal scrollback */
 var EXPLAIN = {
   'run-tests':    'The test runner exited with an error before finishing. Retry re-runs the full suite; Dismiss clears it without re-running.',
-  'analyze-code': 'Saves the agent’s changes to 3 files — auth.ts, login.tsx, session.ts — as one local commit. Nothing is pushed to remote. Fully reversible.',
+  'analyze-code': 'Saves the agent’s changes to 3 files (auth.ts, login.tsx, session.ts) as one local commit. Nothing is pushed to remote. Fully reversible.',
   'build-assets': 'Compiles the project into dist/. Read-only on your source files; overwrites the previous build output. Reversible.'
 };
 function explainOf(id){ return EXPLAIN[id] || 'No extra detail available for this action.'; }
@@ -504,7 +510,7 @@ function onDITap(e){
   renderDI();
   setHint(diExpanded
     ? 'Expanded island: the same 6 sessions, actionable ones first. Tap outside to collapse.'
-    : 'Tap the Dynamic Island to expand and manage every session &mdash; works on the Lock Screen too.');
+    : 'Tap the Dynamic Island to expand and manage every session. It works on the Lock Screen too.');
 }
 function collapseDI(){ if(diExpanded){ diExpanded=false; explainRow=null; document.getElementById('dim').classList.remove('on'); renderDI(); } }
 
@@ -514,7 +520,7 @@ function toggleSecond(){
   var b = document.getElementById('secondBtn');
   if(b) b.textContent = secondActivity ? 'Hide 2nd activity' : 'Show 2nd activity (Minimal)';
   setHint(secondActivity
-    ? 'Two Live Activities share the island &mdash; Session Indicator compresses to a single most-urgent dot (Minimal). Tap it to expand.'
+    ? 'Two Live Activities share the island, so Session Indicator compresses to a single most-urgent dot (Minimal). Tap it to expand.'
     : 'Back to Compact. Tap the Dynamic Island to expand.');
 }
 
@@ -549,12 +555,12 @@ function flashResolved(id, action){
   var approved = (action==='approve'||action==='retry');
   nameEl.textContent = id;
   ctxEl.innerHTML = approved
-    ? 'Agent resumed &mdash; continuing work.'
+    ? 'Agent resumed. Continuing work.'
     : 'Agent stopped.';
   actEl.innerHTML = '<div class="la-resolved '+(approved?'approve':'reject')+'">'
       + (approved?'&#10003; Approved':'&#10005; Rejected')
       + '</div>';
-  setHint('Resolved from the locked screen &mdash; no unlock needed. Swipe up to open and see the rest.');
+  setHint('Resolved from the locked screen, no unlock needed. Swipe up to open and see the rest.');
 }
 
 /* ── MODE / NAV ── */
@@ -577,7 +583,7 @@ function resetFlow(){
   document.getElementById('dim').classList.remove('on');
   var sb=document.getElementById('secondBtn'); if(sb) sb.textContent='Show 2nd activity (Minimal)';
   setMode('lock'); renderAll();
-  setHint('&#9654; You&rsquo;re on the Lock Screen. Approve/Reject the waiting agent below &mdash; or tap the Dynamic Island to see all sessions.');
+  setHint('&#9654; You&rsquo;re on the Lock Screen. Approve or reject the waiting agent below, or tap the Dynamic Island to see all sessions.');
 }
 
 function setHint(html){ document.getElementById('hint').innerHTML = html; }
@@ -612,7 +618,7 @@ function startPhoneTour(){
       { element:'#lacard',
         onHighlightStarted:function(){ ensureCompact(); },
         popover:{ title:'An agent needs you',
-          description:'You&rsquo;re away from your Mac, phone locked. When an agent pauses for approval it reaches you right here on the Lock Screen &mdash; approve or reject without unlocking.',
+          description:'You&rsquo;re away from your Mac, phone locked. When an agent pauses for approval it reaches you right here on the Lock Screen. Approve or reject without unlocking.',
           side:'top', align:'center' } },
 
       /* 2 — compact Dynamic Island + five states (desktop steps 1&ndash;2) */
@@ -633,7 +639,7 @@ function startPhoneTour(){
       { element:'#di',
         onHighlightStarted:function(){ ensureExpanded(); refreshSoon(); },
         popover:{ title:'All sessions in one place',
-          description:'Tap the island and it expands into the full list &mdash; the same sessions running on your Mac, the ones that need you first.',
+          description:'Tap the island and it expands into the full list: the same sessions running on your Mac, the ones that need you first.',
           side:'bottom', align:'center' } },
 
       /* 4 — respond inline (desktop step 4) */
@@ -643,12 +649,12 @@ function startPhoneTour(){
           description:'No terminal on a phone, so you act on the decision itself: Approve or Reject a waiting agent, or Retry / Dismiss one that errored.',
           side:'bottom', align:'center' } },
 
-      /* 5 — Explain this (replaces desktop's keyboard-shortcuts step) */
-      { element:'.di-item',
-        onHighlightStarted:function(){ ensureExpanded(); var f=actionable()[0]; if(f && explainRow!==f.id){ toggleRowExplain(null, f.id); } refreshSoon(); },
+      /* 5 — Explain this, back on the lock card (room for the popover, points at the real Explain link) */
+      { element:'#lacard',
+        onHighlightStarted:function(){ ensureCompact(); if(!explainOpen){ toggleExplain(); } },
         popover:{ title:'Understand before you approve',
-          description:'No scrollback to read? Tap the info dot for a plain-language explanation &mdash; what the action does and whether it&rsquo;s reversible &mdash; right in place.',
-          side:'bottom', align:'center' } }
+          description:'Not sure what an action does? Tap Explain for a plain-language summary right on the card: what it changes, and whether it can be undone. No terminal, no scrollback.',
+          side:'top', align:'center' } }
     ]
   });
   tour.drive();

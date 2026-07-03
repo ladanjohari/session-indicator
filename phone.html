@@ -345,7 +345,7 @@
         <div id="la-action"></div>
       </div>
 
-      <div class="unlock-hint" id="unlockhint">Swipe up to open</div>
+      <div class="unlock-hint" id="unlockhint"></div>
 
       <!-- STATUS BAR -->
       <div class="statusbar">
@@ -369,8 +369,7 @@
   </div><!-- /stage -->
 
   <div class="controls">
-    <button class="ctl-btn" onclick="resetFlow()">&#8635; Replay from Lock Screen</button>
-    <button class="ctl-btn" onclick="goHome()">Skip to Home</button>
+    <button class="ctl-btn" id="modeBtn" onclick="toggleMode()">Home screen</button>
     <button class="ctl-btn" id="secondBtn" onclick="toggleSecond()">Show 2nd activity (Minimal)</button>
   </div>
 
@@ -560,11 +559,20 @@ function flashResolved(id, action){
   actEl.innerHTML = '<div class="la-resolved '+(approved?'approve':'reject')+'">'
       + (approved?'&#10003; Approved':'&#10005; Rejected')
       + '</div>';
-  setHint('Resolved from the locked screen, no unlock needed. Swipe up to open and see the rest.');
+  setHint('Resolved from the locked screen, no unlock needed. Tap to open and see the rest.');
 }
 
 /* ── MODE / NAV ── */
-function setMode(m){ document.getElementById('screen').dataset.mode = m; }
+function setMode(m){ document.getElementById('screen').dataset.mode = m; updateModeToggle(); }
+function updateModeToggle(){
+  var b = document.getElementById('modeBtn'); if(!b) return;
+  /* label shows the mode you'll switch TO, like the 2nd-activity toggle */
+  b.textContent = (document.getElementById('screen').dataset.mode === 'home') ? 'Lock screen' : 'Home screen';
+}
+function toggleMode(){
+  if(document.getElementById('screen').dataset.mode === 'home'){ resetFlow(); }  /* back to a fresh Lock Screen */
+  else { goHome(); }                                                              /* over to the Home Screen */
+}
 function goHome(){ collapseDI(); setMode('home'); renderDI(); setHint('You&rsquo;re on the Home Screen. Tap the Dynamic Island to expand and manage every session.'); }
 function tryUnlock(e){
   /* tapping the lock face (not the card) unlocks */
@@ -598,6 +606,13 @@ function startPhoneTour(){
   var screen = document.getElementById('screen');
   screen.classList.add('tour-run');
 
+  /* bring the phone fully into view — scroll the parent when embedded in the case study.
+     Instant (not smooth): cross-frame smooth scroll is unreliable; a jump-to-content is fine here. */
+  try {
+    var scrollTarget = window.frameElement || document.querySelector('.stage');
+    if (scrollTarget) scrollTarget.scrollIntoView({ block: window.frameElement ? 'start' : 'center' });
+  } catch(e){}
+
   function dot(bg, anim){
     return '<span class="tour-state-dot" style="background:'+bg+(anim?';animation:shimmer 1.6s ease-in-out infinite':'')+'"></span>';
   }
@@ -614,16 +629,9 @@ function startPhoneTour(){
     popoverClass:'si-tour-popover', nextBtnText:'Next', prevBtnText:'Back', doneBtnText:'Got it',
     onDestroyed:function(){ screen.classList.remove('tour-run'); resetFlow(); },
     steps:[
-      /* 1 — the away-from-desk moment (desktop step 1 analog) */
-      { element:'#lacard',
-        onHighlightStarted:function(){ ensureCompact(); },
-        popover:{ title:'An agent needs you',
-          description:'You&rsquo;re away from your Mac, phone locked. When an agent pauses for approval it reaches you right here on the Lock Screen. Approve or reject without unlocking.',
-          side:'top', align:'center' } },
-
-      /* 2 — compact Dynamic Island + five states (desktop steps 1&ndash;2) */
+      /* 1 — compact Dynamic Island + five states */
       { element:'#di',
-        onHighlightStarted:function(){ ensureCompact(); refreshSoon(); },
+        onHighlightStarted:function(){ ensureCompact(); if(explainOpen){ toggleExplain(); } },
         popover:{ title:'Every session, at a glance',
           description:'The Dynamic Island mirrors your Mac: one dot per session, most-urgent first, with the total count.'
             + '<div class="tour-states">'
@@ -635,21 +643,28 @@ function startPhoneTour(){
             + '</div>',
           side:'bottom', align:'center' } },
 
-      /* 3 — expanded list (desktop step 3) */
+      /* 2 — expanded list */
       { element:'#di',
-        onHighlightStarted:function(){ ensureExpanded(); refreshSoon(); },
+        onHighlightStarted:function(){ ensureExpanded(); },
         popover:{ title:'All sessions in one place',
           description:'Tap the island and it expands into the full list: the same sessions running on your Mac, the ones that need you first.',
           side:'bottom', align:'center' } },
 
-      /* 4 — respond inline (desktop step 4) */
+      /* 3 — respond inline */
       { element:'.di-rows',
-        onHighlightStarted:function(){ ensureExpanded(); refreshSoon(); },
+        onHighlightStarted:function(){ ensureExpanded(); },
         popover:{ title:'Respond right here',
           description:'No terminal on a phone, so you act on the decision itself: Approve or Reject a waiting agent, or Retry / Dismiss one that errored.',
           side:'bottom', align:'center' } },
 
-      /* 5 — Explain this, back on the lock card (room for the popover, points at the real Explain link) */
+      /* 4 — the away-from-desk lock card, Explain collapsed */
+      { element:'#lacard',
+        onHighlightStarted:function(){ ensureCompact(); if(explainOpen){ toggleExplain(); } },
+        popover:{ title:'An agent needs you',
+          description:'You&rsquo;re away from your Mac, phone locked. When an agent pauses for approval it reaches you right here on the Lock Screen. Approve or reject without unlocking.',
+          side:'top', align:'center' } },
+
+      /* 5 — Explain, same card expanded */
       { element:'#lacard',
         onHighlightStarted:function(){ ensureCompact(); if(!explainOpen){ toggleExplain(); } },
         popover:{ title:'Understand before you approve',

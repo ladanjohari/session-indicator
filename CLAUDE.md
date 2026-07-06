@@ -49,10 +49,10 @@ Each dot independent — no synchronized animations.
   clicking elsewhere on a window must not start a drag.
 
 ## Before every code change
-Run existing Playwright tests first.
-Only change what is needed.
-Run tests again after change.
-Fix failures before moving on.
+There are no automated tests. Playwright in package.json exists for the
+video recording pipeline (record/), not testing — do not claim test runs.
+Verify by opening index.html in a browser: cycle variations (V, 1-8),
+add sessions (S), check dark and light mode. Only change what is needed.
 
 ## GitHub
 Repo: git@github.com:ladanjohari/session-indicator.git

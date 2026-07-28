@@ -1,3 +1,7 @@
 node_modules/
 record/recordings/
 record/output/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

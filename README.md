@@ -1,5 +1,7 @@
 # Session Indicator
 
+[![Playwright Tests](https://github.com/ladanjohari/session-indicator/actions/workflows/playwright.yml/badge.svg)](https://github.com/ladanjohari/session-indicator/actions/workflows/playwright.yml)
+
 A proposed native macOS menu bar component for monitoring AI agent sessions.
 
 **[View live prototype](https://ladanjohari.github.io/session-indicator)**

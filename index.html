@@ -459,15 +459,15 @@ body.lm .problem-quote-attr{color:rgba(0,0,0,0.38)}
 
 /* ─── FOOTER ─── */
 .footer{
-  padding-top:40px;
+  padding-top:28px;
   border-top:.5px solid rgba(255,255,255,0.05);
-  text-align:center;
-}
-.footer p{
-  font-size:10px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;
   color:rgba(255,255,255,0.32);
-  letter-spacing:.04em;
 }
+.footer a{color:inherit;text-decoration:none;transition:color .15s ease-out}
+.footer-links{display:flex;gap:22px;list-style:none;margin:0;padding:0}
+@media (hover:hover) and (pointer:fine){.footer a:hover{color:rgba(255,255,255,0.7)}}
 
 /* ─── PORTFOLIO HEADER ─── */
 #portfolio-header{background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif}
@@ -536,7 +536,8 @@ body.lm .principle{background:rgba(0,0,0,0.025);border:.5px solid rgba(0,0,0,0.0
 body.lm .principle-title{color:rgba(0,0,0,0.65)}
 body.lm .principle-body{color:rgba(0,0,0,0.48)}
 body.lm .footer{border-top:.5px solid rgba(0,0,0,0.07)}
-body.lm .footer p{color:rgba(0,0,0,0.38)}
+body.lm .footer{color:rgba(0,0,0,0.42)}
+@media (hover:hover) and (pointer:fine){body.lm .footer a:hover{color:rgba(0,0,0,0.75)}}
 
 /* ─── LIGHT MODE: MISSING ELEMENTS ─── */
 body.lm .problem p{color:rgba(0,0,0,0.58)}
@@ -1171,7 +1172,8 @@ body.lm #root .avw-rec strong::before{color:rgba(0,0,0,.7)}
 /* ── Mobile problem statement ── */
 
 /* ── Mobile footer ── */
-.m-footer{padding:28px 24px 40px;border-top:.5px solid rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.22);text-align:center;letter-spacing:.01em}
+.m-footer{padding:28px 24px 40px;border-top:.5px solid rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.32);letter-spacing:.01em}
+.m-footer-links{display:flex;gap:22px;list-style:none;margin:14px 0 0;padding:0}
 .m-footer a{color:inherit;text-decoration:none}
 .m-footer a:hover{color:rgba(255,255,255,.5)}
 
@@ -2382,7 +2384,12 @@ function OnePageContent() {
     /* Implementation section removed — code snippet didn't add portfolio value */
 
     h('footer', {className:'footer'},
-      h('p', null, 'Session Indicator · ', h('a', {href:'https://ladanjohari.com', style:{color:'inherit',textDecoration:'none'}}, 'Ladan Johari'), ' · 2026')
+      h('span', null, '\u00a9 2026 ', h('a', {href:'https://ladanjohari.com'}, 'Ladan Johari')),
+      h('ul', {className:'footer-links'},
+        h('li', null, h('a', {href:'https://github.com/ladanjohari', target:'_blank', rel:'noopener'}, 'GitHub')),
+        h('li', null, h('a', {href:'https://www.linkedin.com/in/ladan-johari/', target:'_blank', rel:'noopener'}, 'LinkedIn')),
+        h('li', null, h('a', {href:'https://x.com/JohariLadan', target:'_blank', rel:'noopener'}, 'X'))
+      )
     )
   );
 }
@@ -2925,7 +2932,12 @@ function startMobileTour() {
 
 
 <footer class="mobile-only m-footer">
-  Session Indicator &middot; <a href="https://ladanjohari.com">Ladan Johari</a> &middot; 2026
+  <span>&copy; 2026 <a href="https://ladanjohari.com">Ladan Johari</a></span>
+  <ul class="m-footer-links">
+    <li><a href="https://github.com/ladanjohari" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="https://www.linkedin.com/in/ladan-johari/" target="_blank" rel="noopener">LinkedIn</a></li>
+    <li><a href="https://x.com/JohariLadan" target="_blank" rel="noopener">X</a></li>
+  </ul>
 </footer>
 </body>
 </html>
